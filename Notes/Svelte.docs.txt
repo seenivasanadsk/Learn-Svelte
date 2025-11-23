@@ -1,0 +1,17 @@
+Introduction
+    * The Svelte compoents has *.svelte extensions
+    * it contains 3 parts <script>, <html>, <style> here styles are only scoped with in the compoent
+    * we can use {}, to display js variable value in html
+
+State
+    * any variable that is used $state() is reactive
+    * get some values based on state that is called $derived, derived is one way
+    * we can log primitve data direclty, but when we log array or object we should use $inspect
+    * $effect get a function that run when any state change used with in it if nothing used it run only one time
+    * we can return a function that is run before update or before destroy to clean up something from $effect
+    * if we use $state in seprate.js file and used thate state variable in multiple times, we can make univesal reactivity
+
+Props
+    * we can pass any data to parent to child compoent
+    * and also we can declare default values to the props in child compoent
+    * we can spread props like {...object} to the compoent
