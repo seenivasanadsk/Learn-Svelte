@@ -6,7 +6,6 @@
 	function addNumber() {
 		numbers.push(2);
 	}
-	$inspect(numbers);
 </script>
 
 <p>{numbers}</p>
