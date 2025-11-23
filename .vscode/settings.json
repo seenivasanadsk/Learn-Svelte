@@ -1,32 +1,32 @@
 {
-	// Associate all .css files with TailwindCSS language mode
-	"files.associations": {
-		"*.css": "tailwindcss"
-	},
+  // Associate all .css files with TailwindCSS language mode
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
 
-	// Force LF line endings in VS Code
-	"files.eol": "\n",
+  // Force LF line endings in VS Code
+  "files.eol": "\n",
 
-	// Enable format on save
-	"editor.formatOnSave": true,
+  // Enable format on save
+  "editor.formatOnSave": true,
 
-	// Use Prettier as the default formatter
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
+  // Use Prettier as the default formatter
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
 
-	// Use 2 spaces as indentation
-	"editor.tabSize": 2,
-	"editor.insertSpaces": true,
+  // Use 2 spaces as indentation
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
 
-	// Disable auto-detect indentation
-	"editor.detectIndentation": false,
+  // Disable auto-detect indentation
+  "editor.detectIndentation": false,
 
-	// Default terminal is Command Prompt
-	"terminal.integrated.defaultProfile.windows": "Command Prompt",
+  // Default terminal is Command Prompt
+  "terminal.integrated.defaultProfile.windows": "Command Prompt",
 
-	// Terminal profile configuration
-	"terminal.integrated.profiles.windows": {
-		"Command Prompt": {
-			"path": "C:\\Windows\\System32\\cmd.exe"
-		}
-	}
+  // Terminal profile configuration
+  "terminal.integrated.profiles.windows": {
+    "Command Prompt": {
+      "path": "C:\\Windows\\System32\\cmd.exe"
+    }
+  }
 }
