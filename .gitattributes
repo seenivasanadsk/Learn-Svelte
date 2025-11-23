@@ -1,0 +1,8 @@
+* text=auto eol=lf
+
+# Optional: keep images as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
