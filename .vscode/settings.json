@@ -4,6 +4,9 @@
 		"*.css": "tailwindcss"
 	},
 
+	// Force LF line endings in VS Code
+	"files.eol": "\n",
+
 	// Enable format on save
 	"editor.formatOnSave": true,
 
