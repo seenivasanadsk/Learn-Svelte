@@ -1,17 +1,37 @@
 Introduction
-    * The Svelte compoents has *.svelte extensions
-    * it contains 3 parts <script>, <html>, <style> here styles are only scoped with in the compoent
-    * we can use {}, to display js variable value in html
+  * The Svelte compoents has *.svelte extensions
+  * it contains 3 parts <script>, <html>, <style> here styles are only scoped with in the compoent
+  * we can use {}, to display js variable value in html
 
 State
-    * any variable that is used $state() is reactive
-    * get some values based on state that is called $derived, derived is one way
-    * we can log primitve data direclty, but when we log array or object we should use $inspect
-    * $effect get a function that run when any state change used with in it if nothing used it run only one time
-    * we can return a function that is run before update or before destroy to clean up something from $effect
-    * if we use $state in seprate.js file and used thate state variable in multiple times, we can make univesal reactivity
+  * any variable that is used $state() is reactive
+  * get some values based on state that is called $derived, derived is one way
+  * we can log primitve data direclty, but when we log array or object we should use $inspect (developemnt only), if we want real value we can access by $state.snapshot
+  * $effect get a function that run when any state change used with in it if nothing used it run only one time (don't use frequently)
+  * we can return a function that is run before update or before destroy to clean up something from $effect
+  * if we use $state in seprate.js file and used thate state variable in multiple times, we can make univesal reactivity
 
 Props
-    * we can pass any data to parent to child compoent
-    * and also we can declare default values to the props in child compoent
-    * we can spread props like {...object} to the compoent
+  * we can pass any data to parent to child compoent
+  * and also we can declare default values to the props in child compoent
+  * we can spread props like {...object} to the compoent
+
+Logics
+  * We can use if condition on compoents by these {#if CONDITION} - starting, {/if} - ending, {:else}, {:else if CONDITION} - for middle here we can close curly braces for each statement
+  * We can also use looping by {#each ITEMS as SINGLE_ITEM, INDEX (KEY)} - starting, {/each} - ending
+  * We can direclty use asyncrohone handling here by {#await PROMISE} ... {:then RESULT} ... {:catch ERROR} ... {/await}
+
+Events
+  * We can use events in Svelte same os onclick, onkeydown like these
+  * In default event trigger in bubbling mood (child to parent), we can make like [onclickcapture, onkeydowncapture] to run event on capturing mode (parent - child)
+  * we can pass event handler to children compoent via props
+
+Binding
+  * we can bind any input element to the reactive state using "bind:value". its consider boolean on checkbox and radio, string on text, number on number, etc...
+
+Class & Styles
+  * we can use {}, and any js expression in it, if we pass objects its assign its key when the value is true, if we pass array its consider all as classname
+  * Same as Class, we can use {} and js expression in it, but unlike class it not accept object and array but it has special statement like (style:border=) like these
+  * in Svelte, styles are scoped for each compoent, if we want to style a child comp from parent comp we can pass like "--color" props to the child which is not props actually
+    it is passing styles from parent to child and we can access that in child comp style tag by var(--color)
+  
