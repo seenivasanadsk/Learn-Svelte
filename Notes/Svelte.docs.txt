@@ -39,3 +39,25 @@ Use Directive
   * This is run for native dom elements has update, create, destry time like events (use:FUNCTION)
   * we can pass parameter like use:FUNCTION={PARAMETER}
   * Svelte recommand to use $effect() instead of update(), destroy()
+
+Transition
+  * we can use transition effect on element render and non rendering time
+  * in default, svelte provides (fade, blur, crossfade, draw, fly, scale, slide). here "draw" only works on svg and for "fly" we need to pass x and y axiois
+  * if we put "transition" keyword it works on both time visible and hide, when we give "in" and "out" seperatly it work diffently
+  * We can also add custom transition by (transition:spin={{duration}}) here spin is a function and duration is arguments
+    * the transition function has two parameter first one is target node, second one is options passed as values
+    * and it should return on objects with these keys (delay, duration, easing, css, tick)
+      * delay - wait before transition begins
+      * duration - how long its should do
+      * easing - easing function (rarly used so skiped)
+      * css - css function it has two parameter first is the from the starting time 0 to 1
+        * the second parent is remaining time
+        * these function runs each time based on display refresh-rate
+        * and it should return a css native style string
+      * tick - (there is exist but skiped raraly used)
+  * We can also use JS based transition like typing by these (but skiped for now)
+  * There is also have 4 event we can use for (onintrostart, onoutrostart, onintroend, onoutroend)
+  * Global transition: when we specify a (transition:spin|global) like these then its trigger even thought its parent add or removed
+    * If we not use global then the transition only happen the element it self add or removed, if the parent added or removed its not work
+  * Sometimes we need to reapply the transition without the dom updates, in that case we can enclosed by key scopes {#key i}...{/key}
+    * Here, the i means the index or any other things that change the dom
