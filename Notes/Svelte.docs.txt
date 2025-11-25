@@ -34,4 +34,8 @@ Class & Styles
   * Same as Class, we can use {} and js expression in it, but unlike class it not accept object and array but it has special statement like (style:border=) like these
   * in Svelte, styles are scoped for each compoent, if we want to style a child comp from parent comp we can pass like "--color" props to the child which is not props actually
     it is passing styles from parent to child and we can access that in child comp style tag by var(--color)
-  
+
+Use Directive
+  * This is run for native dom elements has update, create, destry time like events (use:FUNCTION)
+  * we can pass parameter like use:FUNCTION={PARAMETER}
+  * Svelte recommand to use $effect() instead of update(), destroy()
