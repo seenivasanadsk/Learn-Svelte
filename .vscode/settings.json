@@ -157,11 +157,9 @@
   // Always show status bar
   "workbench.statusBar.visible": true,
 
-  // Show indent guides
-  "editor.renderIndentGuides": true,
-
   // Highlight active indent level
-  "editor.guides.highlightActiveIndentation": true
+  "editor.guides.highlightActiveIndentation": true,
+  "editor.guides.indentation": true
 
   // ---------------------------------------------------
   // AUTO SAVE OPTIONS
