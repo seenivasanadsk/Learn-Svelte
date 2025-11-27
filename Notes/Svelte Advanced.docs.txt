@@ -15,4 +15,24 @@ Reusing Content
   * if the code without snippet which is a normal children without snipets considerd as "children" in child compoents
 
 Motion
-  *
+  * The swelte motion is used some transition effect, currletly we have two option tween and spring
+  * Tween - This is leaner motion
+    * Syntex: let obj = new Tween(0)
+      * here we pass initial value into the Tween
+      * and we have two key obj.current and obj.target, the obj.current is incremanet in a certain time if we set a target so we can make transition
+  * Spring - This is Spring based motion like a real Spring
+    * Syntex: let obj = new Spring(0, { stiffness: 0.25, damping: 0.25 })
+      * here we pass initial value in first arguemnt and second options like stiffness and damping for spring behaviours
+      * and same as we can access via obj.current and modify by obj.target
+
+Advanced Bindings
+  * We can also bind contenteditable html with bind:innerHTML & bind:innerText
+  * We can also directly assin a value to the looped variable {#each todos as todo}...{/each} here we can directly put todo.value
+  * We can also bind some special element attribute like bind:pause
+  * We can also bind element widh and hight to the variable (clientWidh, clientHeight, offsetWidth, offsetHeight), these are readonly
+  * We can also bind the Dom element directly by bind:this
+  * We can make two way binding by modify props in children componets by in children syntex:(let { test = $bindable() } = $props();) and parent syntex:(<Test bind:test/>)
+  * We can also bind a svelte compoents by bind:this
+
+Advanced transition
+  [IGNORED] - because its not working when learned

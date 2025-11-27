@@ -1,11 +1,7 @@
 <script>
-  import { count, data } from './shared.svelte';
-  const { data: tee, monkey } = $props();
+  import Test2 from './Test2.svelte';
 </script>
 
 <div>
-  <p>From child {data.count},, {tee}</p>
-  <button onclick={() => data.count++}>add</button>
-  <button>{$count}</button>
-  {@render monkey('test', 'test123')}
+  <Test2 />
 </div>
