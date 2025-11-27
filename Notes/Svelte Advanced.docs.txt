@@ -36,3 +36,20 @@ Advanced Bindings
 
 Advanced transition
   [IGNORED] - because its not working when learned
+
+Context API
+  * we can set and get a value which is should be object if context shouold be reactive, via setContext, and getContext
+
+Special element
+  * <svelte:window> - it should not contains children and refers a window object, we can define global events here
+    * we can bind these follows: innerWidth, innerHeight, outerWidth, outerHeight, scrollX, scrollY, online
+  * <svelte:document> - it should not children same as windows, it refers document object
+  * <svelte:body> - it should not children same as windows, it refers document body
+  * <svelte:head> - we can inject stylesheet in the head tag by defineing inside its children and it donest has any attirbute
+  * <svelte:element this="input"> - we can render different element by change this attraibute by tag name dynamically
+  * <svelte:boundary> - this error boundary inside we can put children with {#snippet failed(error, reset)} snipets to show when error occured
+    * and we can also use onerror on these element to handle programmatically
+
+<script module>
+  * if we use <script module> this is rune once whenever we imported and all its code is share across its multiple instnace
+  * if we anything export inside the <script module> file then its imporatable whenever we want

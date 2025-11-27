@@ -1,7 +1,6 @@
-<script>
-  import { getContext } from 'svelte';
-
-  const context = getContext('myContext');
+<script module>
+  let current = $state(0);
 </script>
 
-<p>Child shows count: {context.count}</p>
+<p>current: {current}</p>
+<button onclick={() => current++}>inc</button>
