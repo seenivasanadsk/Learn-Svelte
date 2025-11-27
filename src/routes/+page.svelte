@@ -1,40 +1,28 @@
 <script>
-  // --- Typewriter transition defined inside the component ---
-  function typewriter(node, { speed = 50 } = {}) {
-    const text = node.textContent;
-    const length = text.length;
+  import { Tween } from 'svelte/motion';
+  import { cubicOut } from 'svelte/easing';
 
-    return {
-      duration: length * speed,
-      tick: (t) => {
-        const i = Math.trunc(length * t);
-        node.textContent = text.slice(0, i);
-      }
-    };
-  }
-
-  // --- App state ---
-  let i = 0;
-  const messages = ['Hello there!', 'Welcome to Svelte!', 'Transitions are powerful!'];
-
-  function next() {
-    i = (i + 1) % messages.length;
-  }
+  let progress = new Tween(0, {
+    duration: 400,
+    easing: cubicOut
+  });
 </script>
 
-<button on:click={next}>Next message</button>
+<progress value={progress.current}></progress>
 
-<!-- KEY BLOCK → forces the transition to replay -->
-{#key i}
-  <p in:typewriter={{ speed: 30 }}>
-    {messages[i]}
-  </p>
-{/key}
+<button onclick={() => (progress.target = 0)}> 0% </button>
+
+<button onclick={() => (progress.target = 0.25)}> 25% </button>
+
+<button onclick={() => (progress.target = 0.5)}> 50% </button>
+
+<button onclick={() => (progress.target = 0.75)}> 75% </button>
+
+<button onclick={() => (progress.target = 1)}> 100% </button>
 
 <style>
-  p {
-    font-size: 1.4rem;
-    font-family: monospace;
-    margin: 1rem 0;
+  progress {
+    display: block;
+    width: 100%;
   }
 </style>

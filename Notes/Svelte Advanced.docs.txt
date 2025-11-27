@@ -1,0 +1,18 @@
+Advanced reactivity
+  * Raw state ($state.raw()) only reactive when value reassign. not works on objects and array updates
+  * In svelte class properties also reactive
+  * Svlete also gives reactivity in some differant ways like (MediaQuery, SvelteDate, SvelteMap, SvelteSet, SvelteURL, SvelteURLSearchParams, createSubscriber)
+  * Svelte offers predefine Store
+    * we should assign use writable instead of $state in stores and the writable is impreted from 'svelte/store'
+    * and in compoents we should use it with prefix $
+
+Reusing Content
+  * Snippet is minimal html code that reusable rendering, Syntex: {#snippet monkey(emoji, description)}...{/snippet}
+  * we can aslo pass custom parameter to it
+  * And use it by Syntex: {@render monkey('🙈', 'see no evil')}
+  * We can also pass snippet into children compoents via props and render in children
+  * If we declare a snippets inside a Components tag its directly passed as porps automatically, only outside snippet should pass manually
+  * if the code without snippet which is a normal children without snipets considerd as "children" in child compoents
+
+Motion
+  *
