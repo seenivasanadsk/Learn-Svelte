@@ -1,0 +1,13 @@
+Routing
+  * Pages - we can define "+page.svelte" file inside "src/route" which is url routing and the folderpath is the routepath
+  * Layouts - we can put common code into these file "+layout.svelte", A +layout.svelte file applies to every child route, including the sibling +page.svelte
+  * Route Parameters - we can put any valid variable name with square bracked, to access a route dynamiclly "src/route/blog/[slug]" will be "/blog/DYNAMIC"
+
+Loading Data
+  * SvelteKit run three things in the core in the order of Routing (which route match incoming request), Loading (get data for the route), Rendering (generate some HTML)
+  * Every page of your app can declare a load function in a +page.server.js file alongside the +page.svelte file
+  * "+page.server.js" file only runs on the server, whatever we return from the load function, will available in data props in "+page.svelte"
+  * the dynamic routes parameters can accessble in the load function arguemnts like ({params})
+  * we can also use "+layout.server.js" in these file the data availale in all its children
+
+Headers & Coolies
