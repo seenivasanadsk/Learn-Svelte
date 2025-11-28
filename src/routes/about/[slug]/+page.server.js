@@ -1,8 +1,8 @@
-import { data } from '$lib/message.js';
-import { fail } from '@sveltejs/kit';
-import { error } from 'console';
+import { redirect } from '@sveltejs/kit';
 
-export function load({ params, cookies }) {
+export function load() {
+  // error(450, 'test error');
+  redirect(307, '/b');
   return { count: 123 };
 }
 
@@ -10,6 +10,6 @@ export const actions = {
   test: async ({ cookies, request }) => {
     // return fail(422, { error: "This is server errror" })
     const data = await request.formData();
-    console.log("test", data, cookies.delete("SESSION_ID", { path: "/" }))
+    console.log('test', data, cookies.delete('SESSION_ID', { path: '/' }));
   }
 };

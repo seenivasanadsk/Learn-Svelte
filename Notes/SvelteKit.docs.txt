@@ -42,3 +42,16 @@ $app/state
       * from and to — objects with params, route and url properties
       * type — the type of navigation, e.g. link, popstate or goto
     * updates - [IGNORED]
+
+Error and Redirects
+  * Basically two errors, expected and unexpected. For expected error we should pass status code and message to error function
+  * error(450, "Test error") from Svelte/kit, and it shows the message and status code
+  * if any error comes unexpected that is bug and it shows 500 internal server error
+  * if we put "+error.svelte" and it caches its nested routes error, if we put in routes folder it renders inside layout
+    * if layout has any other nav links thats also renders
+  * If any error occures during before the rendering i mean before root layout render it fallback to "error.html" in src folder
+    * in that html we can use %sveltekit.status%, %sveltekit.error.message% these for display a message
+  * redirects - redirects to another page imported form svelte/kit, Syntax: redirect(STATUS_CODE, URL)
+    * 303 — for form actions, following a successful submission
+    * 307 — for temporary redirects
+    * 308 — for permanent redirects
