@@ -1,9 +1,24 @@
 <script>
-  let { data } = $props();
+  import { enhance } from '$app/forms';
+  let { data, form } = $props();
 </script>
+
+{#if form?.error}
+  <p class="text-red-500">Error: {form.error}</p>
+{/if}
 
 <h1>about</h1>
 <p>this is the about page.</p>
 <div>
   {JSON.stringify(data)}
 </div>
+
+<form method="POST">
+  <input type="text" name="field1" />
+  <button>Submit</button>
+</form>
+
+<form method="POST" action="?/test" use:enhance>
+  <input type="text" name="field2" />
+  <button>Submit</button>
+</form>

@@ -11,3 +11,34 @@ Loading Data
   * we can also use "+layout.server.js" in these file the data availale in all its children
 
 Headers & Coolies
+  * We can set a headers from load function of "+page.server.js" has a "setHeaders" arguments we can pass objects here to set headers
+  * We can also get and set Cookies from load function same as setHeaders, cookies.get('visited'), cookies.set("visited", value, options), in options path is mandatory
+
+Shared Modules
+  * Every js module files in the "src/lib" folder is accessble in src folder by "$lib", here if "src/lib/message.js" can be "$lib/message.js"
+
+Forms
+  * Any form inside the "+page.svelte" if we don;t specified the action only method post it triggers the "+page.server.js" action object inside default function
+  * We can also make a named actions in same actions object with any name and in the form actions we can call it (action="?/create"), default function not works in named actions
+  * If we return a import { fail } from '@sveltejs/kit'; fail function with 1st args status code and 2nd args details in actions, we can get that in Svelte files
+    * We can get a form props in svelte UI file and these form has error that is faild via fail function to diaplay a error message
+  * Svelte makes default full page relaod on form submit, if we want SPA we need to use import { enhance } from '$app/forms'; and in form tag (use:enhance)
+  * We can pasuse a callback function for use:enhance to handle the starting, loading, finshed event of the submit, for more details visit (https://svelte.dev/tutorial/kit/customizing-use-enhance)
+
+API routes
+  * Same as pages we can also define API end points by "+server.js" file with export function with Method as function name it has parameters of request, url, cookies, setcookie, ipaddress etc...
+
+$app/state
+  * SvelteKit makes three available options via these module. page, navigating, and updated
+    * page - it has objects and has
+      * url — the URL of the current page
+      * params — the current page’s parameters
+      * route — an object with an id property representing the current route
+      * status — the HTTP status code of the current page
+      * error — the error object of the current page, if any (you’ll learn more about error handling in later exercises)
+      * data — the data for the current page, combining the return values of all load functions
+      * form — the data returned from a form action
+    * navigating - Represents the current navigation.
+      * from and to — objects with params, route and url properties
+      * type — the type of navigation, e.g. link, popstate or goto
+    * updates - [IGNORED]
