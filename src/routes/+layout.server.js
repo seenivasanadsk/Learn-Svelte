@@ -1,5 +1,4 @@
-export function load({ params }) {
-  console.log(params, import.meta.url);
-  // throw new Error();
-  return { layout: 'data' };
+export function load({ fetch }) {
+  const res = fetch('https://www.google.com');
+  console.log(res);
 }

@@ -1,0 +1,9 @@
+Hooks
+  * Hooks makes custmozie the apps default behaviour "src/hooks.server.js"
+  * handle - export async function handle in the hooks file, its like a middleware, we can do anything
+  * event.locals - this is used for send some data to every request if we set this value we can read it any request
+  * handleFetch - export async function handleFetch({ event, request, fetch })
+    * It will work if we called event.fetch inside the load functions only
+  * handleError - export function handleError({ event, error })
+
+Page Options
