@@ -19,3 +19,15 @@ Page Options
 Link Options
   * Preloading - [NOT_WORKING_PROPERLY_ON_TRY] only "hover" works on try, "viewport, eager" not working (even production build also)
   * Reloading - "data-sveltekit-reload" if we put these attribute on parent element of <a> link it reload full page (in default it works smoth navigation on client side)
+
+Advanced Routing
+  * [[optional]]  - makes optional parmeteres
+  * [...catchall] - makes multiple segements
+  * Param matchers - makes specific paremeers allows only specific words or logics
+    * in these file "src/params/hex.js" we can export a function called match which pass argument as value and we do logics here and return true or false
+    * the folder path for routes is "src/routes/colors/[color=hex]" here the hex is same both places
+  * (gruped) - this is grouped routes it is not affect the URL segements but we can organize, it works for using "+layout.svelte.js" but not works for "+page.svelte.js"
+  * Breaking out of layers - in default every layout is rendred in the page if we access multiple nested pages
+    * we can break the layout by adding "+page@SEGMENT.svelte" its only apperas a rootlayout to SEGMENT we described other inners are skipped
+
+Advanced Loading
