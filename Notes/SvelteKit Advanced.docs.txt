@@ -7,3 +7,14 @@ Hooks
   * handleError - export function handleError({ event, error })
 
 Page Options
+  * in Page options we can tell the page is should render in server side, or clinet side or pre render at build time, also trailing slash
+  * ssr - we can enable or disbale ssr in +page.server.js file by export a variable "export const ssr = false", default every page is server render
+  * csr - we can enable or disbale csr in +page.server.js file by export a variable "export const csr = false"
+  * prerender - we can enable or disbale prerender in +page.server.js file by export a variable "export const prerender = false" (its not work in dev mode)
+  * trailingSlash - we can add or remove slash on the end of the url by these  "export const trailingSlash = 'always'"
+    * always - means it add slash even though user not put it
+    * ignore - means it users defined
+    * never - means it remove slash even though user added it (default)
+
+Link Options
+  * Preloading - only "hover" works on try, "viewport, eager" not working (even production build also)

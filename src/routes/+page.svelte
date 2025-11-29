@@ -2,7 +2,7 @@
   import Test2 from './Test2.svelte';
 </script>
 
-<div>
+<div class="h-dvh">
   <Test2 />
   <Test2 />
   <Test2 />
