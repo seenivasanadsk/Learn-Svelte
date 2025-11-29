@@ -17,4 +17,5 @@ Page Options
     * never - means it remove slash even though user added it (default)
 
 Link Options
-  * Preloading - only "hover" works on try, "viewport, eager" not working (even production build also)
+  * Preloading - [NOT_WORKING_PROPERLY_ON_TRY] only "hover" works on try, "viewport, eager" not working (even production build also)
+  * Reloading - "data-sveltekit-reload" if we put these attribute on parent element of <a> link it reload full page (in default it works smoth navigation on client side)
