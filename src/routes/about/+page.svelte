@@ -2,8 +2,7 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { invalidate } from '$app/navigation';
-
-  export let data; // load() data automatically injected
+  let { data } = $props();
   console.log(data);
 
   onMount(() => {
@@ -16,6 +15,6 @@
 </script>
 
 <div>
-  <h1>This is about page</h1>
+  <h1>This is about page {data.TEST}</h1>
   <h2>{new Date().toLocaleString()}</h2>
 </div>

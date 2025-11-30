@@ -40,3 +40,9 @@ Advanced Loading
   * invalidate       - [IGNORED|NOT_UNDERSTANDABLE]
   * custom depednecy - [IGNORED|NOT_UNDERSTANDABLE]
   * invalidateAll    - [IGNORED|NOT_UNDERSTANDABLE]
+
+Environment variable
+  * $env/static/private - Access build time parsed variable in server side
+  * $env/dynamic/private - Access run time parsed variable in server side (must restart the server)
+  * $env/static/public - Access build time parsed variable in client side
+  * $env/dynamic/public - Access run time parsed variable in client side
