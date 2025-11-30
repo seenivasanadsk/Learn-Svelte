@@ -6,11 +6,6 @@
   import { onMount } from 'svelte';
 
   let { children } = $props();
-
-  onMount(() => {
-    console.log('hisdf');
-    preloadCode('/about/234');
-  });
 </script>
 
 <svelte:head>
@@ -19,7 +14,6 @@
 
 <div data-sveltekit-reload>
   <a href="/">home</a>
-  <a href="/about/234" data-sveltekit-preload-code="viewport">about 234</a>
 </div>
 
 {@render children()}

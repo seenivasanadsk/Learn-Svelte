@@ -31,3 +31,12 @@ Advanced Routing
     * we can break the layout by adding "+page@SEGMENT.svelte" its only apperas a rootlayout to SEGMENT we described other inners are skipped
 
 Advanced Loading
+  * we alredy know that "+page.server.js", but it only runs on server, sometimes we need client side load function we can use with "+page.js"
+    * "+page.server.js" - run only server, "+page.js" - runs both client and server, both has load function, page.server.js load function run first
+  * the "+page.js" file override the "+page.server.js" returned data, the component receives the data from "+page.js" and the "+page.js" receives the server file data.
+    * if we want both data we should concadinate both in "+page.js"
+  * Using parent data - we can use parent layout data from here by calling parent paremeter with await keyword.
+    * (but server load file return to server load file, and univeral file return to univeral file)
+  * invalidate       - [IGNORED|NOT_UNDERSTANDABLE]
+  * custom depednecy - [IGNORED|NOT_UNDERSTANDABLE]
+  * invalidateAll    - [IGNORED|NOT_UNDERSTANDABLE]
