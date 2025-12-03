@@ -1053,3 +1053,121 @@ If you want, I can generate:
 ✔ Clean Architecture version
 
 Just tell me **which environment** you want this for.
+
+# ============================
+
+# Export Optiosn
+
+Use named exports for all CRUD functions
+✔ Optionally combine into a default object export
+Final pattern:
+
+```js
+// user.repository.js
+export async function createUser(data) {...}
+export async function getUserById(id) {...}
+export async function updateUser(id, data) {...}
+export async function deleteUser(id) {...}
+
+const UserRepository = {
+  createUser,
+  getUserById,
+  updateUser,
+  deleteUser
+};
+
+export default UserRepository;
+```
+
+# ==================================
+
+```bash
+src/
+│
+├── lib/
+│ ├── server/
+│ │ ├── db/ # DB client & connection (Mongo/Prisma/etc)
+│ │ │ └── index.js
+│ │ ├── auth/ # Authentication logic
+│ │ │ ├── auth.js
+│ │ │ ├── password.js
+│ │ │ └── token.js
+│ │ ├── repositories/ # Data access layer (DAL)
+│ │ │ ├── userRepository.js
+│ │ │ └── productRepository.js
+│ │ ├── services/ # Business logic layer
+│ │ │ ├── userService.js
+│ │ │ └── productService.js
+│ │ ├── models/ # Zod schemas / domain models
+│ │ │ ├── userModel.js
+│ │ │ └── productModel.js
+│ │ ├── validators/ # Validation logic
+│ │ │ └── userValidator.js
+│ │ ├── utils/ # General server utilities
+│ │ │ └── logger.js
+│ │ └── config/ # Env config, constants
+│ │ ├── env.js
+│ │ └── constants.js
+│ │
+│ ├── components/ # UI components for pages
+│ │ └── …
+│ ├── stores/ # Writable/derived stores
+│ ├── utils/ # Browser-side utilities
+│ └── types/ # TypeScript types
+│
+├── routes/
+│ └── …
+│
+└── app.d.ts
+```
+
+```bash
+src/
+├── routes/                        # Controllers / route handlers (thin)
+│   ├── api/
+│   │   ├── auth/
+│   │   │   └── +server.js
+│   │   ├── users/
+│   │   │   └── +server.js
+│   │   └── products/
+│   │       └── +server.js
+│   └── +layout.svelte             # App layout
+│
+├── lib/                           # Shared code (frontend + server)
+│   ├── server/                    # Server-only code
+│   │   ├── db/                    # Database connection/config
+│   │   │   └── mongo.js
+│   │   ├── config/                # Environment & constants
+│   │   │   ├── env.js
+│   │   │   └── constants.js
+│   │   ├── errors/                # Error handling
+│   │   │   └── app-error.js
+│   │   ├── utils/                 # Generic server utilities
+│   │   │   └── logger.js
+│   │   ├── auth/                  # Authentication feature
+│   │   │   ├── auth.service.js    # Business logic for auth
+│   │   │   ├── auth.js            # Login/logout helpers
+│   │   │   ├── password.js        # Hashing & verification
+│   │   │   └── token.js           # JWT / token generation & verification
+│   │   ├── users/                 # Users feature
+│   │   │   ├── user.service.js
+│   │   │   ├── user.repository.js
+│   │   │   ├── user.model.js
+│   │   │   └── user.validator.js
+│   │   ├── products/              # Products feature
+│   │   │   ├── product.service.js
+│   │   │   ├── product.repository.js
+│   │   │   ├── product.model.js
+│   │   │   └── product.validator.js
+│   │   └── mappers/               # DTO & data transformations
+│   │       └── user.mapper.js
+│   │
+│   ├── components/                # Shared UI components
+│   │   └── Button.svelte
+│   ├── stores/                    # Svelte stores
+│   │   └── auth.store.js
+│   ├── utils/                     # Browser + server shared utils
+│   │   └── helpers.js
+│   └── types/                     # TypeScript interfaces / types
+│       └── user.ts
+```
