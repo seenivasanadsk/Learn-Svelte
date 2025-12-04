@@ -2,6 +2,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 import { parseCommandLine } from './commands/helpers/parseCLI.js';
+import runCommand from './commands/helpers/runCommand.js';
 
 // Load .env explicitly
 dotenv.config({
@@ -9,6 +10,5 @@ dotenv.config({
   quiet: true
 });
 
-// Parse the CLI input
-const cli = parseCommandLine();
-console.log(cli);
+const parsedInput = parseCommandLine();
+runCommand(parsedInput)
