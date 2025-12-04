@@ -1171,3 +1171,61 @@ src/
 │   └── types/                     # TypeScript interfaces / types
 │       └── user.ts
 ```
+
+```bash
+src/
+│
+├── app.html
+├── app.css
+├── hooks.server.js
+│
+├── lib/
+│   ├── core/                  # Reusable cross-app utilities
+│   │   ├── config/            # env, constants
+│   │   ├── db/                # database connection, ORM
+│   │   ├── errors/            # custom error classes
+│   │   └── utils/             # helpers
+│   │
+│   ├── shared/                # UI & logic shared across features
+│   │   ├── components/        # buttons, modals, inputs
+│   │   ├── layouts/
+│   │   ├── hooks/             # custom hooks
+│   │   └── types/
+│   │
+│   └── server/ (optional)     # server-wide utilities (if needed)
+│
+├── features/                  # ⭐ Each main feature gets its own folder
+│   │
+│   ├── auth/                  # Authentication module
+│   │   ├── routes/            # /login, /register, /logout routes
+│   │   ├── components/
+│   │   ├── services/          # login(), register()…
+│   │   ├── repository/        # DB access (DAL)
+│   │   ├── validations/       # Zod schemas
+│   │   └── types/
+│   │
+│   ├── users/                 # User management module
+│   │   ├── routes/            # /users, /users/[id]
+│   │   ├── components/
+│   │   ├── services/
+│   │   ├── repository/
+│   │   └── validations/
+│   │
+│   ├── products/              # Product module
+│   │   ├── routes/
+│   │   ├── components/
+│   │   ├── repository/
+│   │   └── services/
+│
+│   └── dashboard/
+│       ├── routes/
+│       ├── components/
+│       └── services/
+│
+└── routes/
+    ├── +layout.svelte         # global layout
+    ├── +layout.server.js
+    ├── +page.svelte           # homepage
+    └── health/                # small system routes
+
+```

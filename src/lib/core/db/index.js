@@ -1,4 +1,4 @@
-// src\lib\server\db.js
+// src\lib\server\db\index.js
 import { MongoClient } from 'mongodb';
 import { env } from '$env/dynamic/private';
 
