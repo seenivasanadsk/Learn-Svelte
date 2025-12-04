@@ -1,27 +1,57 @@
-// commands/helpers/formatText.js
+// commands\helpers\formatText.js
 
 const ANSI = {
-  reset: "\x1b[0m",
+  reset: '\x1b[0m',
 
   colors: {
-    black: 30, red: 31, green: 32, yellow: 33, blue: 34,
-    magenta: 35, cyan: 36, white: 37, gray: 90,
+    black: 30,
+    red: 31,
+    green: 32,
+    yellow: 33,
+    blue: 34,
+    magenta: 35,
+    cyan: 36,
+    white: 37,
+    gray: 90,
 
-    brightRed: 91, brightGreen: 92, brightYellow: 93,
-    brightBlue: 94, brightMagenta: 95, brightCyan: 96, brightWhite: 97,
+    brightRed: 91,
+    brightGreen: 92,
+    brightYellow: 93,
+    brightBlue: 94,
+    brightMagenta: 95,
+    brightCyan: 96,
+    brightWhite: 97
   },
 
   bg: {
-    black: 40, red: 41, green: 42, yellow: 43, blue: 44,
-    magenta: 45, cyan: 46, white: 47, gray: 100,
+    black: 40,
+    red: 41,
+    green: 42,
+    yellow: 43,
+    blue: 44,
+    magenta: 45,
+    cyan: 46,
+    white: 47,
+    gray: 100,
 
-    brightRed: 101, brightGreen: 102, brightYellow: 103,
-    brightBlue: 104, brightMagenta: 105, brightCyan: 106, brightWhite: 107,
+    brightRed: 101,
+    brightGreen: 102,
+    brightYellow: 103,
+    brightBlue: 104,
+    brightMagenta: 105,
+    brightCyan: 106,
+    brightWhite: 107
   },
 
   styles: {
-    bold: 1, dim: 2, italic: 3, underline: 4,
-    blink: 5, inverse: 7, hidden: 8, strikethrough: 9,
+    bold: 1,
+    dim: 2,
+    italic: 3,
+    underline: 4,
+    blink: 5,
+    inverse: 7,
+    hidden: 8,
+    strikethrough: 9
   }
 };
 
@@ -33,12 +63,12 @@ const bgRgb = (r, g, b) => `\x1b[48;2;${r};${g};${b}m`;
 const color256 = (n) => `\x1b[38;5;${n}m`;
 const bg256 = (n) => `\x1b[48;5;${n}m`;
 
-const normalize = (x) => x?.toString().trim().toLowerCase() || "";
-const isObj = (x) => typeof x === "object" && !Array.isArray(x);
+const normalize = (x) => x?.toString().trim().toLowerCase() || '';
+const isObj = (x) => typeof x === 'object' && !Array.isArray(x);
 
 /** Convert HEX → RGB (supports #fff or #ffffff) */
 const hexToRgb = (hex) => {
-  hex = normalize(hex).replace("#", "");
+  hex = normalize(hex).replace('#', '');
   if (hex.length === 3) hex = hex.replace(/./g, (c) => c + c);
   const num = parseInt(hex, 16);
   return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
@@ -46,14 +76,14 @@ const hexToRgb = (hex) => {
 
 /** Get ANSI code by case-insensitive match */
 const find = (dict, name) => {
-  const key = Object.keys(dict).find(k => k.toLowerCase() === name);
+  const key = Object.keys(dict).find((k) => k.toLowerCase() === name);
   return key ? dict[key] : null;
 };
 
 /* ---------------------- Main Formatter -------------------- */
 
 export default function formatText(text, opts = {}) {
-  let out = "";
+  let out = '';
 
   const colorInput = opts.color || opts.fg;
   const bgInput = opts.bgColor || opts.bg;
@@ -79,10 +109,11 @@ export default function formatText(text, opts = {}) {
   }
 
   // Shortcuts: bold, underline, italic...
-  ["bold", "underline", "italic", "dim", "blink", "inverse", "hidden", "strikethrough"]
-    .forEach((s) => {
+  ['bold', 'underline', 'italic', 'dim', 'blink', 'inverse', 'hidden', 'strikethrough'].forEach(
+    (s) => {
       if (opts[s]) out += code(ANSI.styles[s]);
-    });
+    }
+  );
 
   return `${out}${text}${ANSI.reset}`;
 }
@@ -96,7 +127,7 @@ function parseColor(input, isBg = false) {
   if (nameCode) return code(nameCode);
 
   // HEX (#fff or #ffffff)
-  if (n.startsWith("#")) {
+  if (n.startsWith('#')) {
     const [r, g, b] = hexToRgb(n);
     return isBg ? bgRgb(r, g, b) : rgb(r, g, b);
   }
@@ -119,5 +150,5 @@ function parseColor(input, isBg = false) {
     }
   }
 
-  return "";
+  return '';
 }

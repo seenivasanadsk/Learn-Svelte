@@ -1,40 +1,66 @@
-import path from "path";
-import { pathToFileURL } from "url";
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import formatText from './formatText.js';
 
+/**
+ * Execute a CLI command based on parsed user input.
+ */
 export default async function runCommand(parsedInput) {
   const { command, subCommand, ...flags } = parsedInput;
 
   try {
     const module = await loadCommandModule(command);
 
+    // Run named export as subcommand
     if (subCommand) {
       const fn = module[subCommand];
-      if (typeof fn === "function") {
-        await fn(flags);
-      } else {
-        console.error(`Subcommand "${subCommand}" not found in "${command}".`);
+      if (typeof fn === 'function') {
+        return await fn(flags);
       }
-    } else {
-      if (typeof module.default === "function") {
-        await module.default(flags);
-      } else {
-        console.error(`Command "${command}" does not export a default function.`);
-      }
+
+      return printError(`Subcommand "${subCommand}" not found in "${command}".`);
     }
 
-  } catch (err) {
-    console.error(`Error loading command "${command}": ${err.message}`);
+    // Run default export
+    if (typeof module.default === 'function') {
+      return await module.default(flags);
+    }
+
+    printError(`Command "${command}" does not export a default function.`);
+  } catch {
+    printError(`Wrong command: '${command}' or command cannot be executed.`);
+    printHint();
   }
 }
 
+/**
+ * Loads the JS module for a given command.
+ * Falls back to help message if no command is given.
+ */
 async function loadCommandModule(command) {
-  if (!command) throw new Error("No command provided.");
+  if (!command) {
+    printHint();
+    process.exit(0);
+  }
 
-  // Using import.meta.dirname (Node 22+)
-  const modulePath = path.join(import.meta.dirname, "../", `${command}.js`);
+  const baseDir = import.meta.dirname; // Node 22+
+  const filePath = path.join(baseDir, '../', `${command}.js`);
+  const fileURL = pathToFileURL(filePath).href;
 
-  // Must convert path → file:// URL
-  const moduleURL = pathToFileURL(modulePath).href;
+  return import(fileURL);
+}
 
-  return import(moduleURL);
+/* ---------------------- Utility UI Helpers ---------------------- */
+
+function printError(message) {
+  console.log(formatText(message, { fg: 'red', style: 'bold' }));
+}
+
+function printHint() {
+  console.log(
+    formatText("Try 'node command list' to see available commands.", {
+      fg: 'yellow',
+      style: 'bold'
+    })
+  );
 }
