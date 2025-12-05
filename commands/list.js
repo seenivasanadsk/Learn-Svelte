@@ -25,6 +25,6 @@ export default async function () {
     const commandName = file.replace('.js', '');
     const commandInfo = module?.info || '';
 
-    console.log(yellowText(`${commandName} - ${commandInfo}`));
+    console.log(yellowText(`${commandName}\t - ${commandInfo}`));
   }
 }
