@@ -152,3 +152,11 @@ function parseColor(input, isBg = false) {
 
   return '';
 }
+
+// Helper functions
+export const redText = (text) => formatText(text, { fg: 'red', style: 'bold' });
+export const greenText = (text) => formatText(text, { fg: 'green', style: 'bold' });
+export const yellowText = (text) => formatText(text, { fg: 'yellow', style: 'bold' });
+export const cyanText = (text) => formatText(text, { fg: 'cyan', style: 'bold' });
+export const magentaText = (text) => formatText(text, { fg: 'magenta', style: 'bold' });
+export const blueText = (text) => formatText(text, { fg: 'blue', style: 'bold' });

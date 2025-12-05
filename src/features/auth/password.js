@@ -1,4 +1,4 @@
-// src/lib/server/auth/password.js
+// src\features\auth\password.js
 import argon2 from 'argon2';
 
 // Hash a plain password. Uses secure Argon2id by default.

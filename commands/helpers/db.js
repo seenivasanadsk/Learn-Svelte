@@ -1,10 +1,9 @@
-// src\lib\core\db\index.js
+// commands\helpers\db.js
 import { MongoClient } from 'mongodb';
-import { env } from '$env/dynamic/private';
 
 // Load from ENV
-const uri = env.MONGO_URI;
-const dbName = env.MONGO_DB_NAME;
+const uri = process.env.MONGO_URI;
+const dbName = process.env.MONGO_DB_NAME;
 
 if (!uri) throw new Error('MONGO_URI is missing!');
 if (!dbName) throw new Error('MONGO_DB_NAME is missing!');

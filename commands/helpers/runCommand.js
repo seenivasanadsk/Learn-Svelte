@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import formatText from './formatText.js';
+import { redText, yellowText } from './formatText.js';
 
 /**
  * Execute a CLI command based on parsed user input.
@@ -27,7 +27,8 @@ export default async function runCommand(parsedInput) {
     }
 
     printError(`Command "${command}" does not export a default function.`);
-  } catch {
+  } catch (e) {
+    console.error(e);
     printError(`Wrong command: '${command}' or command cannot be executed.`);
     printHint();
   }
@@ -53,14 +54,9 @@ async function loadCommandModule(command) {
 /* ---------------------- Utility UI Helpers ---------------------- */
 
 function printError(message) {
-  console.log(formatText(message, { fg: 'red', style: 'bold' }));
+  console.log(redText(message));
 }
 
 function printHint() {
-  console.log(
-    formatText("Try 'node command list' to see available commands.", {
-      fg: 'yellow',
-      style: 'bold'
-    })
-  );
+  console.log(yellowText("Try 'node command list' to see available commands."));
 }

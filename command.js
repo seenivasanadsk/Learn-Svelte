@@ -11,4 +11,4 @@ dotenv.config({
 });
 
 const parsedInput = parseCommandLine();
-runCommand(parsedInput)
+runCommand(parsedInput);
