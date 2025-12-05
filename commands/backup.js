@@ -7,7 +7,7 @@ import { redText, greenText, yellowText } from './helpers/formatText.js';
 import { getFilesName } from './helpers/utils.js';
 import { formatDateTime } from '../src/lib/utils/dateTime.js';
 
-export const info = 'Simple MongoDB Backup (Compressed ZIP)';
+export const info = 'Take MongoDB Backup';
 
 export default function backup() {
   const uriBase = process.env.MONGO_URI || '';
