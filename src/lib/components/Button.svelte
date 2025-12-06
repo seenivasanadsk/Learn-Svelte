@@ -12,18 +12,23 @@
     size = 'md',
     radius = '',
     prefix = null,
-    suffix = null
+    suffix = null,
+    class: userClass = ''
   } = $props();
 
   // -------------------------------------
   // Styles
   // -------------------------------------
   const colorStyles = {
-    primary: 'bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700',
-    accent: 'bg-amber-500 text-white hover:bg-amber-600 active:bg-amber-700',
-    success: 'bg-green-500 text-white hover:bg-green-600 active:bg-green-700',
-    danger: 'bg-red-500 text-white hover:bg-red-600 active:bg-red-800',
-    dim: 'bg-gray-300 text-black hover:bg-gray-400 active:bg-gray-500'
+    primary:
+      'bg-blue-500 text-white hover:bg-blue-600 focus:bg-blue-600 outline-blue-600 active:bg-blue-700',
+    accent:
+      'bg-amber-500 text-white hover:bg-amber-600 focus:bg-amber-600 outline-amber-600 active:bg-amber-700',
+    success:
+      'bg-green-500 text-white hover:bg-green-600 focus:bg-green-600 outline-green-600 active:bg-green-700',
+    danger:
+      'bg-red-500 text-white hover:bg-red-600 focus:bg-red-600 outline-red-600 active:bg-red-800',
+    dim: 'bg-gray-300 text-black hover:bg-gray-400 focus:bg-gray-400 outline-gray-400 active:bg-gray-500'
   };
 
   const sizeStyles = {
@@ -40,13 +45,14 @@
     full: 'rounded-full'
   };
 
-  const baseStyle = 'cursor-pointer font-semibold flex items-center';
+  const baseClass =
+    'cursor-pointer font-semibold inline-flex items-center focus:outline-2 focus:outline-offset-1';
 
   // -------------------------------------
   // Derived values
   // -------------------------------------
   const className = $derived(
-    cn(baseStyle, colorStyles[color], sizeStyles[size], radiusStyles[radius || size])
+    cn(baseClass, colorStyles[color], sizeStyles[size], radiusStyles[radius || size], userClass)
   );
 
   const iconSize = $derived(size === 'sm' ? 15 : size === 'md' ? 20 : size === 'lg' ? 25 : 20);
