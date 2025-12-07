@@ -11,6 +11,7 @@
     onClick = () => {},
     onPrefixClick = () => {},
     onSuffixClick = () => {},
+    color = 'accent',
     size = 'md',
     radius = '',
     prefix = null,
@@ -22,6 +23,13 @@
   // -------------------------------------
   // Styles
   // -------------------------------------
+  const colorStyles = {
+    primary: 'focus-within:border-blue-500',
+    success: 'focus-within:border-green-500',
+    danger: 'focus-within:border-red-500',
+    accent: 'focus-within:border-amber-500'
+  };
+
   const sizeStyles = {
     sm: 'text-sm',
     md: 'text-base',
@@ -37,13 +45,13 @@
   };
 
   const baseClass =
-    'group inline-flex items-center border-2 border-gray-300 rounded-md font-semibold relative focus-within:border-amber-500';
+    'group inline-flex items-center border-2 border-gray-300 rounded-md font-semibold relative';
 
   // -------------------------------------
   // Derived values
   // -------------------------------------
   const className = $derived(
-    cn(baseClass, sizeStyles[size], radiusStyles[radius || size], userClass)
+    cn(baseClass, colorStyles[color], sizeStyles[size], radiusStyles[radius || size], userClass)
   );
 
   const iconSize = $derived(size === 'sm' ? 15 : size === 'md' ? 20 : size === 'lg' ? 25 : 20);
@@ -79,7 +87,7 @@
     class="absolute top-full h-50 overflow-auto left-0 w-full border-amber-500 border-2 rounded-b-md"
   >
     {#each Array(50) as _, i}
-      <div class="bg-white not-last:border-b border-amber-500 p-1">option {i + 1}</div>
+      <div class="bg-amber-50 not-last:border-b border-amber-500 p-1">option {i + 1}</div>
     {/each}
   </div>
 </div>

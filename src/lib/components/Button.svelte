@@ -13,7 +13,8 @@
     radius = '',
     prefix = null,
     suffix = null,
-    class: userClass = ''
+    class: userClass = '',
+    ...props
   } = $props();
 
   // -------------------------------------
@@ -79,7 +80,7 @@
 
 {#if href}
   <!-- Anchor Button -->
-  <a {href} class={className}>
+  <a {href} class={className} {...props}>
     {#if prefix}
       {@const Prefix = prefix}
       <Prefix class={prefixClass} size={iconSize} />
@@ -94,7 +95,7 @@
   </a>
 {:else}
   <!-- Normal Button -->
-  <button class={className} {onClick}>
+  <button class={className} {onClick} {...props}>
     {#if prefix}
       {@const Prefix = prefix}
       <Prefix class={prefixClass} size={iconSize} />
