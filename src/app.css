@@ -4,3 +4,29 @@
   scrollbar-width: thin;
   scrollbar-color: theme(--color-gray-400) theme(--color-gray-100);
 }
+
+.error {
+  border-color: red;
+  animation: jiggle 0.2s ease-in-out;
+}
+
+@keyframes jiggle {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-5px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

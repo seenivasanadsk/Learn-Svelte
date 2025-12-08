@@ -11,60 +11,18 @@
     onClick = () => {},
     onPrefixClick = () => {},
     onSuffixClick = () => {},
-    size = 'md',
-    radius = '',
     prefix = null,
     suffix = null,
     class: userClass = '',
     ...props
   } = $props();
-
-  // -------------------------------------
-  // Styles
-  // -------------------------------------
-  const sizeStyles = {
-    sm: 'text-sm',
-    md: 'text-base',
-    lg: 'text-xl'
-  };
-
-  const radiusStyles = {
-    none: 'rounded-none',
-    sm: 'rounded-sm',
-    md: 'rounded-md',
-    lg: 'rounded-lg',
-    full: 'rounded-full'
-  };
-
-  const baseClass =
-    'group inline-flex items-center border-2 border-gray-300 rounded-md font-semibold relative focus-within:border-amber-500';
-
-  // -------------------------------------
-  // Derived values
-  // -------------------------------------
-  const className = $derived(
-    cn(baseClass, sizeStyles[size], radiusStyles[radius || size], userClass)
-  );
-
-  const iconSize = $derived(size === 'sm' ? 15 : size === 'md' ? 20 : size === 'lg' ? 25 : 20);
-
-  // Margin spacing based on size
-  const prefixClass = $derived(
-    cn(
-      size === 'sm' ? 'mr-1' : size === 'md' ? 'mr-2' : size === 'lg' ? 'mr-3' : 'mr-2',
-      'inline-block'
-    )
-  );
-
-  const suffixClass = $derived(
-    cn(
-      size === 'sm' ? 'ml-1' : size === 'md' ? 'ml-2' : size === 'lg' ? 'ml-3' : 'ml-2',
-      'inline-block'
-    )
-  );
 </script>
 
-<div class={className}>
+<button onclick={() => (hasError = !hasError)}>{hasError ? 'Error' : 'No Error'}</button>
+<div
+  class="group inline-flex items-center border-2 border-gray-300 rounded-md font-semibold relative focus-within:border-amber-500"
+  use:errorStyle
+>
   <span class="p-1 border-r-2 border-gray-300 group-focus-within:border-amber-500">
     <Sun class="text-gray-500 inline-block group-focus-within:text-amber-500" />
   </span>
