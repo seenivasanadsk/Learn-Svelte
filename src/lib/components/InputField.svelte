@@ -2,6 +2,8 @@
   import { Sun, Moon } from 'lucide-svelte';
   import cn from '$lib/utils/cn';
 
+  const options = ['seeni', 'vasan', 'sara', 'adsk', 'ramki'];
+
   // -------------------------------------
   // Props
   // -------------------------------------
@@ -14,30 +16,67 @@
     prefix = null,
     suffix = null,
     class: userClass = '',
+    hasError = false,
+    fullSearch = false,
     ...props
   } = $props();
+
+  let search = $state('');
+  let showOptions = $state(false);
+  let selectedOptionIndex = $state(0);
+  let filtered = $derived(
+    fullSearch
+      ? options.filter((o) => o.includes(search))
+      : options.filter((o) => o.startsWith(search))
+  );
+
+  function handleOptionNavigation(e) {
+    e.key == 'ArrowDown' && selectedOptionIndex < filtered.length - 1
+      ? selectedOptionIndex++
+      : e.key == 'ArrowUp' && selectedOptionIndex > 0
+        ? selectedOptionIndex--
+        : e.key == 'Enter'
+          ? (search = filtered[selectedOptionIndex])
+          : null;
+  }
 </script>
 
-<button onclick={() => (hasError = !hasError)}>{hasError ? 'Error' : 'No Error'}</button>
 <div
-  class="group inline-flex items-center border-2 border-gray-300 rounded-md font-semibold relative focus-within:border-amber-500"
-  use:errorStyle
+  class="group inline-flex items-center border-2 border-gray-300 rounded-md font-semibold relative focus-within:border-amber-500 {hasError &&
+    'error'}"
 >
   <span class="p-1 border-r-2 border-gray-300 group-focus-within:border-amber-500">
     <Sun class="text-gray-500 inline-block group-focus-within:text-amber-500" />
   </span>
 
-  <input type="text" class="outline-none py-1 px-2" />
+  <input
+    type="text"
+    class="outline-none py-1 px-2"
+    bind:value={search}
+    onkeyup={handleOptionNavigation}
+    onfocus={() => (showOptions = true)}
+    onblur={() => (showOptions = false)}
+  />
 
   <span class="p-1 border-l-2 border-gray-300 group-focus-within:border-amber-500">
     <Moon class="text-gray-500 inline-block group-focus-within:text-amber-500" />
   </span>
 
-  <div
-    class="absolute top-full h-50 overflow-auto left-0 w-full border-amber-500 border-2 rounded-b-md"
-  >
-    {#each Array(50) as _, i}
-      <div class="bg-white not-last:border-b border-amber-500 p-1">option {i + 1}</div>
-    {/each}
-  </div>
+  {#if showOptions}
+    <div
+      class="absolute top-full max-h-50 overflow-auto left-0 w-full border-amber-500 border-2 rounded-b-md"
+    >
+      {#each filtered as option, index (option)}
+        <div
+          class={cn(
+            'bg-white p-1 hover:bg-gray-300',
+            selectedOptionIndex == index && 'bg-gray-200'
+          )}
+          onclick={() => (selectedOptionIndex = index)}
+        >
+          {option}
+        </div>
+      {/each}
+    </div>
+  {/if}
 </div>
