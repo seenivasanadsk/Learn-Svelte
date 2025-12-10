@@ -7,4 +7,6 @@
 <div class="p-6">
   <Button>fads</Button>
   <InputField prefix={Eye} />
+  <InputField prefix={Eye} />
+  <InputField prefix={Eye} />
 </div>

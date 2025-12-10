@@ -2,7 +2,7 @@
   import { Sun, Moon } from 'lucide-svelte';
   import cn from '$lib/utils/cn';
 
-  const options = ['seeni', 'vasan', 'sara', 'adsk', 'ramki'];
+  const options = ['seeni', 'vasan', 'sara', 'adsk', 'ramki', 'extra', 'word', 'for', 'this'];
 
   // -------------------------------------
   // Props
@@ -10,6 +10,7 @@
   let {
     children,
     href = '',
+    value = $bindable(''),
     onClick = () => {},
     onPrefixClick = () => {},
     onSuffixClick = () => {},
@@ -21,23 +22,52 @@
     ...props
   } = $props();
 
-  let search = $state('');
   let showOptions = $state(false);
   let selectedOptionIndex = $state(0);
   let filtered = $derived(
     fullSearch
-      ? options.filter((o) => o.includes(search))
-      : options.filter((o) => o.startsWith(search))
+      ? options.filter((o) => o.includes(value))
+      : options.filter((o) => o.startsWith(value))
   );
 
   function handleOptionNavigation(e) {
-    e.key == 'ArrowDown' && selectedOptionIndex < filtered.length - 1
-      ? selectedOptionIndex++
-      : e.key == 'ArrowUp' && selectedOptionIndex > 0
-        ? selectedOptionIndex--
-        : e.key == 'Enter'
-          ? (search = filtered[selectedOptionIndex])
-          : null;
+    // Prevent default behavior for navigation keys
+    if (['ArrowDown', 'ArrowUp', 'Enter', 'Escape'].includes(e.key)) {
+      e.preventDefault();
+    }
+
+    if (e.key === 'ArrowDown') {
+      // Navigate down with loop from bottom to top
+      if (selectedOptionIndex < filtered.length - 1) {
+        selectedOptionIndex++;
+      } else {
+        selectedOptionIndex = 0; // Loop back to first option
+      }
+    } else if (e.key === 'ArrowUp') {
+      // Navigate up with loop from top to bottom
+      if (selectedOptionIndex > 0) {
+        selectedOptionIndex--;
+      } else {
+        selectedOptionIndex = filtered.length - 1; // Loop to last option
+      }
+    } else if (e.key === 'Enter') {
+      // Select current option and close dropdown
+      if (filtered.length > 0) {
+        value = filtered[selectedOptionIndex];
+        showOptions = false;
+      }
+    } else if (e.key === 'Escape') {
+      // Close dropdown without selecting
+      showOptions = false;
+    } else if (e.key === 'Tab') {
+      // Close dropdown when tabbing away
+      showOptions = false;
+    }
+  }
+
+  function handleOptionClick(e, index) {
+    value = filtered[index];
+    showOptions = false;
   }
 </script>
 
@@ -52,8 +82,8 @@
   <input
     type="text"
     class="outline-none py-1 px-2"
-    bind:value={search}
-    onkeyup={handleOptionNavigation}
+    bind:value
+    onkeydown={handleOptionNavigation}
     onfocus={() => (showOptions = true)}
     onblur={() => (showOptions = false)}
   />
@@ -64,15 +94,18 @@
 
   {#if showOptions}
     <div
-      class="absolute top-full max-h-50 overflow-auto left-0 w-full border-amber-500 border-2 rounded-b-md"
+      class="absolute top-full max-h-50 overflow-auto left-0 w-full border-amber-500 border-2 rounded-b-md bg-white z-10"
     >
       {#each filtered as option, index (option)}
         <div
+          role="option"
+          aria-selected={selectedOptionIndex == index ? 'true' : 'false'}
           class={cn(
-            'bg-white p-1 hover:bg-gray-300',
+            'bg-white p-1 hover:bg-gray-300 flex items-center',
             selectedOptionIndex == index && 'bg-gray-200'
           )}
-          onclick={() => (selectedOptionIndex = index)}
+          onmousedown={(e) => handleOptionClick(e, index)}
+          tabindex="0"
         >
           {option}
         </div>
