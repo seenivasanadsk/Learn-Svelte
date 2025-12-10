@@ -30,6 +30,21 @@
       : options.filter((o) => o.startsWith(value))
   );
 
+  // Auto-scroll when selectedOptionIndex changes
+  $effect(() => {
+    if (showOptions && selectedOptionIndex >= 0) {
+      // Wait for DOM to update, then scroll
+      setTimeout(() => {
+        const selectedElement = document.querySelector(
+          `[data-option-index="${selectedOptionIndex}"]`
+        );
+        if (selectedElement) {
+          selectedElement.scrollIntoView({ block: 'nearest' });
+        }
+      }, 10);
+    }
+  });
+
   function handleOptionNavigation(e) {
     // Prevent default behavior for navigation keys
     if (['ArrowDown', 'ArrowUp', 'Enter', 'Escape'].includes(e.key)) {
@@ -100,6 +115,7 @@
         <div
           role="option"
           aria-selected={selectedOptionIndex == index ? 'true' : 'false'}
+          data-option-index={index}
           class={cn(
             'bg-white p-1 hover:bg-gray-300 flex items-center',
             selectedOptionIndex == index && 'bg-gray-200'
