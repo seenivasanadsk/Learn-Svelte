@@ -25,8 +25,8 @@
   let selectedOptionIndex = $state(0);
   let filtered = $derived(
     fullSearch
-      ? options.filter((o) => o.includes(value))
-      : options.filter((o) => o.startsWith(value))
+      ? options.filter((o) => o.toLowerCase().includes(value.toLowerCase()))
+      : options.filter((o) => o.toLowerCase().startsWith(value.toLowerCase()))
   );
 
   // Auto-scroll when selectedOptionIndex changes
@@ -65,10 +65,14 @@
         selectedOptionIndex = filtered.length - 1; // Loop to last option
       }
     } else if (e.key === 'Enter') {
-      // Select current option and close dropdown
-      if (filtered.length > 0) {
-        value = filtered[selectedOptionIndex];
-        showOptions = false;
+      if (newValue == 'create' && filtered.length == 0) {
+        handleCreateOption();
+      } else {
+        // Select current option and close dropdown
+        if (filtered.length > 0) {
+          value = filtered[selectedOptionIndex];
+          showOptions = false;
+        }
       }
     } else if (e.key === 'Escape') {
       // Close dropdown without selecting
@@ -85,12 +89,22 @@
     showOptions = false;
   }
 
+  function handleInput(e) {
+    const newVal = e.target.value;
+    console.log(newVal); //  <== ToDo: we need to make the stringCase utils in helper file
+    value = newVal.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
   function handleOnBlur() {
     if (options.length) {
       showOptions = false;
       const isValueExist = filtered.includes(value);
       if (!isValueExist && newValue != 'accept') value = '';
     }
+  }
+
+  function handleCreateOption() {
+    console.log(value); // Todo: Make create options logics
   }
 </script>
 
@@ -106,6 +120,7 @@
     type="text"
     class="outline-none py-1 px-2"
     bind:value
+    oninput={handleInput}
     onkeydown={handleOptionNavigation}
     onfocus={() => (showOptions = true)}
     onblur={handleOnBlur}
@@ -143,10 +158,13 @@
         <div
           class="bg-white px-2 py-1 hover:bg-amber-50 cursor-pointer whitespace-nowrap overflow-hidden text-ellipsis"
           title={value}
+          onmousedown={handleCreateOption}
+          role="button"
+          tabindex="0"
         >
-          <span class="text-green-600"
-            ><PlusCircle size="20" class="inline-block mb-0.5" /> Create</span
-          >
+          <span class="text-green-600">
+            <PlusCircle size="20" class="inline-block mb-0.5" /> Create
+          </span>
           <span class="text-blue-600">'{value}'</span>
         </div>
       </div>
