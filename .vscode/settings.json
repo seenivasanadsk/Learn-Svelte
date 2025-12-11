@@ -159,7 +159,10 @@
 
   // Highlight active indent level
   "editor.guides.highlightActiveIndentation": true,
-  "editor.guides.indentation": true
+  "editor.guides.indentation": true,
+  "[svelte]": {
+    "editor.defaultFormatter": "prettier.prettier-vscode"
+  }
 
   // ---------------------------------------------------
   // AUTO SAVE OPTIONS

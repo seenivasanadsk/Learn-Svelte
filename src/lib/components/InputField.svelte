@@ -1,14 +1,12 @@
 <script>
-  import { Sun, Moon, PlusCircle } from 'lucide-svelte';
+  import { Sun, Moon, PlusCircle, Loader2Icon } from 'lucide-svelte';
   import cn from '$lib/utils/cn';
+  import stringCase from '$lib/utils/stringCase';
   // -------------------------------------
   // Props
   // -------------------------------------
   let {
-    children,
-    href = '',
     value = $bindable(''),
-    onClick = () => {},
     onPrefixClick = () => {},
     onSuffixClick = () => {},
     prefix = null,
@@ -18,10 +16,13 @@
     hasError = false,
     fullSearch = false,
     newValue = 'ignore', // ignore|accept|create
+    createOption = () => {},
+    placeholder = '',
     ...props
   } = $props();
 
   let showOptions = $state(false);
+  let optionLoading = $state(false);
   let selectedOptionIndex = $state(0);
   let filtered = $derived(
     fullSearch
@@ -91,8 +92,7 @@
 
   function handleInput(e) {
     const newVal = e.target.value;
-    console.log(newVal); //  <== ToDo: we need to make the stringCase utils in helper file
-    value = newVal.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+    value = stringCase.smartTitle(newVal);
   }
 
   function handleOnBlur() {
@@ -103,32 +103,61 @@
     }
   }
 
-  function handleCreateOption() {
-    console.log(value); // Todo: Make create options logics
+  async function handleCreateOption(e) {
+    e.preventDefault();
+    optionLoading = true;
+    console.log('optionLoading');
+    await createOption(value);
+    optionLoading = false;
   }
 </script>
 
 <div
-  class="group inline-flex items-center border-2 border-gray-300 rounded-md font-semibold relative focus-within:border-amber-500 {hasError &&
-    'error'}"
+  class={cn(
+    'group inline-flex items-center border-2 border-gray-400 rounded-md font-semibold relative focus-within:border-amber-500',
+    hasError && 'error'
+  )}
 >
-  <span class="p-1 border-r-2 border-gray-300 group-focus-within:border-amber-500">
-    <Sun class="text-gray-500 inline-block group-focus-within:text-amber-500" />
-  </span>
+  {#if prefix}
+    <span
+      role="button"
+      class={cn(
+        'p-1 border-r-2 text-gray-400 *:inline-block group-focus-within:text-amber-500 border-gray-400 group-focus-within:border-amber-500',
+        hasError && 'border-red-500 group-focus-within:border-red-500',
+        hasError && 'text-red-500 group-focus-within:text-red-500'
+      )}
+      onmousedown={onPrefixClick}
+      tabindex="ignore"
+    >
+      {@render prefix({})}
+    </span>
+  {/if}
 
   <input
     type="text"
     class="outline-none py-1 px-2"
     bind:value
+    {placeholder}
     oninput={handleInput}
     onkeydown={handleOptionNavigation}
     onfocus={() => (showOptions = true)}
     onblur={handleOnBlur}
   />
 
-  <span class="p-1 border-l-2 border-gray-300 group-focus-within:border-amber-500">
-    <Moon class="text-gray-500 inline-block group-focus-within:text-amber-500" />
-  </span>
+  {#if suffix}
+    <span
+      role="button"
+      class={cn(
+        'p-1 border-l-2 text-gray-400 *:inline-block group-focus-within:text-amber-500 border-gray-400 group-focus-within:border-amber-500',
+        hasError && 'border-red-500 group-focus-within:border-red-500',
+        hasError && 'text-red-500 group-focus-within:text-red-500'
+      )}
+      onmousedown={onSuffixClick}
+      tabindex="ignore"
+    >
+      {@render suffix({})}
+    </span>
+  {/if}
 
   {#if options.length}
     {#if showOptions && filtered.length}
@@ -162,10 +191,15 @@
           role="button"
           tabindex="0"
         >
-          <span class="text-green-600">
-            <PlusCircle size="20" class="inline-block mb-0.5" /> Create
-          </span>
-          <span class="text-blue-600">'{value}'</span>
+          {optionLoading ? 'true' : 'false'}
+          {#if optionLoading}
+            <span class="animate-spin inline-block"><Loader2Icon /></span> Loading...
+          {:else}
+            <span class="text-green-600">
+              <PlusCircle size="20" class="inline-block mb-0.5" /> Create
+            </span>
+            <span class="text-blue-600">'{value}'</span>
+          {/if}
         </div>
       </div>
     {/if}
