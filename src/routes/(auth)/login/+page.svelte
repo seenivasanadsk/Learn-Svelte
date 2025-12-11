@@ -2,11 +2,12 @@
   import Button from '$lib/components/Button.svelte';
   import InputField from '$lib/components/InputField.svelte';
   import Eye from 'lucide-svelte/icons/Eye';
+  const options = ['seeni', 'vasan', 'sara', 'adsk', 'ramki', 'extra', 'word', 'for', 'this'];
 </script>
 
 <div class="p-6">
   <Button>fads</Button>
-  <InputField prefix={Eye} />
+  <InputField prefix={Eye} {options} />
   <InputField prefix={Eye} />
   <InputField prefix={Eye} />
 </div>
