@@ -61,7 +61,7 @@
   // ---------------------------------------------------
 
   // Enable inline hints (like parameter names)
-  "editor.inlayHints.enabled": true,
+  "editor.inlayHints.enabled": "on",
   "editor.inlayHints.fontFamily": "JetBrains Mono",
   "editor.inlayHints.fontSize": 12,
 
@@ -159,10 +159,7 @@
 
   // Highlight active indent level
   "editor.guides.highlightActiveIndentation": true,
-  "editor.guides.indentation": true,
-  "[svelte]": {
-    "editor.defaultFormatter": "prettier.prettier-vscode"
-  }
+  "editor.guides.indentation": true
 
   // ---------------------------------------------------
   // AUTO SAVE OPTIONS

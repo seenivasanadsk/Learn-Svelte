@@ -23,6 +23,7 @@
 
   let showOptions = $state(false);
   let optionLoading = $state(false);
+  let optionCreateError = $state(false);
   let selectedOptionIndex = $state(0);
   let filtered = $derived(
     fullSearch
@@ -93,6 +94,7 @@
   function handleInput(e) {
     const newVal = e.target.value;
     value = stringCase.smartTitle(newVal);
+    optionCreateError = false;
   }
 
   function handleOnBlur() {
@@ -106,8 +108,7 @@
   async function handleCreateOption(e) {
     e.preventDefault();
     optionLoading = true;
-    console.log('optionLoading', optionLoading);
-    await createOption(value);
+    optionCreateError = !(await createOption(value));
     optionLoading = false;
   }
 </script>
@@ -191,12 +192,15 @@
           role="button"
           tabindex="0"
         >
-          {optionLoading}
           {#if optionLoading}
-            <span class="animate-spin inline-block"><Loader2Icon /></span> Loading...
+            <div class="flex items-center gap-2 text-amber-600">
+              <span class="animate-spin inline-block"><Loader2Icon /></span> Creating...
+            </div>
+          {:else if optionCreateError}
+            <span class="text-red-500">Error Occured</span>
           {:else}
             <span class="text-green-600">
-              <PlusCircle size="20" class="inline-block mb-0.5" /> Create
+              <PlusCircle class="inline-block mb-0.5" /> Create
             </span>
             <span class="text-blue-600">'{value}'</span>
           {/if}
