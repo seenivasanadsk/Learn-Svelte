@@ -106,7 +106,7 @@
   async function handleCreateOption(e) {
     e.preventDefault();
     optionLoading = true;
-    console.log('optionLoading');
+    console.log('optionLoading', optionLoading);
     await createOption(value);
     optionLoading = false;
   }
@@ -191,7 +191,7 @@
           role="button"
           tabindex="0"
         >
-          {optionLoading ? 'true' : 'false'}
+          {optionLoading}
           {#if optionLoading}
             <span class="animate-spin inline-block"><Loader2Icon /></span> Loading...
           {:else}
