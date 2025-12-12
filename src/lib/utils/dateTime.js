@@ -1,22 +1,11 @@
-// src\lib\utils\dateTime.js
+// src/lib/utils/dateTime.js
 
 /**
- * Extracts date & time components using Intl.DateTimeFormat
- * and returns them in a clean object.
- *
+ * Extract date/time parts including month & weekday names
  * @param {Date} date
- * @returns {{
- *   year: string,
- *   month: string,
- *   day: string,
- *   hour: string,
- *   minute: string,
- *   second: string,
- *   dayPeriod: string
- * }}
  */
 export function getDateTimeParts(date = new Date()) {
-  const formatter = new Intl.DateTimeFormat('en-US', {
+  const baseFormatter = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -26,29 +15,42 @@ export function getDateTimeParts(date = new Date()) {
     hour12: true
   });
 
-  const parts = formatter.formatToParts(date);
+  const monthNameFormatter = new Intl.DateTimeFormat('en-US', {
+    month: 'long'
+  });
+
+  const monthShortFormatter = new Intl.DateTimeFormat('en-US', {
+    month: 'short'
+  });
+
+  const weekdayNameFormatter = new Intl.DateTimeFormat('en-US', {
+    weekday: 'long'
+  });
+
+  const weekdayShortFormatter = new Intl.DateTimeFormat('en-US', {
+    weekday: 'short'
+  });
+
+  const baseParts = baseFormatter.formatToParts(date);
   const result = {};
 
-  for (const part of parts) {
+  for (const part of baseParts) {
     if (part.type !== 'literal') {
       result[part.type] = part.value;
     }
   }
 
+  // Add month & weekday names
+  result.monthName = monthNameFormatter.format(date);
+  result.monthShort = monthShortFormatter.format(date);
+  result.weekdayName = weekdayNameFormatter.format(date);
+  result.weekdayShort = weekdayShortFormatter.format(date);
+
   return result;
 }
 
 /**
- * Format a date using a custom pattern
- * Example:
- *   formatDateTime(new Date(), "YY-MM-DD-HH-II-SS-AA")
- *
- * Supported tokens:
- *   YY, MM, DD, HH, II, SS, AA
- *
- * @param {Date} date
- * @param {string} pattern
- * @returns {string}
+ * Format using custom token pattern
  */
 export function formatDateTime(pattern = '', date = new Date()) {
   const p = getDateTimeParts(date);
@@ -60,14 +62,21 @@ export function formatDateTime(pattern = '', date = new Date()) {
     HH: p.hour,
     II: p.minute,
     SS: p.second,
-    AA: p.dayPeriod
+    AA: p.dayPeriod,
+
+    // Month and Weekday name
+    MN: p.monthName,
+    MS: p.monthShort,
+    WN: p.weekdayName,
+    WS: p.weekdayShort
   };
 
   let output = pattern;
 
-  // Replace tokens safely
+  // Replace tokens (use regexp to avoid conflicts)
   for (const token in tokens) {
-    output = output.replace(token, tokens[token]);
+    const regex = new RegExp(token, 'g');
+    output = output.replace(regex, tokens[token]);
   }
 
   return output;
