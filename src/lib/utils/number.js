@@ -32,25 +32,6 @@ export const formatCompact = (n, locale = 'en-IN', long = false) =>
   }).format(n);
 
 /**
- * Convert a number to spelled-out words (if supported by the browser).
- * Falls back to a plain string if not supported.
- *
- * @param {number} n - The number to spell out.
- * @param {string} [locale='en-IN'] - Locale code.
- * @returns {string} Number in words or fallback numeric string.
- *
- * @example
- * spellout(123); // "one hundred twenty-three" (if supported)
- */
-export const spellout = (n, locale = 'en-IN') => {
-  try {
-    return new Intl.NumberFormat(locale, { style: 'spellout' }).format(n);
-  } catch {
-    return String(n);
-  }
-};
-
-/**
  * Format a number as currency.
  *
  * @param {number} n - The amount.
@@ -126,28 +107,3 @@ export const formatFixed = (n, digits = 2, locale = 'en-IN') =>
  * formatIndian(1234567); // "12,34,567"
  */
 export const formatIndian = (n) => new Intl.NumberFormat('en-IN').format(n);
-
-/**
- * Convert a number into Indian numbering words (Crore/Lakh/Thousand).
- * NOTE: This is a fallback custom implementation — NOT full English words.
- *
- * @param {number} n - The number to convert.
- * @returns {string} Number in Indian word units.
- *
- * @example
- * toWordsIndian(12345678); // "1 Crore 23 Lakh 45 Thousand 678"
- */
-export const toWordsIndian = (n) => {
-  const units = ['', 'Thousand', 'Lakh', 'Crore'];
-  let value = n;
-  let i = 0;
-
-  const parts = [];
-  while (value > 0) {
-    const chunk = i === 0 ? value % 1000 : value % 100;
-    if (chunk) parts.push(chunk + ' ' + units[i]);
-    value = i === 0 ? Math.floor(value / 1000) : Math.floor(value / 100);
-    i++;
-  }
-  return parts.reverse().join(' ').trim();
-};

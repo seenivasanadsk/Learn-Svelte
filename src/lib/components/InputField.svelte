@@ -1,5 +1,5 @@
 <script>
-  import { Sun, Moon, PlusCircle, Loader2Icon } from 'lucide-svelte';
+  import { PlusCircle, Loader2Icon } from 'lucide-svelte';
   import cn from '$lib/utils/cn';
   import stringCase from '$lib/utils/stringCase';
   // -------------------------------------

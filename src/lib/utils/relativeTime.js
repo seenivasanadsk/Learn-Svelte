@@ -34,7 +34,7 @@ export function timeAgoSmart(date, locale = 'en') {
   const d2 = new Date(now).setHours(0, 0, 0, 0);
   const diffDays = (d1 - d2) / (24 * 60 * 60 * 1000);
 
-  if (diffDays === 0) return 'Today';
+  // if (diffDays === 0) return 'Today';
   if (diffDays === -1) return 'Yesterday';
   if (diffDays === 1) return 'Tomorrow';
 
