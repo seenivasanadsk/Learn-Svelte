@@ -7,15 +7,18 @@
   let {
     children,
     href = '',
-    onClick = () => {},
+    onclick = () => {},
     color = 'accent',
     size = 'md',
+    type = 'button',
     radius = '',
     prefix = null,
     suffix = null,
     class: userClass = '',
     ...props
   } = $props();
+
+  console.log(type, onclick);
 
   // -------------------------------------
   // Styles
@@ -95,7 +98,7 @@
   </a>
 {:else}
   <!-- Normal Button -->
-  <button class={className} {onClick} {...props}>
+  <button class={className} {onclick} {type} {...props}>
     {#if prefix}
       {@const Prefix = prefix}
       <Prefix class={prefixClass} size={iconSize} />

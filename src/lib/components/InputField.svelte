@@ -115,7 +115,7 @@
 
 <div
   class={cn(
-    'group inline-flex items-center border-2 border-gray-400 rounded-md font-semibold relative focus-within:border-amber-500',
+    'group inline-flex items-center border-2 border-gray-400 rounded-md font-semibold relative focus-within:border-amber-500 w-full mb-3 last:mb-0',
     hasError && 'error'
   )}
 >
@@ -136,7 +136,7 @@
 
   <input
     type="text"
-    class="outline-none py-1 px-2"
+    class="outline-none py-1 px-2 w-full"
     bind:value
     {placeholder}
     oninput={handleInput}

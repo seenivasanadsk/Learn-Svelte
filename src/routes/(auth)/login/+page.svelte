@@ -1,19 +1,29 @@
 <script>
   import Button from '$lib/components/Button.svelte';
   import Dialog from '$lib/components/Dialog.svelte';
-  import Card from '$lib/components/Card.svelte';
+  import Form from '$lib/components/Form.svelte';
+  import InputField from '$lib/components/InputField.svelte';
 </script>
 
 <div class="p-6">
-  <Dialog>
+  <Dialog class="rounded-lg">
     {#snippet trigger({ show })}
       <Button onclick={show}>Test</Button>
     {/snippet}
 
-    {#snippet content()}
-      <div class="p-5">
-        <Card title="This is test"></Card>
+    {#snippet content({ hide })}
+      <div>
+        <Form title="Login" cancel={hide} rounded="lg">
+          <InputField placeholder="User" />
+          <InputField placeholder="Password" />
+        </Form>
       </div>
     {/snippet}
   </Dialog>
+  <div>
+    <Form title="Login" rounded="lg">
+      <InputField placeholder="User" />
+      <InputField placeholder="Password" />
+    </Form>
+  </div>
 </div>
