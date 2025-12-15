@@ -1,21 +1,47 @@
 <script>
   import cn from '$lib/utils/cn';
-  import Button from './Button.svelte';
-  const { children, class: userClass = '' } = $props();
+
+  const { class: userClass = '', trigger, content } = $props();
+
+  let open = $state(false);
+  open = true; // Should Remove these Later
+
+  function toggle() {
+    open = !open;
+  }
+
+  function show() {
+    open = true;
+  }
+
+  function hide() {
+    open = false;
+  }
+
+  function closeOnEscape(e) {
+    if (e.key !== 'Escape') return;
+    if (!open) return;
+    open = false;
+  }
 </script>
 
-<span>
-  <Button>Test</Button>
+<svelte:window on:keydown={closeOnEscape} />
 
-  <!-- Overlay -->
-  <div class="absolute bg-black/30 w-dvw h-dvh inset-0">
-    <div
-      class={cn(
-        'bg-white min-w-md absolute top-10 left-1/2 -translate-x-1/2 rounded overflow-auto',
-        userClass
-      )}
-    >
-      {@render children()}
+<span>
+  <!-- Trigger -->
+  {@render trigger({ toggle, show, hide, open })}
+
+  <!-- Dialog -->
+  {#if open}
+    <div class="absolute bg-black/40 w-dvw h-dvh inset-0" transition="fly">
+      <div
+        class={cn(
+          'bg-white min-w-md absolute top-10 left-1/2 -translate-x-1/2 rounded overflow-auto',
+          userClass
+        )}
+      >
+        {@render content({ toggle, show, hide, open })}
+      </div>
     </div>
-  </div>
+  {/if}
 </span>
