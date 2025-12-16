@@ -14,10 +14,13 @@
     class: userClass = '',
     options = [],
     hasError = false,
+    caseMode = 'smartTitle', // upper|lower|title|para|smartTitle|none
     fullSearch = false,
     newValue = 'ignore', // ignore|accept|create
     createOption = () => {},
     placeholder = '',
+    textAlign = 'left',
+    type = 'text',
     ...props
   } = $props();
 
@@ -93,7 +96,14 @@
 
   function handleInput(e) {
     const newVal = e.target.value;
-    value = stringCase.smartTitle(newVal);
+    const handlers = {
+      upper: stringCase.upper,
+      lower: stringCase.lower,
+      title: stringCase.title,
+      para: stringCase.para,
+      smartTitle: stringCase.smartTitle
+    };
+    value = handlers[caseMode]?.(newVal) ?? newVal;
     optionCreateError = false;
   }
 
@@ -135,14 +145,15 @@
   {/if}
 
   <input
-    type="text"
-    class="outline-none py-1 px-2 w-full"
+    class="outline-none py-1 px-2 w-full text-{textAlign}"
     bind:value
     {placeholder}
     oninput={handleInput}
     onkeydown={handleOptionNavigation}
     onfocus={() => (showOptions = true)}
     onblur={handleOnBlur}
+    {type}
+    {...props}
   />
 
   {#if suffix}
