@@ -33,7 +33,7 @@
 
   <!-- Dialog -->
   {#if open}
-    <div class="absolute bg-black/40 w-dvw h-dvh inset-0 z-50" transition="fly">
+    <div class="absolute bg-black/40 w-dvw h-dvh inset-0 z-50">
       <div
         class={cn(
           'bg-white min-w-md absolute top-10 left-1/2 -translate-x-1/2 rounded overflow-auto',
