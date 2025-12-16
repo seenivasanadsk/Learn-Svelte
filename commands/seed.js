@@ -15,7 +15,7 @@ export const info = 'Seed data into the Database';
  * @param {boolean} fresh - If true, delete existing data before seeding.
  */
 async function seed(_flags, fresh = false) {
-  const projectRoot = path.dirname(process.argv[1]);
+  const projectRoot = path.resolve(import.meta.dirname, "..")
   const seedFolder = path.join(projectRoot, 'seed');
 
   const seedFiles = getFilesName(seedFolder);
