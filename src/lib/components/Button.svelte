@@ -30,7 +30,9 @@
       'bg-green-500 text-white hover:bg-green-600 focus:bg-green-600 outline-green-600 active:bg-green-700',
     danger:
       'bg-red-500 text-white hover:bg-red-600 focus:bg-red-600 outline-red-600 active:bg-red-800',
-    dim: 'bg-gray-300 text-black hover:bg-gray-400 focus:bg-gray-400 outline-gray-400 active:bg-gray-500'
+    cyan: 'bg-cyan-400 text-white hover:bg-cyan-500 focus:bg-cyan-500 outline-cyan-500 active:bg-cyan-600',
+    fuchsia:
+      'bg-fuchsia-400 text-white hover:bg-fuchsia-500 focus:bg-fuchsia-500 outline-fuchsia-500 active:bg-fuchsia-600'
   };
 
   const sizeStyles = {

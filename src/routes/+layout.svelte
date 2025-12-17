@@ -2,19 +2,17 @@
 <script>
   import '../app.css';
   import favicon from '$lib/assets/favicon.svg';
+  import { keyboardEventBus } from '$lib/utils/eventBus';
+  import { theme } from '$lib/stores/theme';
 
   let { children } = $props();
 
-  function handleGlobalShortcutKey(e) {
-    const { altKey, ctrlKey, shiftKey, metaKey, key } = e;
-  }
+  keyboardEventBus.on('Alt+D', theme.toggle);
 </script>
 
 <svelte:head>
   <link rel="icon" href={favicon} />
 </svelte:head>
-
-<svelte:window onkeydown={handleGlobalShortcutKey} />
 
 <div class="h-dvh">
   {@render children()}

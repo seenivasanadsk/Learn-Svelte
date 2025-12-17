@@ -1,11 +1,32 @@
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ---------- LIGHT THEME (default) ---------- */
+:root {
+  --foreground: #000000;
+  --background: #ffffff;
+}
+
+/* ---------- DARK THEME ---------- */
+.dark {
+  --foreground: #e5e7eb;
+  --background: #0d1117;
+}
+
+/* ---------- Apply globally ---------- */
+html,
+body {
+  color: var(--foreground);
+  background-color: var(--background);
+}
+
+/* ---------- Scrollbar ---------- */
 * {
   scrollbar-width: thin;
   scrollbar-color: theme(--color-gray-400) theme(--color-gray-100);
 }
 
+/* ---------- Error animation ---------- */
 .error {
   border-color: red;
   animation: jiggle 0.2s ease-in-out;
