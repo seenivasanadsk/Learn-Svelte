@@ -4,6 +4,7 @@
   import favicon from '$lib/assets/favicon.svg';
   import { keyboardEventBus } from '$lib/utils/eventBus';
   import { theme } from '$lib/stores/theme';
+  import Toast from '$lib/components/Toast.svelte';
 
   let { children } = $props();
 
@@ -17,3 +18,4 @@
 <div class="h-dvh">
   {@render children()}
 </div>
+<Toast />

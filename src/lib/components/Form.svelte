@@ -10,10 +10,16 @@
   }
 </script>
 
-<form method="POST" class="bg-white shadow rounded-{rounded} overflow-hidden" use:enhance>
+<form
+  method="POST"
+  class="bg-white dark:bg-amber-950/30 shadow rounded-{rounded} overflow-hidden"
+  use:enhance
+>
   <!-- Card Header -->
-  <div class="border-b border-amber-200 bg-amber-100 px-3 py-2 flex justify-between">
-    <h1 class="text-2xl font-semibold text-amber-900">{title}</h1>
+  <div
+    class="border-b-2 border-amber-200 dark:border-amber-900 bg-amber-100 dark:bg-amber-950 px-3 py-2 flex justify-between"
+  >
+    <h1 class="text-2xl font-semibold text-amber-900 dark:text-amber-100">{title}</h1>
     {#if cancel}
       <div class="inline-flex items-center">
         <button
@@ -28,13 +34,15 @@
   </div>
 
   <!-- Card Body -->
-  <div class="p-3">
+  <div class="p-4">
     {@render children()}
   </div>
 
   <!-- Card Footer -->
-  <div class="border-t border-amber-200 bg-amber-100 px-3 py-2 flex gap-2 justify-end">
+  <div
+    class="border-t-2 border-amber-200 dark:border-amber-900 bg-amber-100 dark:bg-amber-950 px-3 py-2 flex gap-2 justify-end"
+  >
     <Button color="success" type="submit">Submit</Button>
-    <Button color="dim" type="button" onclick={handleCancel}>Cancel</Button>
+    <Button type="button" onclick={handleCancel}>Cancel</Button>
   </div>
 </form>
