@@ -2,22 +2,26 @@
   import { PlusCircle, Loader2Icon } from 'lucide-svelte';
   import cn from '$lib/utils/cn';
   import stringCase from '$lib/utils/stringCase';
+
+  const dummyFunction = () => {};
+
   // -------------------------------------
   // Props
   // -------------------------------------
   let {
     value = $bindable(''),
-    onPrefixClick = () => {},
-    onSuffixClick = () => {},
+    onPrefixClick = dummyFunction,
+    onSuffixClick = dummyFunction,
     prefix = null,
     suffix = null,
     class: userClass = '',
     options = [],
     hasError = false,
+    silent = false,
     caseMode = 'smartTitle', // upper|lower|title|para|smartTitle|none
     fullSearch = false,
     newValue = 'ignore', // ignore|accept|create
-    createOption = () => {},
+    createOption = dummyFunction,
     placeholder = '',
     textAlign = 'left',
     type = 'text',
@@ -56,11 +60,15 @@
     }
 
     if (e.key === 'ArrowDown') {
-      // Navigate down with loop from bottom to top
-      if (selectedOptionIndex < filtered.length - 1) {
-        selectedOptionIndex++;
+      if (showOptions) {
+        // Navigate down with loop from bottom to top
+        if (selectedOptionIndex < filtered.length - 1) {
+          selectedOptionIndex++;
+        } else {
+          selectedOptionIndex = 0; // Loop back to first option
+        }
       } else {
-        selectedOptionIndex = 0; // Loop back to first option
+        showOptions = true;
       }
     } else if (e.key === 'ArrowUp') {
       // Navigate up with loop from top to bottom
@@ -95,6 +103,7 @@
   }
 
   function handleInput(e) {
+    showOptions = true;
     const newVal = e.target.value;
     const handlers = {
       upper: stringCase.upper,
@@ -105,6 +114,7 @@
     };
     value = handlers[caseMode]?.(newVal) ?? newVal;
     optionCreateError = false;
+    selectedOptionIndex = 0;
   }
 
   function handleOnBlur() {
@@ -135,7 +145,8 @@
       class={cn(
         'p-1 border-r-2 text-gray-400 *:inline-block group-focus-within:text-amber-500 border-gray-400 group-focus-within:border-amber-500',
         hasError && 'border-red-500 group-focus-within:border-red-500',
-        hasError && 'text-red-500 group-focus-within:text-red-500'
+        hasError && 'text-red-500 group-focus-within:text-red-500',
+        onPrefixClick != dummyFunction && 'hover:text-amber-500 cursor-pointer'
       )}
       onmousedown={onPrefixClick}
       tabindex="ignore"
@@ -150,7 +161,7 @@
     {placeholder}
     oninput={handleInput}
     onkeydown={handleOptionNavigation}
-    onfocus={() => (showOptions = true)}
+    onfocus={() => (showOptions = !silent)}
     onblur={handleOnBlur}
     {type}
     {...props}
@@ -162,7 +173,8 @@
       class={cn(
         'p-1 border-l-2 text-gray-400 *:inline-block group-focus-within:text-amber-500 border-gray-400 group-focus-within:border-amber-500',
         hasError && 'border-red-500 group-focus-within:border-red-500',
-        hasError && 'text-red-500 group-focus-within:text-red-500'
+        hasError && 'text-red-500 group-focus-within:text-red-500',
+        onSuffixClick != dummyFunction && 'hover:text-amber-500 cursor-pointer'
       )}
       onmousedown={onSuffixClick}
       tabindex="ignore"

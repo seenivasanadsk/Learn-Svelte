@@ -10,11 +10,7 @@
   }
 </script>
 
-<form
-  method="POST"
-  class="bg-white dark:bg-amber-950/30 shadow rounded-{rounded} overflow-hidden"
-  use:enhance
->
+<form method="POST" class="bg-white dark:bg-amber-950/30 shadow-md rounded-{rounded}" use:enhance>
   <!-- Card Header -->
   <div
     class="border-b-2 border-amber-200 dark:border-amber-900 bg-amber-100 dark:bg-amber-950 px-3 py-2 flex justify-between"

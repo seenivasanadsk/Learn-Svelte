@@ -3,10 +3,10 @@
   import { X } from 'lucide-svelte';
 
   const styles = {
-    success: 'bg-green-600',
-    error: 'bg-red-600',
-    info: 'bg-blue-600',
-    warning: 'bg-amber-500 text-black'
+    success: 'bg-green-600 dark:bg-green-700',
+    danger: 'bg-red-600 dark:bg-red-700',
+    primary: 'bg-blue-600 dark:bg-blue-700',
+    amber: 'bg-amber-600 dark:bg-amber-700'
   };
 </script>
 

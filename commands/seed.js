@@ -64,6 +64,9 @@ async function seedCollection(collectionName, seedData, fresh) {
       console.log(yellowText(`🧹  Cleared ${collectionName} (${existingCount} docs removed)`));
     }
 
+    console.log(yellowText(`Found totaly ${seedData.length} ${collectionName} records`))
+    seedData = seedData.filter(s => s)
+    console.log(yellowText(`Valid Records: ${seedData.length} ${collectionName} records`))
     await collection.insertMany(seedData);
     console.log(greenText(`✅ Seeded ${collectionName} with ${seedData.length} documents`));
   } catch (error) {

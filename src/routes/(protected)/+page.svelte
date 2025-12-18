@@ -20,7 +20,8 @@
     List,
     Handshake,
     Users,
-    CircleUser
+    CircleUser,
+    CircleCheckBig
   } from 'lucide-svelte';
 
   // Lab Lucide icons
@@ -48,7 +49,8 @@
     { label: 'Materials', icon: List, route: '/materials' },
     { label: 'Party', icon: Users, route: '/party' },
     { label: 'User', icon: CircleUser, route: '/party' },
-    { label: 'Settings', icon: Settings, route: '/settings' }
+    { label: 'Settings', icon: Settings, route: '/settings' },
+    { label: 'Tasks', icon: CircleCheckBig, route: '/tasks' }
   ];
 </script>
 

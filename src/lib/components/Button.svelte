@@ -51,7 +51,7 @@
   };
 
   const baseClass =
-    'cursor-pointer font-semibold inline-flex items-center focus:outline-2 focus:outline-offset-2';
+    'cursor-pointer font-semibold inline-flex items-center focus:outline-2 focus:outline-offset-2 select-none';
 
   // -------------------------------------
   // Derived values

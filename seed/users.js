@@ -1,5 +1,7 @@
 import { hashPassword } from '../src/features/auth/password.js';
-import { defualtSettings } from '../config/constant.js';
+import { userCreateModel } from '../src/features/users/user.model.js'
+import { userSchema } from '../src/features/users/user.schema.js'
+import { redText } from '../commands/helpers/formatText.js'
 
 const admin = {
   username: process.env.ADMIN_USERNAME || 'Admin',
@@ -43,19 +45,15 @@ const users = [
 ];
 
 export const seedData = await Promise.all(
-  users.map(async (u) => ({
-    username: u.username,
-    hashed_password: await hashPassword(u.password),
-    role: u.role,
-    lastLogin: null,
-    lastAccess: null,
-    lastPasswordReset: null,
-    createdAt: null,
-    createdBy: null,
-    updatedAt: null,
-    updatedBy: null,
-    seededAt: new Date(),
-    isActive: true,
-    settings: defualtSettings
-  }))
+  users.map(async (u) => {
+    u.hashedPassword = await hashPassword(u.password)
+    delete u.password
+    const isValid = userSchema.safeParse(u)
+    if (isValid.success)
+      return userCreateModel(u, {}, true)
+    else {
+      console.log(redText(`Error in User Data ${u.username}`))
+      return null
+    }
+  })
 );
