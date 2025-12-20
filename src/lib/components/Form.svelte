@@ -1,13 +1,17 @@
 <!-- src\lib\components\Form.svelte -->
 <script>
   import { enhance } from '$app/forms';
-  import { X } from 'lucide-svelte';
+  import { LoaderCircle, X } from 'lucide-svelte';
   import Button from './Button.svelte';
   const {
     title,
     cancel,
     children = () => {},
+    loading = false,
+    isEdit = false,
     enhance: enhanceAction = undefined,
+    submitButtonText = ['Save', 'Update'],
+    cancelButtonText = 'Cancel',
     ...props
   } = $props();
 
@@ -49,7 +53,13 @@
   <div
     class="border-t-2 border-amber-200 dark:border-amber-900 bg-amber-100 dark:bg-amber-950 px-3 py-2 flex gap-2 justify-end rounded-b-md"
   >
-    <Button color="success" type="submit">Submit</Button>
-    <Button type="button" onclick={handleCancel}>Cancel</Button>
+    <Button color="success" type="submit">
+      {#if loading}
+        <LoaderCircle class="animate-spin mr-1" /> Loading...
+      {:else}
+        <span>{isEdit ? submitButtonText[1] || 'Update' : submitButtonText[0] || 'Save'}</span>
+      {/if}
+    </Button>
+    <Button type="button" onclick={handleCancel}>{cancelButtonText}</Button>
   </div>
 </form>

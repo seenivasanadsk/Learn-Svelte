@@ -52,7 +52,7 @@
     </IconButton>
 
     <!-- Logout user -->
-    <IconButton title="Logout (Alt+L)" onclick={() => goto('/logut')}>
+    <IconButton title="Logout (Alt+L)" onclick={() => goto('/logout')}>
       <LogOut />
     </IconButton>
 

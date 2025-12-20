@@ -3,10 +3,11 @@ import { fail, redirect } from '@sveltejs/kit';
 import { loginService } from '$lib/features/auth/auth.service.js';
 import { getAllUsernames } from '$lib/features/users/user.repository.js';
 
-export async function load() {
+export async function load({ cookies }) {
   const result = await getAllUsernames();
   const userList = result.map((user) => user.username);
-  return { userList };
+  const lastUsername = cookies.get('LAST_USERNAME');
+  return { userList, lastUsername };
 }
 
 export const actions = {
@@ -34,6 +35,7 @@ export const actions = {
       maxAge
     };
     cookies.set('SESSION', result.data.session, cookieOption);
+    cookies.set('LAST_USERNAME', username, { maxAge, path: '/' });
     throw redirect(303, '/');
   }
 };

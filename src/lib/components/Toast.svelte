@@ -25,7 +25,7 @@
     >
       <!-- Message -->
       <span class="text-base leading-relaxed">
-        {toast.message}
+        {@html toast.message}
       </span>
 
       <!-- Close button -->

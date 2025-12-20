@@ -4,6 +4,7 @@ import { verifyPassword } from './password';
 import {
   createSession,
   deleteSessionByTokenAndUserID,
+  deleteSessionByUserId,
   findSessionByUsername
 } from './session.repository';
 
@@ -58,6 +59,38 @@ export async function logoutService(storedSession) {
 
   if (!result.acknowledged) {
     return commonError('Session is Not Found', 401);
+  }
+
+  return {
+    success: true
+  };
+}
+
+export async function forceLogoutService(username, password) {
+  if (!username || !password) {
+    return commonError('Username and password are required', 400);
+  }
+
+  const user = await getUserByUsername(username);
+
+  if (!user) {
+    return commonError('Invalid username or password', 401);
+  }
+
+  if (!user.isActive) {
+    return commonError('User is Deactivated', 401);
+  }
+
+  const isValid = await verifyPassword(user.hashedPassword, password);
+
+  if (!isValid) {
+    return commonError('Invalid username or password', 401);
+  }
+
+  let result = await deleteSessionByUserId(user._id);
+
+  if (!result.acknowledged) {
+    return commonError('Force Logout Faild', 401);
   }
 
   return {
