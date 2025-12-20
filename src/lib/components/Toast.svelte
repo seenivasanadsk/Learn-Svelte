@@ -1,6 +1,7 @@
 <script>
   import { toasts, closeToast } from '$lib/stores/toast';
   import { X } from 'lucide-svelte';
+  import { fly } from 'svelte/transition';
 
   const styles = {
     success: 'bg-green-600 dark:bg-green-700',
@@ -20,6 +21,7 @@
         animate-slide-in
         ${styles[toast.type] || styles.success}
       `}
+      in:fly={{ x: 200, duration: 200 }}
     >
       <!-- Message -->
       <span class="text-base leading-relaxed">

@@ -21,7 +21,8 @@
     Handshake,
     Users,
     CircleUser,
-    CircleCheckBig
+    CircleCheckBig,
+    ShieldCheck
   } from 'lucide-svelte';
 
   // Lab Lucide icons
@@ -49,8 +50,9 @@
     { label: 'Materials', icon: List, route: '/materials' },
     { label: 'Party', icon: Users, route: '/party' },
     { label: 'User', icon: CircleUser, route: '/party' },
-    { label: 'Settings', icon: Settings, route: '/settings' },
-    { label: 'Tasks', icon: CircleCheckBig, route: '/tasks' }
+    { label: 'Tasks', icon: CircleCheckBig, route: '/tasks' },
+    { label: 'Settings', icon: Settings, route: '/settings' }
+    // { label: 'Permission', icon: ShieldCheck, route: '/permission' }
   ];
 </script>
 
@@ -74,15 +76,14 @@
   </p>
 
   <!-- Menu -->
-  <div class="mt-8 flex flex-wrap justify-center gap-3 w-full max-w-4xl">
+  <div class="mt-8 flex flex-wrap justify-center gap-4 w-full max-w-4xl">
     {#each menus as menu, index}
       <button
         on:click={() => goto(menu.route)}
         class="flex flex-col items-center justify-center relative
-               rounded-md border-2 border-amber-400/70
+               rounded-md border-2 border-amber-400/70 hover:border-amber-600/70
                p-2 w-28 h-28 overflow-hidden
                backdrop-blur
-               transition-all duration-200
                active:scale-95
                focus:outline-none"
       >

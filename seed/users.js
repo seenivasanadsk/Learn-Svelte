@@ -1,7 +1,7 @@
-import { hashPassword } from '../src/features/auth/password.js';
-import { userCreateModel } from '../src/features/users/user.model.js'
-import { userSchema } from '../src/features/users/user.schema.js'
 import { redText } from '../commands/helpers/formatText.js'
+import { hashPassword } from '../src/lib/features/auth/password.js'
+import { userSchema } from '../src/lib/features/users/user.schema.js'
+import { userCreateModel } from '../src/lib/features/users/user.model.js'
 
 const admin = {
   username: process.env.ADMIN_USERNAME || 'Admin',

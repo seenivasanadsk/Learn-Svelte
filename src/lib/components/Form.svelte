@@ -1,8 +1,15 @@
+<!-- src\lib\components\Form.svelte -->
 <script>
   import { enhance } from '$app/forms';
   import { X } from 'lucide-svelte';
   import Button from './Button.svelte';
-  const { title, cancel, rounded = 'md', children = () => {} } = $props();
+  const {
+    title,
+    cancel,
+    children = () => {},
+    enhance: enhanceAction = undefined,
+    ...props
+  } = $props();
 
   function handleCancel(e) {
     if (cancel) cancel();
@@ -10,10 +17,14 @@
   }
 </script>
 
-<form method="POST" class="bg-white dark:bg-amber-950/30 shadow-md rounded-{rounded}" use:enhance>
+<form
+  class="bg-white dark:bg-amber-950/30 shadow-md rounded-md"
+  {...props}
+  use:enhance={enhanceAction}
+>
   <!-- Card Header -->
   <div
-    class="border-b-2 border-amber-200 dark:border-amber-900 bg-amber-100 dark:bg-amber-950 px-3 py-2 flex justify-between"
+    class="border-b-2 border-amber-200 dark:border-amber-900 bg-amber-100 dark:bg-amber-950 px-3 py-2 flex justify-between rounded-t-md"
   >
     <h1 class="text-2xl font-semibold text-amber-900 dark:text-amber-100">{title}</h1>
     {#if cancel}
@@ -36,7 +47,7 @@
 
   <!-- Card Footer -->
   <div
-    class="border-t-2 border-amber-200 dark:border-amber-900 bg-amber-100 dark:bg-amber-950 px-3 py-2 flex gap-2 justify-end"
+    class="border-t-2 border-amber-200 dark:border-amber-900 bg-amber-100 dark:bg-amber-950 px-3 py-2 flex gap-2 justify-end rounded-b-md"
   >
     <Button color="success" type="submit">Submit</Button>
     <Button type="button" onclick={handleCancel}>Cancel</Button>

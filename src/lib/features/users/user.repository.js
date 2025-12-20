@@ -9,3 +9,8 @@ export async function getAllUsernames() {
     { projection: { username: 1, _id: 0 } }
   ).toArray()
 }
+
+export async function getUserByUsername(username) {
+  const collection = await getCollection(COLLECTION_NAME)
+  return await collection.findOne({ username: username })
+}

@@ -186,7 +186,7 @@
   {#if options.length}
     {#if showOptions && filtered.length}
       <div
-        class="absolute top-full max-h-50 overflow-auto left-0 w-full border-amber-500 border-2 rounded-b-md bg-white z-10"
+        class="absolute top-full max-h-50 overflow-auto left-0 w-full border-amber-500 border-2 rounded-b-md bg-white dark:bg-gray-900 z-10"
       >
         {#each filtered as option, index (option)}
           <div
@@ -194,8 +194,8 @@
             aria-selected={selectedOptionIndex == index ? 'true' : 'false'}
             data-option-index={index}
             class={cn(
-              'bg-white p-1 hover:bg-gray-300',
-              selectedOptionIndex == index && 'bg-gray-200'
+              'p-1 hover:bg-gray-300 dark:hover:bg-gray-700',
+              selectedOptionIndex == index && 'bg-gray-200 dark:bg-gray-700'
             )}
             onmousedown={(e) => handleOptionClick(e, index)}
             tabindex="0"
@@ -209,7 +209,7 @@
         class="absolute top-full max-h-50 overflow-auto left-0 w-full border-amber-500 border-2 rounded-b-md bg-white z-10"
       >
         <div
-          class="bg-white px-2 py-1 hover:bg-amber-50 cursor-pointer whitespace-nowrap overflow-hidden text-ellipsis"
+          class="bg-white dark:bg-gray-900 px-2 py-1 hover:bg-amber-50 dark:hover:bg-gray-800 cursor-pointer whitespace-nowrap overflow-hidden text-ellipsis"
           title={value}
           onmousedown={handleCreateOption}
           role="button"
@@ -222,10 +222,10 @@
           {:else if optionCreateError}
             <span class="text-red-500">Error Occured</span>
           {:else}
-            <span class="text-green-600">
+            <span class="text-green-600 dark:text-green-400">
               <PlusCircle class="inline-block mb-0.5" /> Create
             </span>
-            <span class="text-blue-600">'{value}'</span>
+            <span class="text-blue-600 dark:text-blue-400">'{value}'</span>
           {/if}
         </div>
       </div>
