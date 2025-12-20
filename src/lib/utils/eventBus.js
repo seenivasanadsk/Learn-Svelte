@@ -7,12 +7,7 @@ const shortcuts = new Map();
  * Example: "Ctrl+Shift+K" → "ctrl+shift+k"
  */
 function normalizeShortcut(shortcut) {
-  return shortcut
-    .toLowerCase()
-    .replace(/\s+/g, '')
-    .split('+')
-    .sort()
-    .join('+');
+  return shortcut.toLowerCase().replace(/\s+/g, '').split('+').sort().join('+');
 }
 
 /**

@@ -1,13 +1,14 @@
-import { getCollection } from "$lib/core/db";
-import crypto from 'node:crypto'
+import { getCollection } from '$lib/core/db';
+import { ObjectId } from 'mongodb';
+import crypto from 'node:crypto';
 
-export const COLLECTION_NAME = 'sessions'
+export const COLLECTION_NAME = 'sessions';
 
 export async function createSession(user, maxAge) {
-  const collection = await getCollection(COLLECTION_NAME)
+  const collection = await getCollection(COLLECTION_NAME);
 
-  const token = crypto.randomBytes(32).toString('hex')
-  const expiredOn = new Date(new Date().setSeconds(maxAge))
+  const token = crypto.randomBytes(32).toString('hex');
+  const expiredOn = new Date(new Date().setSeconds(maxAge));
 
   await collection.deleteOne({ userId: user._id });
 
@@ -18,7 +19,7 @@ export async function createSession(user, maxAge) {
     userRole: user.role,
     createdAt: new Date(),
     expiredOn
-  }
+  };
 
   const result = await collection.insertOne(sessionData);
 
@@ -26,11 +27,11 @@ export async function createSession(user, maxAge) {
 }
 
 export async function findSessionByUsername(username) {
-  const collection = await getCollection(COLLECTION_NAME)
+  const collection = await getCollection(COLLECTION_NAME);
   return await collection.findOne({ username });
 }
 
 export async function deleteSessionByTokenAndUserID(token, userId) {
-  const collection = await getCollection(COLLECTION_NAME)
-  return await collection.deleteOne({ token, userId })
+  const collection = await getCollection(COLLECTION_NAME);
+  return await collection.deleteOne({ token, userId: new ObjectId(userId) });
 }

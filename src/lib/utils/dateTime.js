@@ -157,8 +157,8 @@ export function formatDateTime(pattern = '', date = new Date()) {
 export function getDefaultDateTimeFormat(date = new Date()) {
   return {
     date: formatDateTime('DD-MM-YY', date),
-    time: formatDateTime('HH:II AA', date),
-  }
+    time: formatDateTime('HH:II AA', date)
+  };
 }
 
 /**
@@ -176,7 +176,7 @@ export function getDefaultDateTimeFormat(date = new Date()) {
  *   Formatted date string.
  */
 export function getFormattedDate(date = new Date()) {
-  return formatDateTime('DD-MM-YY', date)
+  return formatDateTime('DD-MM-YY', date);
 }
 
 /**
@@ -194,5 +194,5 @@ export function getFormattedDate(date = new Date()) {
  *   Formatted time string.
  */
 export function getFormattedTime(date = new Date()) {
-  return formatDateTime('HH:II AA', date)
+  return formatDateTime('HH:II AA', date);
 }

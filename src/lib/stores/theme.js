@@ -8,9 +8,7 @@ export const SYSTEM = 'SYSTEM';
    Helpers
 --------------------------------------- */
 function getSystemTheme() {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? DARK
-    : LIGHT;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? DARK : LIGHT;
 }
 
 function applyTheme(theme) {
@@ -36,7 +34,7 @@ function createTheme() {
     // react to system theme changes
     const media = window.matchMedia('(prefers-color-scheme: dark)');
     media.addEventListener('change', () => {
-      update(t => {
+      update((t) => {
         if (t === SYSTEM) applyTheme(SYSTEM);
         return t;
       });
@@ -52,11 +50,8 @@ function createTheme() {
     },
 
     toggle() {
-      update(t => {
-        const next =
-          t === LIGHT ? DARK :
-            t === DARK ? SYSTEM :
-              LIGHT;
+      update((t) => {
+        const next = t === LIGHT ? DARK : t === DARK ? SYSTEM : LIGHT;
 
         applyTheme(next);
         return next;

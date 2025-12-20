@@ -1,7 +1,7 @@
 export const ALLOWED_UPDATE_FIELDS = ['username', 'role', 'isActive'];
 
 export function userCreateModel(data, overridableData, seed = false) {
-  const input = { ...data, ...overridableData }
+  const input = { ...data, ...overridableData };
   return {
     username: input.username,
     hashedPassword: input.hashedPassword,
@@ -16,12 +16,12 @@ export function userCreateModel(data, overridableData, seed = false) {
     seededAt: seed ? new Date() : null,
     isActive: true,
     settings: {}
-  }
+  };
 }
 
 export function userUpdateModel(data, overridableData) {
-  const input = { ...data, ...overridableData }
-  const update = {}
+  const input = { ...data, ...overridableData };
+  const update = {};
 
   for (const field of ALLOWED_UPDATE_FIELDS) {
     if (field in input) {
@@ -32,7 +32,7 @@ export function userUpdateModel(data, overridableData) {
   update.updatedAt = new Date();
   update.updatedBy = input.updatedBy ?? null;
 
-  return update
+  return update;
 
   // hashedPassword: input.hashedPassword,
   // lastLogin: null,

@@ -15,7 +15,7 @@ export const info = 'Seed data into the Database';
  * @param {boolean} fresh - If true, delete existing data before seeding.
  */
 async function seed(_flags, fresh = false) {
-  const projectRoot = path.resolve(import.meta.dirname, "..")
+  const projectRoot = path.resolve(import.meta.dirname, '..');
   const seedFolder = path.join(projectRoot, 'seed');
 
   const seedFiles = getFilesName(seedFolder);
@@ -64,9 +64,9 @@ async function seedCollection(collectionName, seedData, fresh) {
       console.log(yellowText(`🧹  Cleared ${collectionName} (${existingCount} docs removed)`));
     }
 
-    console.log(yellowText(`Found totaly ${seedData.length} ${collectionName} records`))
-    seedData = seedData.filter(s => s)
-    console.log(yellowText(`Valid Records: ${seedData.length} ${collectionName} records`))
+    console.log(yellowText(`Found totaly ${seedData.length} ${collectionName} records`));
+    seedData = seedData.filter((s) => s);
+    console.log(yellowText(`Valid Records: ${seedData.length} ${collectionName} records`));
     await collection.insertMany(seedData);
     console.log(greenText(`✅ Seeded ${collectionName} with ${seedData.length} documents`));
   } catch (error) {

@@ -1,7 +1,7 @@
-import { redText } from '../commands/helpers/formatText.js'
-import { hashPassword } from '../src/lib/features/auth/password.js'
-import { userSchema } from '../src/lib/features/users/user.schema.js'
-import { userCreateModel } from '../src/lib/features/users/user.model.js'
+import { redText } from '../commands/helpers/formatText.js';
+import { hashPassword } from '../src/lib/features/auth/password.js';
+import { userSchema } from '../src/lib/features/users/user.schema.js';
+import { userCreateModel } from '../src/lib/features/users/user.model.js';
 
 const admin = {
   username: process.env.ADMIN_USERNAME || 'Admin',
@@ -46,14 +46,13 @@ const users = [
 
 export const seedData = await Promise.all(
   users.map(async (u) => {
-    u.hashedPassword = await hashPassword(u.password)
-    delete u.password
-    const isValid = userSchema.safeParse(u)
-    if (isValid.success)
-      return userCreateModel(u, {}, true)
+    u.hashedPassword = await hashPassword(u.password);
+    delete u.password;
+    const isValid = userSchema.safeParse(u);
+    if (isValid.success) return userCreateModel(u, {}, true);
     else {
-      console.log(redText(`Error in User Data ${u.username}`))
-      return null
+      console.log(redText(`Error in User Data ${u.username}`));
+      return null;
     }
   })
 );

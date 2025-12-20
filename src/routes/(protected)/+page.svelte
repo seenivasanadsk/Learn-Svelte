@@ -57,7 +57,7 @@
 </script>
 
 <div
-  class="h-full flex flex-col items-center text-center font-semibold px-4 overflow-auto py-10 md:py-20"
+  class="h-full flex flex-col items-center text-center font-semibold px-4 overflow-auto py-10 md:py-15"
 >
   <!-- Title -->
   <h1

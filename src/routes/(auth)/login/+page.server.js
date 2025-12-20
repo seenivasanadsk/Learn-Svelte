@@ -5,7 +5,7 @@ import { getAllUsernames } from '$lib/features/users/user.repository.js';
 
 export async function load() {
   const result = await getAllUsernames();
-  const userList = result.map(user => user.username);
+  const userList = result.map((user) => user.username);
   return { userList };
 }
 
@@ -27,13 +27,13 @@ export const actions = {
 
     // ✅ SUCCESS → REDIRECT
     const cookieOption = {
-      path: '/',              // required
-      httpOnly: true,         // JS can't access
-      sameSite: 'strict',     // CSRF protection
-      secure: true,           // HTTPS only (use false in dev if needed)
+      path: '/', // required
+      httpOnly: true, // JS can't access
+      sameSite: 'strict', // CSRF protection
+      secure: true, // HTTPS only (use false in dev if needed)
       maxAge
-    }
-    cookies.set('SESSION', result.data.session, cookieOption)
+    };
+    cookies.set('SESSION', result.data.session, cookieOption);
     throw redirect(303, '/');
   }
 };
