@@ -45,7 +45,8 @@ export async function loginService(username, password, maxAge = 60 * 60 * 24 * 3
   return {
     success: true,
     data: {
-      session: `${session.token}.${user._id}`
+      session: `${session.token}.${user._id}`,
+      user
     }
   };
 }

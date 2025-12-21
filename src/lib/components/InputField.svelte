@@ -23,6 +23,7 @@
     newValue = 'ignore', // ignore|accept|create
     createOption = dummyFunction,
     placeholder = '',
+    onEnter = () => {},
     textAlign = 'left',
     type = 'text',
     ...props
@@ -87,6 +88,7 @@
           showOptions = false;
         }
       }
+      onEnter(e);
     } else if (e.key === 'Escape') {
       // Close dropdown without selecting
       showOptions = false;
@@ -186,7 +188,7 @@
   {#if options.length}
     {#if showOptions && filtered.length}
       <div
-        class="absolute top-full max-h-50 overflow-auto left-0 w-full border-amber-500 border-2 rounded-b-md bg-white dark:bg-gray-900 z-10"
+        class="absolute top-full max-h-50 overflow-auto left-0 w-full border-amber-500 border-2 rounded-b-md bg-white dark:bg-gray-950 z-10"
       >
         {#each filtered as option, index (option)}
           <div
@@ -195,7 +197,7 @@
             data-option-index={index}
             class={cn(
               'p-1 hover:bg-gray-300 dark:hover:bg-gray-700',
-              selectedOptionIndex == index && 'bg-gray-200 dark:bg-gray-700'
+              selectedOptionIndex == index && 'bg-gray-200 dark:bg-amber-950'
             )}
             onmousedown={(e) => handleOptionClick(e, index)}
             tabindex="0"
@@ -209,7 +211,7 @@
         class="absolute top-full max-h-50 overflow-auto left-0 w-full border-amber-500 border-2 rounded-b-md bg-white z-10"
       >
         <div
-          class="bg-white dark:bg-gray-900 px-2 py-1 hover:bg-amber-50 dark:hover:bg-gray-800 cursor-pointer whitespace-nowrap overflow-hidden text-ellipsis"
+          class="bg-white dark:bg-gray-950 px-2 py-1 hover:bg-amber-50 dark:hover:bg-gray-800 cursor-pointer whitespace-nowrap overflow-hidden text-ellipsis"
           title={value}
           onmousedown={handleCreateOption}
           role="button"

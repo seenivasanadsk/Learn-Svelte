@@ -32,6 +32,7 @@ function getShortcutFromEvent(e) {
 }
 
 function handleKeydown(e) {
+  if (!e.key) return true; // When user clicked Saved Password it doesnot contain 'key'
   const shortcut = getShortcutFromEvent(e);
   const handlers = shortcuts.get(shortcut);
 

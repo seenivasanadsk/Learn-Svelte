@@ -9,7 +9,6 @@
   const { children, data } = $props();
   let user = $state(data.user);
   let isSidebarOpen = $state(true);
-  console.log(data);
 
   // Update user when data changes
   $effect(() => {

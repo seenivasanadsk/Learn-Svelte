@@ -4,33 +4,24 @@
   import InputField from '$lib/components/InputField.svelte';
   import { showToast } from '$lib/stores/toast';
   import { goto } from '$app/navigation';
-  import { Eye } from 'lucide-svelte';
+  import { Eye, EyeClosed } from 'lucide-svelte';
   import { browser } from '$app/environment';
   import { page } from '$app/stores'; // Import page store
 
-  const { data } = $props();
+  const { data, form } = $props();
   let showPassword = $state(false);
   let loading = $state(false);
   let username = $state(data.lastUsername || '');
-  let autoFocus = username ? 'password' : 'username';
-  console.log(autoFocus);
 
-  function handleForm() {
-    loading = true;
-    return async ({ result }) => {
-      loading = false;
-      if (result.type === 'redirect') {
-        await goto(result.location, { invalidateAll: true, replaceState: true });
-      } else if (result.type === 'failure') {
-        showToast(result.data.message, 'danger');
-        if (result.data.message == 'User already Logged in') {
-          showToast(
-            `Force Logout <b><u><a href="/force-logout?username=${username}">Here</a></u></b>`,
-            'primary'
-          );
-        }
-      }
-    };
+  if (form) showToast(form.message, 'danger');
+  if (form?.message == 'User already Logged in')
+    showToast(
+      `Force Logout <b><u><a href="/force-logout?username=${username}">Here</a></u></b>`,
+      'primary'
+    );
+
+  function triggerFormSubmission(e) {
+    e?.target?.closest('form')?.querySelector('button[type=submit]')?.click();
   }
 </script>
 
@@ -41,7 +32,6 @@
     method="POST"
     autoComplete="off"
     submitButtonText={['Login']}
-    enhance={handleForm}
     {loading}
   >
     <InputField
@@ -50,17 +40,18 @@
       bind:value={username}
       options={data.userList}
       silent={true}
-      autoFocus={autoFocus === 'username'}
+      autoFocus={username !== 'Admin'}
     />
     <InputField
       placeholder="Password"
       name="password"
       value="Admin@123"
       type={!showPassword && 'password'}
-      suffix={Eye}
+      suffix={showPassword ? Eye : EyeClosed}
       caseMode="none"
-      autoFocus={autoFocus === 'password'}
       onSuffixClick={() => (showPassword = !showPassword)}
+      autoFocus={username === 'Admin'}
+      onEnter={triggerFormSubmission}
     />
   </Form>
 </div>

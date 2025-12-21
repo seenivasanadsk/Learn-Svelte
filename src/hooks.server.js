@@ -1,29 +1,26 @@
 import { verifySession } from '$lib/features/auth/auth.service';
 import { redirect } from '@sveltejs/kit';
 
-// Define public routes (no authentication required)
-const PUBLIC_ROUTES = [
-  '/login',
-  '/logout', // Add logout to public routes
-  '/force-logout'
-];
+// Public routes (no authentication required)
+const PUBLIC_ROUTES = ['/login', '/logout', '/force-logout'];
 
-// Define auth routes (only accessible when NOT logged in)
+// Auth routes (only accessible when NOT logged in)
 const AUTH_ROUTES = ['/login', '/force-logout'];
 
+/** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
   const url = new URL(event.request.url);
   const path = url.pathname;
 
-  // SKIP DATA REQUESTS IN HOOKS (IMPORTANT!)
+  // --- Skip JSON/data requests ---
   if (path.includes('/__data.json') || path.includes('.json')) {
     return await resolve(event);
   }
 
-  // 1. Extract session from cookies
+  // --- 1. Extract session from cookies ---
   const session = event.cookies.get('SESSION');
 
-  // 2. Verify session and set user in locals
+  // --- 2. Verify session and set locals ---
   if (session) {
     const user = await verifySession(session);
     if (user) {
@@ -34,7 +31,7 @@ export async function handle({ event, resolve }) {
         settings: user.settings
       };
     } else {
-      // Invalid session - clear cookie
+      // Invalid session
       event.cookies.delete('SESSION', { path: '/' });
       event.locals.user = null;
     }
@@ -42,39 +39,47 @@ export async function handle({ event, resolve }) {
     event.locals.user = null;
   }
 
-  // 3. Route protection logic
+  // --- 3. Route classification ---
   const isPublicRoute = PUBLIC_ROUTES.some(
     (route) => route === path || (route.endsWith('*') && path.startsWith(route.slice(0, -1)))
   );
 
   const isAuthRoute = AUTH_ROUTES.includes(path);
 
-  // 4. CRITICAL FIX: Check for data.json in redirect URLs
-  const redirectTo = url.searchParams.get('redirectTo');
+  // --- 4. Get redirectTo parameter ---
+  let redirectTo = url.searchParams.get('redirectTo');
 
+  // Prevent data.json redirects
   if (redirectTo && redirectTo.includes('__data.json')) {
-    // Remove the redirectTo parameter if it points to a data file
     url.searchParams.delete('redirectTo');
     throw redirect(303, url.pathname + url.search);
   }
 
-  // 5. Redirect logic
+  // Normalize redirectTo: make sure it’s internal
+  if (redirectTo && !redirectTo.startsWith('/')) {
+    redirectTo = '/';
+  }
+
+  // --- 5. Redirect logic ---
+
+  // 5a. Unauthenticated user trying to access protected routes
   if (!isPublicRoute && !event.locals.user) {
-    // Don't redirect if we're already on login or logout
+    // Skip redirect if already on login/logout
     if (path !== '/login' && path !== '/logout') {
-      throw redirect(303, `/login?redirectTo=${encodeURIComponent(path)}`);
+      const fullPath = path + url.search;
+      throw redirect(303, `/login?redirectTo=${encodeURIComponent(fullPath)}`);
     }
   }
 
+  // 5b. Authenticated user on auth-only pages
   if (isAuthRoute && event.locals.user && path !== '/logout') {
-    // Redirect away from auth pages if already logged in
+    // Prevent redirect loops
     const safeRedirectTo = redirectTo || '/';
-    // Ensure we're not creating a loop
-    if (safeRedirectTo !== path) {
+    if (safeRedirectTo !== path && safeRedirectTo !== '/login') {
       throw redirect(303, safeRedirectTo);
     }
   }
 
-  // 6. Proceed with the request
+  // --- 6. Proceed normally ---
   return await resolve(event);
 }

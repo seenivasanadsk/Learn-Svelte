@@ -19,12 +19,17 @@
     if (cancel) cancel();
     else window.history.back();
   }
+
+  function conditionalEnhance(node, handler) {
+    if (!handler) return;
+    return enhance(node, handler);
+  }
 </script>
 
 <form
   class="bg-white dark:bg-amber-950/30 shadow-md rounded-md"
   {...props}
-  use:enhance={enhanceAction}
+  use:conditionalEnhance={enhanceAction}
 >
   <!-- Card Header -->
   <div

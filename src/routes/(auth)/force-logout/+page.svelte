@@ -4,26 +4,20 @@
   import { showToast } from '$lib/stores/toast';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores'; // Import page store
-  import { Eye } from 'lucide-svelte';
+  import { Eye, EyeClosed } from 'lucide-svelte';
 
   // Get URL parameters using $page store
   let username = $state($page.url.searchParams.get('username') || '');
 
-  const { data } = $props();
+  const { data, form } = $props();
   let showPassword = $state(false);
   let loading = $state(false);
   let autoFocus = username ? 'password' : 'username';
 
-  function handleForm() {
-    loading = true;
-    return async ({ result }) => {
-      loading = false;
-      if (result.type === 'redirect') {
-        await goto(result.location, { invalidateAll: true });
-      } else if (result.type === 'failure') {
-        showToast(result.data.message, 'danger');
-      }
-    };
+  if (form) showToast(form.message, 'danger');
+
+  function triggerFormSubmission(e) {
+    e?.target?.closest('form')?.querySelector('button[type=submit]')?.click();
   }
 </script>
 
@@ -34,7 +28,6 @@
     method="POST"
     autoComplete="off"
     submitButtonText={['Force Logout']}
-    enhance={handleForm}
     {loading}
   >
     <InputField
@@ -54,6 +47,7 @@
       suffix={Eye}
       caseMode="none"
       onSuffixClick={() => (showPassword = !showPassword)}
+      onEnter={triggerFormSubmission}
     />
   </Form>
 </div>
