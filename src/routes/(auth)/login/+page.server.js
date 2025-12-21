@@ -11,7 +11,7 @@ export async function load({ cookies }) {
 }
 
 export const actions = {
-  login: async ({ cookies, request }) => {
+  login: async ({ cookies, request, url }) => {
     const formData = await request.formData();
     const username = formData.get('username');
     const password = formData.get('password');
@@ -36,6 +36,6 @@ export const actions = {
     };
     cookies.set('SESSION', result.data.session, cookieOption);
     cookies.set('LAST_USERNAME', username, { maxAge, path: '/' });
-    throw redirect(303, '/');
+    throw redirect(303, url.searchParams.get('redirectTo') || '/');
   }
 };

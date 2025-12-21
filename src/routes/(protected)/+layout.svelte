@@ -1,10 +1,28 @@
 <!-- src/routes/(protected)/+layout.svelte -->
 
 <script>
-  const { children } = $props();
-  let isSidebarOpen = $state(true);
+  import { onMount } from 'svelte';
   import Sidebar from '$lib/components/Sidebar.svelte';
+  import { invalidateAll } from '$app/navigation';
   import { keyboardEventBus } from '$lib/utils/eventBus';
+
+  const { children, data } = $props();
+  let user = $state(data.user);
+  let isSidebarOpen = $state(true);
+  console.log(data);
+
+  // Update user when data changes
+  $effect(() => {
+    user = data.user;
+  });
+
+  // Check on mount if user is missing but should be logged in
+  onMount(async () => {
+    if (!user) {
+      // Try to re-fetch the data
+      await invalidateAll();
+    }
+  });
 
   function toggleSidebar() {
     isSidebarOpen = !isSidebarOpen;
@@ -44,6 +62,6 @@
     class:translate-x-0={isSidebarOpen}
     class:translate-x-full={!isSidebarOpen}
   >
-    <Sidebar {toggleSidebar} />
+    <Sidebar {toggleSidebar} {user} />
   </aside>
 </div>

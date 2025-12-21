@@ -1,10 +1,11 @@
 import { commonError } from '$lib/core/response';
-import { getUserByUsername } from '../users/user.repository';
+import { findUserById, getUserByUsername } from '../users/user.repository';
 import { verifyPassword } from './password';
 import {
   createSession,
   deleteSessionByTokenAndUserID,
   deleteSessionByUserId,
+  findSessionByToken,
   findSessionByUsername
 } from './session.repository';
 
@@ -96,4 +97,34 @@ export async function forceLogoutService(username, password) {
   return {
     success: true
   };
+}
+
+export async function verifySession(session) {
+  const [token, userId] = session.split('.');
+
+  if (!token || !userId) {
+    return commonError('Invalid Session', 400);
+  }
+
+  session = await findSessionByToken(token);
+
+  if (!session) {
+    return commonError('Session Not Found', 400);
+  }
+
+  if (session.userId != userId) {
+    return commonError('Wrong Session');
+  }
+
+  const user = await findUserById(userId);
+
+  if (!user) {
+    return commonError('User not found');
+  }
+
+  if (!user.isActive) {
+    return commonError('User is Deactivated');
+  }
+
+  return user;
 }

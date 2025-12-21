@@ -15,7 +15,7 @@
   import { goto } from '$app/navigation';
   import { keyboardEventBus } from '$lib/utils/eventBus';
 
-  const { toggleSidebar } = $props();
+  const { toggleSidebar, user } = $props();
 
   function navigate(url) {
     goto(url);
@@ -74,7 +74,7 @@
   <div class="border-t-2">
     <div class="text-xs text-center p-1">
       <span class="select-all">http://192.168.1.20:88888</span> <br />
-      <span>User: Admin</span> <br />
+      <span>User: {user?.username}</span> <br />
       <span>{env.PUBLIC_COMPANY_NAME}</span>
     </div>
   </div>

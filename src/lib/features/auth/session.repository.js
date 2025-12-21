@@ -40,3 +40,8 @@ export async function deleteSessionByUserId(userId) {
   const collection = await getCollection(COLLECTION_NAME);
   return await collection.deleteMany({ userId: new ObjectId(userId) });
 }
+
+export async function findSessionByToken(token) {
+  const collection = await getCollection(COLLECTION_NAME);
+  return await collection.findOne({ token });
+}

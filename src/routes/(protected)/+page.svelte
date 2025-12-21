@@ -80,7 +80,7 @@
     {#each menus as menu, index}
       <button
         on:click={() => goto(menu.route)}
-        class="flex flex-col items-center justify-center relative
+        class="flex flex-col items-center justify-center relative cursor-pointer
                rounded-md border-2 border-amber-400/70 hover:border-amber-600/70
                p-2 w-28 h-28 overflow-hidden
                backdrop-blur

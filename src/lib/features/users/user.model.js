@@ -9,6 +9,7 @@ export function userCreateModel(data, overridableData, seed = false) {
     lastLogin: null,
     lastAccess: null,
     lastPasswordReset: null,
+    lastLogout: null,
     createdAt: seed ? null : new Date(),
     createdBy: seed ? null : input.createdBy,
     updatedAt: null,

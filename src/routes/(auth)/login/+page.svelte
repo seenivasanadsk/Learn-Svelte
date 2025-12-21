@@ -6,7 +6,7 @@
   import { goto } from '$app/navigation';
   import { Eye } from 'lucide-svelte';
   import { browser } from '$app/environment';
-  import { getCookie, setCookie } from '$lib/core/clientCookie.js';
+  import { page } from '$app/stores'; // Import page store
 
   const { data } = $props();
   let showPassword = $state(false);
@@ -20,7 +20,7 @@
     return async ({ result }) => {
       loading = false;
       if (result.type === 'redirect') {
-        await goto(result.location, { invalidateAll: true });
+        await goto(result.location, { invalidateAll: true, replaceState: true });
       } else if (result.type === 'failure') {
         showToast(result.data.message, 'danger');
         if (result.data.message == 'User already Logged in') {
@@ -37,7 +37,7 @@
 <div class="pt-26 max-w-lg mx-auto">
   <Form
     title="Login"
-    action="?/login"
+    action={`?/login&redirectTo=${$page.url.searchParams.get('redirectTo') || '/'}`}
     method="POST"
     autoComplete="off"
     submitButtonText={['Login']}
