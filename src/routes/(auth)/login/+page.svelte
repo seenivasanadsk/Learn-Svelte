@@ -7,6 +7,7 @@
   import { Eye, EyeClosed } from 'lucide-svelte';
   import { browser } from '$app/environment';
   import { page } from '$app/stores'; // Import page store
+  import Button from '$lib/components/Button.svelte';
 
   const { data, form } = $props();
   let showPassword = $state(false);
@@ -53,5 +54,8 @@
       autoFocus={username === 'Admin'}
       onEnter={triggerFormSubmission}
     />
+    {#snippet extraButtons()}
+      <Button color="cyan" href="reset-request">Forget Password</Button>
+    {/snippet}
   </Form>
 </div>

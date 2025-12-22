@@ -1,25 +1,14 @@
 import { getCollection } from '$lib/core/db';
 import { ObjectId } from 'mongodb';
-import crypto from 'node:crypto';
+import { sessionCreateModel } from './session.model';
 
 export const COLLECTION_NAME = 'sessions';
 
 export async function createSession(user, maxAge) {
   const collection = await getCollection(COLLECTION_NAME);
-
-  const token = crypto.randomBytes(32).toString('hex');
-  const expiredOn = new Date(new Date().setSeconds(maxAge));
-
   await collection.deleteOne({ userId: user._id });
 
-  const sessionData = {
-    token,
-    userId: user._id,
-    username: user.username,
-    userRole: user.role,
-    createdAt: new Date(),
-    expiredOn
-  };
+  const sessionData = sessionCreateModel({}, { user, maxAge })
 
   const result = await collection.insertOne(sessionData);
 

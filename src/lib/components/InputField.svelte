@@ -138,7 +138,8 @@
 <div
   class={cn(
     'group inline-flex items-center border-2 border-gray-400 rounded-md font-semibold relative focus-within:border-amber-500 w-full mb-3 last:mb-0',
-    hasError && 'error'
+    hasError && 'error',
+    userClass
   )}
 >
   {#if prefix}

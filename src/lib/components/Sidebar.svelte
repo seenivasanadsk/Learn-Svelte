@@ -23,7 +23,7 @@
 
   keyboardEventBus.on('Alt+H', () => navigate('/'));
   keyboardEventBus.on('Alt+S', () => navigate('/settings'));
-  keyboardEventBus.on('Alt+L', () => navigate('/logout'));
+  keyboardEventBus.on('Alt+L', () => (window.location.href = '/logout')); // Logout needs full page reload
   keyboardEventBus.on('Alt+Q', () => navigate('/shutdown'));
 </script>
 
@@ -52,7 +52,8 @@
     </IconButton>
 
     <!-- Logout user -->
-    <IconButton title="Logout (Alt+L)" onclick={() => goto('/logout')}>
+    <IconButton title="Logout (Alt+L)" onclick={() => (window.location.href = '/logout')}>
+      <!-- Logout needs full page reload -->
       <LogOut />
     </IconButton>
 
@@ -74,7 +75,7 @@
   <div class="border-t-2">
     <div class="text-xs text-center p-1">
       <span class="select-all">http://192.168.1.20:88888</span> <br />
-      <span>User: {user?.username}</span> <br />
+      <span>User: <span class="font-bold">{user?.username}</span> </span> <br />
       <span>{env.PUBLIC_COMPANY_NAME}</span>
     </div>
   </div>
