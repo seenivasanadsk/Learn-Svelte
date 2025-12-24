@@ -28,7 +28,8 @@ export async function handle({ event, resolve }) {
   // 2. Verify session and set locals
   // --------------------------------------------------
   if (session) {
-    const user = await verifySession(session);
+    let result = await verifySession(session);
+    const user = result.data
 
     if (user) {
       event.locals.user = {

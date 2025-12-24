@@ -20,10 +20,8 @@ export const actions = {
     const result = await loginService(username, password, maxAge);
 
     // ❌ Expected error
-    if (!result.success) {
-      return fail(result.status, {
-        message: result.message
-      });
+    if (!result.ok) {
+      return fail(400, { message: result?.message || 'Enter Correct Details' });
     }
 
     // ✅ SUCCESS → REDIRECT

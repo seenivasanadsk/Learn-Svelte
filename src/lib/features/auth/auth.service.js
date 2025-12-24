@@ -1,4 +1,3 @@
-import { commonError } from '$lib/core/response';
 import { findUserById, getUserByUsername } from '../users/user.repository';
 import { verifyPassword } from './password';
 import {
@@ -11,92 +10,95 @@ import {
 
 export async function loginService(username, password, maxAge = 60 * 60 * 24 * 366) {
   if (!username || !password) {
-    return commonError('Username and password are required', 400);
+    return { message: 'Username and password are required', ok: false };
   }
 
   const user = await getUserByUsername(username);
 
   if (!user) {
-    return commonError('Invalid username or password', 401);
+    return { message: 'Invalid username or password', ok: false };
   }
 
   if (!user.isActive) {
-    return commonError('User is Deactivated', 401);
+    return { message: 'User is Deactivated', ok: false };
   }
 
   const isValid = await verifyPassword(user.hashedPassword, password);
 
   if (!isValid) {
-    return commonError('Invalid username or password', 401);
+    return { message: 'Invalid username or password', ok: false };
   }
 
   let session = await findSessionByUsername(username);
 
   if (session && session?.expiredOn > new Date()) {
-    return commonError('User already Logged in', 401);
+    return { message: 'User already Logged in', ok: false };
   }
 
   session = await createSession(user, maxAge);
 
   if (!session?.token) {
-    return commonError('Session Error Occured', 401);
+    return { message: 'Session Error Occured', ok: false };
   }
 
   return {
-    success: true,
+    ok: true,
     data: {
       session: `${session.token}.${user._id}`,
       user
-    }
+    },
+    message: "Login successful"
   };
 }
 
 export async function logoutService(storedSession) {
   if (!storedSession) {
-    return commonError('Session is Required', 400);
+    return { message: 'Session is Required', ok: false };
   }
 
   const [token, userId] = storedSession.split('.');
   const result = await deleteSessionByTokenAndUserID(token, userId);
 
   if (!result.acknowledged) {
-    return commonError('Session is Not Found', 401);
+    return { message: 'Session is Not Found', ok: false };
   }
 
   return {
-    success: true
+    ok: true,
+    message: 'Logout successful'
   };
 }
 
 export async function forceLogoutService(username, password) {
   if (!username || !password) {
-    return commonError('Username and password are required', 400);
+    return { message: 'Username and password are required', ok: false };
   }
 
   const user = await getUserByUsername(username);
 
   if (!user) {
-    return commonError('Invalid username or password', 401);
+    return { message: 'Invalid username or password', ok: false };
   }
 
   if (!user.isActive) {
-    return commonError('User is Deactivated', 401);
+    return { message: 'User is Deactivated', ok: false };
   }
 
   const isValid = await verifyPassword(user.hashedPassword, password);
 
   if (!isValid) {
-    return commonError('Invalid username or password', 401);
+    return { message: 'Invalid username or password', ok: false };
   }
 
   let result = await deleteSessionByUserId(user._id);
 
   if (!result.acknowledged) {
-    return commonError('Force Logout Faild', 401);
+    return { message: 'Force Logout Faild', ok: false };
   }
 
   return {
-    success: true
+    ok: true,
+    message: 'Force logout successful'
   };
 }
 
@@ -104,28 +106,38 @@ export async function verifySession(session) {
   const [token, userId] = session.split('.');
 
   if (!token || !userId) {
-    return commonError('Invalid Session', 400);
+    return { message: 'Invalid Session', ok: false };
   }
 
   session = await findSessionByToken(token);
 
   if (!session) {
-    return commonError('Session Not Found', 400);
+    return { message: 'Session Not Found', ok: false };
   }
 
   if (session.userId != userId) {
-    return commonError('Wrong Session');
+    return {
+      message: 'Wrong Session', ok: false
+    }
   }
 
   const user = await findUserById(userId);
 
   if (!user) {
-    return commonError('User not found');
+    return {
+      message: 'User not found', ok: false
+    }
   }
 
   if (!user.isActive) {
-    return commonError('User is Deactivated');
+    return {
+      message: 'User is Deactivated', ok: false
+    }
   }
 
-  return user;
+  return {
+    ok: true,
+    data: user,
+    message: "Verificaiton successful"
+  };
 }
