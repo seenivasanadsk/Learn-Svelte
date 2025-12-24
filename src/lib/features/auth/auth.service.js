@@ -1,3 +1,4 @@
+import { env } from '$env/dynamic/private';
 import { findUserById, getUserByUsername } from '../users/user.repository';
 import { verifyPassword } from './password';
 import {
@@ -8,7 +9,9 @@ import {
   findSessionByUsername
 } from './session.repository';
 
-export async function loginService(username, password, maxAge = 60 * 60 * 24 * 366) {
+export async function loginService(username, password) {
+  const maxAge = env.SESSION_MAX_AGE || (60 * 60 * 24) // 1 days in sesconds
+
   if (!username || !password) {
     return { message: 'Username and password are required', ok: false };
   }
