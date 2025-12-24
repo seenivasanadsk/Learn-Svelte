@@ -1,7 +1,0 @@
-routes        - controllers only
-models        - schemas, DTOs only
-repositories  - Data access (DAL)
-services      - Business logics
-mappers       - Data transformation
-validators    - Zod/Yup validation
-lib           - library and utility
