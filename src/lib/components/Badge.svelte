@@ -1,6 +1,4 @@
 <script>
-  import cn from '$lib/utils/cn';
-
   const { children, color = 'accent', class: userClass = '', prefix, suffix, ...props } = $props();
 
   const colorStyles = {
@@ -13,7 +11,7 @@
   };
 </script>
 
-<div class="font-semibold rounded-md px-2 py-1 {cn(colorStyles[color], userClass)}" {...props}>
+<div class="font-semibold rounded-md px-2 py-1 {colorStyles[color]} {userClass}" {...props}>
   {#if prefix}
     {@const Prefix = prefix}
     <Prefix class="inline-block mr-1" />

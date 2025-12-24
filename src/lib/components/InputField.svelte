@@ -1,6 +1,5 @@
 <script>
   import { PlusCircle, Loader2Icon } from 'lucide-svelte';
-  import cn from '$lib/utils/cn';
   import stringCase from '$lib/utils/stringCase';
 
   const dummyFunction = () => {};
@@ -136,21 +135,17 @@
 </script>
 
 <div
-  class={cn(
-    'group inline-flex items-center border-2 border-gray-400 rounded-md font-semibold relative focus-within:border-amber-500 w-full mb-3 last:mb-0',
-    hasError && 'error',
-    userClass
-  )}
+  class="group inline-flex items-center border-2 border-gray-400 rounded-md font-semibold relative
+  focus-within:border-amber-500 w-full mb-3 last:mb-0
+  {hasError && 'error'} {userClass}"
 >
   {#if prefix}
     <span
       role="button"
-      class={cn(
-        'p-1 border-r-2 text-gray-400 *:inline-block group-focus-within:text-amber-500 border-gray-400 group-focus-within:border-amber-500',
-        hasError && 'border-red-500 group-focus-within:border-red-500',
-        hasError && 'text-red-500 group-focus-within:text-red-500',
-        onPrefixClick != dummyFunction && 'hover:text-amber-500 cursor-pointer'
-      )}
+      class="p-1 border-r-2 text-gray-400 *:inline-block group-focus-within:text-amber-500 border-gray-400 group-focus-within:border-amber-500
+        {hasError && 'border-red-500 group-focus-within:border-red-500'}
+        {hasError && 'text-red-500 group-focus-within:text-red-500'}
+        {onPrefixClick != dummyFunction && 'hover:text-amber-500 cursor-pointer'}"
       onmousedown={onPrefixClick}
       tabindex="ignore"
     >
@@ -173,12 +168,10 @@
   {#if suffix}
     <span
       role="button"
-      class={cn(
-        'p-1 border-l-2 text-gray-400 *:inline-block group-focus-within:text-amber-500 border-gray-400 group-focus-within:border-amber-500',
-        hasError && 'border-red-500 group-focus-within:border-red-500',
-        hasError && 'text-red-500 group-focus-within:text-red-500',
-        onSuffixClick != dummyFunction && 'hover:text-amber-500 cursor-pointer'
-      )}
+      class="p-1 border-l-2 text-gray-400 *:inline-block group-focus-within:text-amber-500 border-gray-400 group-focus-within:border-amber-500'
+        {hasError && 'border-red-500 group-focus-within:border-red-500'}
+        {hasError && 'text-red-500 group-focus-within:text-red-500'}
+        {onSuffixClick != dummyFunction && 'hover:text-amber-500 cursor-pointer'}"
       onmousedown={onSuffixClick}
       tabindex="ignore"
     >
@@ -196,10 +189,8 @@
             role="option"
             aria-selected={selectedOptionIndex == index ? 'true' : 'false'}
             data-option-index={index}
-            class={cn(
-              'p-1 hover:bg-gray-300 dark:hover:bg-gray-700',
-              selectedOptionIndex == index && 'bg-gray-200 dark:bg-amber-950'
-            )}
+            class="p-1 hover:bg-gray-300 dark:hover:bg-gray-700
+            {selectedOptionIndex == index && 'bg-gray-200 dark:bg-amber-950'}"
             onmousedown={(e) => handleOptionClick(e, index)}
             tabindex="0"
           >

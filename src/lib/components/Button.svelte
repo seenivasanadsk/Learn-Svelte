@@ -1,6 +1,4 @@
 <script>
-  import cn from '$lib/utils/cn';
-
   // -------------------------------------
   // Props
   // -------------------------------------
@@ -56,25 +54,15 @@
   // -------------------------------------
   // Derived values
   // -------------------------------------
-  const className = $derived(
-    cn(baseClass, colorStyles[color], sizeStyles[size], radiusStyles[radius || size], userClass)
-  );
-
   const iconSize = $derived(size === 'sm' ? 15 : size === 'md' ? 20 : size === 'lg' ? 25 : 20);
 
   // Margin spacing based on size
-  const prefixClass = $derived(
-    cn(
-      size === 'sm' ? 'mr-1' : size === 'md' ? 'mr-2' : size === 'lg' ? 'mr-3' : 'mr-2',
-      'inline-block'
-    )
+  const prefixClassSize = $derived(
+    size === 'sm' ? 'mr-1' : size === 'md' ? 'mr-2' : size === 'lg' ? 'mr-3' : 'mr-2'
   );
 
-  const suffixClass = $derived(
-    cn(
-      size === 'sm' ? 'ml-1' : size === 'md' ? 'ml-2' : size === 'lg' ? 'ml-3' : 'ml-2',
-      'inline-block'
-    )
+  const suffixClassSize = $derived(
+    size === 'sm' ? 'ml-1' : size === 'md' ? 'ml-2' : size === 'lg' ? 'ml-3' : 'ml-2'
   );
 </script>
 
@@ -84,32 +72,43 @@
 
 {#if href}
   <!-- Anchor Button -->
-  <a {href} class={className} {...props}>
+  <a
+    {href}
+    class="{baseClass} {colorStyles[color]} {sizeStyles[size]}
+    {radiusStyles[radius || size]} {userClass}"
+    {...props}
+  >
     {#if prefix}
       {@const Prefix = prefix}
-      <Prefix class={prefixClass} size={iconSize} />
+      <Prefix class="inline-block {prefixClassSize}" size={iconSize} />
     {/if}
 
     {@render children()}
 
     {#if suffix}
       {@const Suffix = suffix}
-      <Suffix class={suffixClass} size={iconSize} />
+      <Suffix class="inline-block {suffixClassSize}" size={iconSize} />
     {/if}
   </a>
 {:else}
   <!-- Normal Button -->
-  <button class={className} {onclick} {type} {...props}>
+  <button
+    class="{baseClass} {colorStyles[color]} {sizeStyles[size]}
+    {radiusStyles[radius || size]} {userClass}"
+    {onclick}
+    {type}
+    {...props}
+  >
     {#if prefix}
       {@const Prefix = prefix}
-      <Prefix class={prefixClass} size={iconSize} />
+      <Prefix class="inline-block {prefixClassSize}" size={iconSize} />
     {/if}
 
     {@render children()}
 
     {#if suffix}
       {@const Suffix = suffix}
-      <Suffix class={suffixClass} size={iconSize} />
+      <Suffix class="inline-block {suffixClassSize}" size={iconSize} />
     {/if}
   </button>
 {/if}

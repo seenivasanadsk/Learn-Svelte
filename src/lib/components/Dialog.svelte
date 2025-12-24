@@ -1,6 +1,4 @@
 <script>
-  import cn from '$lib/utils/cn';
-
   const { class: userClass = '', trigger, content } = $props();
 
   let open = $state(false);
@@ -35,10 +33,7 @@
   {#if open}
     <div class="absolute bg-black/40 w-dvw h-dvh inset-0 z-20">
       <div
-        class={cn(
-          'bg-white min-w-md absolute top-10 left-1/2 -translate-x-1/2 rounded overflow-auto',
-          userClass
-        )}
+        class="bg-white min-w-md absolute top-10 left-1/2 -translate-x-1/2 rounded overflow-auto {userClass}"
       >
         {@render content({ toggle, show, hide, open })}
       </div>
