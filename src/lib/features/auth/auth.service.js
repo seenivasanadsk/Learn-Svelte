@@ -3,6 +3,7 @@ import { findUserById, getUserByUsername } from '../users/user.repository';
 import { verifyPassword } from './password';
 import {
   createSession,
+  deleteSessionByToken,
   deleteSessionByTokenAndUserID,
   deleteSessionByUserId,
   findSessionByToken,
@@ -118,6 +119,11 @@ export async function verifySession(session) {
     return { message: 'Session Not Found', ok: false };
   }
 
+  if (session.expiredOn < new Date()) {
+    await deleteSessionByToken(token)
+    return { message: 'Session Expired', ok: false }
+  }
+
   if (session.userId != userId) {
     return {
       message: 'Wrong Session', ok: false
@@ -127,12 +133,14 @@ export async function verifySession(session) {
   const user = await findUserById(userId);
 
   if (!user) {
+    await deleteSessionByToken(token)
     return {
       message: 'User not found', ok: false
     }
   }
 
   if (!user.isActive) {
+    await deleteSessionByToken(token)
     return {
       message: 'User is Deactivated', ok: false
     }

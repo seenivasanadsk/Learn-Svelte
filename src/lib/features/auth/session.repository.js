@@ -30,6 +30,11 @@ export async function deleteSessionByUserId(userId) {
   return await collection.deleteMany({ userId: new ObjectId(userId) });
 }
 
+export async function deleteSessionByToken(token) {
+  const collection = await getCollection(COLLECTION_NAME);
+  return await collection.deleteOne({ token });
+}
+
 export async function findSessionByToken(token) {
   const collection = await getCollection(COLLECTION_NAME);
   return await collection.findOne({ token });

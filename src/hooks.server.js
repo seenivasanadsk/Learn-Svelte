@@ -29,20 +29,26 @@ export async function handle({ event, resolve }) {
   // --------------------------------------------------
   if (session) {
     let result = await verifySession(session);
-    const user = result.data
 
-    if (user) {
-      event.locals.user = {
-        id: user._id.toString(),
-        role: user.role,
-        username: user.username,
-        settings: user.settings
-      };
+    if (result.ok) {
+      const user = result.data
+      if (user) {
+        event.locals.user = {
+          id: user._id.toString(),
+          role: user.role,
+          username: user.username,
+          settings: user.settings
+        };
+      } else {
+        event.cookies.delete('SESSION', { path: '/' });
+        event.locals.user = null;
+      }
     } else {
       event.cookies.delete('SESSION', { path: '/' });
       event.locals.user = null;
     }
   } else {
+    event.cookies.delete('SESSION', { path: '/' });
     event.locals.user = null;
   }
 
