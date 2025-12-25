@@ -10,8 +10,8 @@ export const actions = {
     const result = await forceLogoutService(username, password);
 
     // ❌ Expected error
-    if (!result.success) {
-      return fail(result.status, {
+    if (!result?.ok) {
+      return fail(400, {
         message: result.message
       });
     }

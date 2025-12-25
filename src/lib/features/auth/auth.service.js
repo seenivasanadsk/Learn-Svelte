@@ -1,6 +1,8 @@
 import { env } from '$env/dynamic/private';
-import { findUserById, getUserByUsername } from '../users/user.repository';
+import { getUserById, getUserByUsername } from '../users/user.repository';
 import { verifyPassword } from './password';
+import { resetRequestCreateModel } from './resetRequest.model';
+import { createResetRequest, findResetRequestByStatus } from './resetRequest.repository';
 import {
   createSession,
   deleteSessionByToken,
@@ -130,7 +132,7 @@ export async function verifySession(session) {
     }
   }
 
-  const user = await findUserById(userId);
+  const user = await getUserById(userId);
 
   if (!user) {
     await deleteSessionByToken(token)
@@ -151,4 +153,46 @@ export async function verifySession(session) {
     data: user,
     message: "Verificaiton successful"
   };
+}
+
+
+// -------------------------------------
+//  Reset Request Related Services
+// -------------------------------------
+
+export async function upsertResetRequestService(username) {
+  if (!username) {
+    return { message: 'Username is required', ok: false }
+  }
+
+  const exsitingNewResetReqeust = await findResetRequestByStatus('NEW')
+  if (exsitingNewResetReqeust?._id) {
+    return { message: 'Reset Request Already Requested', ok: false }
+  }
+
+  const user = await getUserByUsername(username)
+
+  if (!user) {
+    return { message: 'User not exist', ok: false }
+  }
+
+  if (!user.isActive) {
+    return { message: 'User Deactivated', ok: false }
+  }
+
+  const resetRequest = resetRequestCreateModel(user)
+  const result = await createResetRequest(resetRequest)
+
+  if (!result.acknowledged) {
+    return { message: 'Reset request not created', ok: false }
+  }
+
+  return {
+    ok: true,
+    message: 'Reset Request Created'
+  };
+}
+
+export async function getActiveResetRequest() {
+  return await findResetRequestByStatus('NEW');
 }

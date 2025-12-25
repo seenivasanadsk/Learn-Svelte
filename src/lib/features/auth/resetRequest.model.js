@@ -1,3 +1,5 @@
+import { serializeDoc } from "$lib/utils/serializer";
+
 export const ALLOWED_UPDATE_FIELDS = ['username', 'role', 'isActive'];
 
 export function resetRequestCreateModel(data, overridableData) {
@@ -11,4 +13,8 @@ export function resetRequestCreateModel(data, overridableData) {
     cancelledAt: null,
     cancelledBy: null
   }
+}
+
+export function resetRequestSerializer(resetRequest) {
+  return serializeDoc(resetRequest)
 }

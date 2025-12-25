@@ -5,7 +5,7 @@ export async function load({ cookies, locals }) {
   const session = cookies.get('SESSION');
   const result = await logoutService(session);
 
-  if (result) {
+  if (result?.ok) {
     cookies.delete('SESSION', { path: '/' });
     locals.user = null;
 

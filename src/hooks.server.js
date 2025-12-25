@@ -75,7 +75,7 @@ export async function handle({ event, resolve }) {
   if (!isPublicRoute && !event.locals.user) {
     if (path === '/') {
       throw redirect(303, `/login`);
-    } else if (path !== '/login') {
+    } else if (path !== '/login' && !isAuthRoute) {
       const fullPath = path + url.search;
       throw redirect(303, `/login?redirectTo=${encodeURIComponent(fullPath)}`);
     }

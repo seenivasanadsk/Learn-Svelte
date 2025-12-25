@@ -15,7 +15,7 @@ export async function getUserByUsername(username) {
   return await collection.findOne({ username: username });
 }
 
-export async function findUserById(userId) {
+export async function getUserById(userId) {
   const collection = await getCollection(COLLECTION_NAME);
   return await collection.findOne({ _id: new ObjectId(userId) });
 }

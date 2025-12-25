@@ -15,9 +15,8 @@ export const actions = {
     const formData = await request.formData();
     const username = formData.get('username');
     const password = formData.get('password');
-    const maxAge = 60 * 60 * 24 * 366;
 
-    const result = await loginService(username, password, maxAge);
+    const result = await loginService(username, password);
 
     // ❌ Expected error
     if (!result.ok) {
@@ -30,10 +29,10 @@ export const actions = {
       httpOnly: true, // JS can't access
       sameSite: 'strict', // CSRF protection
       secure: true, // HTTPS only (use false in dev if needed)
-      maxAge
+      maxAge: 60 * 60 * 25 * 366 // Store cookies in maxAge in seconds (1year)
     };
     cookies.set('SESSION', result.data.session, cookieOption);
-    cookies.set('LAST_USERNAME', username, { maxAge, path: '/' });
+    cookies.set('LAST_USERNAME', username, cookieOption);
     throw redirect(303, url.searchParams.get('redirectTo') || '/');
   }
 };

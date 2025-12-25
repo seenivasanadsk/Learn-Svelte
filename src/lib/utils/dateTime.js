@@ -196,3 +196,7 @@ export function getFormattedDate(date = new Date()) {
 export function getFormattedTime(date = new Date()) {
   return formatDateTime('HH:II AA', date);
 }
+
+export function getFormattedTimeStamp(date = new Date()) {
+  return formatDateTime('DD-MM-YY HH:II AA', date);
+}

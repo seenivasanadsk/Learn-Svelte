@@ -1,18 +1,27 @@
 <script>
+  import { invalidate } from '$app/navigation';
   import Badge from '$lib/components/Badge.svelte';
   import Button from '$lib/components/Button.svelte';
   import Form from '$lib/components/Form.svelte';
   import InputField from '$lib/components/InputField.svelte';
   import { showToast } from '$lib/stores/toast.js';
+  import { getFormattedTime } from '$lib/utils/dateTime.js';
   import { CircleCheck, Eye, EyeClosed, Hourglass, ShieldCheck } from 'lucide-svelte';
 
   let showPassword = $state(false);
+  let approvingIndex = $state(null);
+
   const { data } = $props();
+  const { resetRequest, currentUser, users, approverCount } = data;
+
+  const alredyExisit = !!resetRequest?._id;
+  let username = $state(resetRequest?.username || '');
 
   function handleForm() {
     return async function ({ result }) {
       if (result?.data?.message) {
         showToast(result?.data?.message, result.type == 'success' ? 'success' : 'danger');
+        await invalidate();
       }
     };
   }
@@ -49,41 +58,49 @@
     {/snippet}
     <InputField
       placeholder="Select Username"
-      options={data.users}
+      options={users || []}
       autoFocus
       name="username"
+      disabled={alredyExisit}
+      bind:value={username}
       silent={true}
     />
 
-    {#if !1}
+    {#if alredyExisit && data.resetRequest?.userId}
       {@render divider('&#9312;', 'Reset Requested')}
-      <div
-        class="border-2 rounded-md inline-flex w-full items-center justify-between p-2 border-gray-400 mb-3"
-      >
-        <div class="flex flex-col">
-          <span>Approver 1</span>
-          <!-- <span class="text-xs font-medium">Approve to reset password</span> -->
-          <!-- <span class="text-xs font-medium">Waiting for approval...</span> -->
-          <span class="text-xs font-medium">{new Date().toLocaleString()}</span>
+      {#each Array(approverCount) as _, i}
+        {@const approver = resetRequest.approver[i] || null}
+        <div
+          class="border-2 rounded-md inline-flex w-full items-center justify-between p-2 border-gray-400 mb-3"
+        >
+          <div class="flex flex-col">
+            <span>
+              {approver?.username || 'Not Approved'}
+            </span>
+            <span class="text-xs font-medium">
+              {(approver?.approvedAt && getFormattedTime(approver?.approvedAt)) ||
+                (currentUser ? 'Approve to reset password' : 'Waiting for approval...')}
+            </span>
+          </div>
+          <span>
+            {#if approver?.username}
+              <Badge color="success" prefix={ShieldCheck}>Approved</Badge>
+            {:else if currentUser}
+              <input
+                type="hidden"
+                name={`approver[${i}][username]`}
+                bind:value={approver.username}
+              />
+              <input type="hidden" name={`approver[${i}][userId]`} bind:value={approver.userId} />
+              <Button prefix={CircleCheck} color="primary" onclick={() => handleApprove(i)}>
+                Approve
+              </Button>
+            {:else}
+              <Badge prefix={Hourglass}>Waiting...</Badge>
+            {/if}
+          </span>
         </div>
-        <span>
-          <!-- <Badge prefix={Hourglass}>Waiting...</Badge> -->
-          <Badge color="success" prefix={ShieldCheck}>Approved</Badge>
-          <!-- <Button prefix={CircleCheck} color="primary">Approve</Button> -->
-        </span>
-      </div>
-      <div
-        class="border-2 rounded-md inline-flex w-full items-center justify-between p-2 border-gray-400 mb-3"
-      >
-        <div class="flex flex-col">
-          <span>Guna</span>
-          <span class="text-xs font-medium">Approve to reset password</span>
-          <!-- <span class="text-xs font-medium">Waiting for approval...</span> -->
-        </div>
-        <span>
-          <Button prefix={CircleCheck} color="primary">Approve</Button>
-        </span>
-      </div>
+      {/each}
     {/if}
 
     {#if !1}
