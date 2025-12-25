@@ -2,7 +2,7 @@ import { verifySession } from '$lib/features/auth/auth.service';
 import { redirect } from '@sveltejs/kit';
 
 // Public routes (no authentication required)
-const PUBLIC_ROUTES = ['/login', '/logout', '/force-logout', '/reset-request'];
+const PUBLIC_ROUTES = ['/reset-request'];
 
 // Auth routes (only accessible when NOT logged in)
 const AUTH_ROUTES = ['/login', '/force-logout'];
@@ -60,55 +60,34 @@ export async function handle({ event, resolve }) {
       route === path ||
       (route.endsWith('*') && path.startsWith(route.slice(0, -1)))
   );
-
   const isAuthRoute = AUTH_ROUTES.includes(path);
 
   // --------------------------------------------------
-  // 4. redirectTo handling
+  // 4. Make stay logged users in home page when access login page
   // --------------------------------------------------
-  let redirectTo = url.searchParams.get('redirectTo');
-
-  if (redirectTo && redirectTo.includes('__data.json')) {
-    url.searchParams.delete('redirectTo');
-    throw redirect(303, url.pathname + url.search);
-  }
-
-  if (redirectTo && !redirectTo.startsWith('/')) {
-    redirectTo = '/';
+  if (event.locals.user && isAuthRoute) {
+    throw redirect(303, '/');
   }
 
   // --------------------------------------------------
-  // 5. HARD BLOCK: logged-in users on login
-  // --------------------------------------------------
-  if (event.locals.user && path === '/login') {
-    throw redirect(303, redirectTo || '/');
-  }
-
-  // --------------------------------------------------
-  // 6. Redirect logic
+  // 5. Redirect to login page when user not logged in
   // --------------------------------------------------
   if (!isPublicRoute && !event.locals.user) {
-    if (path !== '/login' && path !== '/logout') {
+    if (path === '/') {
+      throw redirect(303, `/login`);
+    } else if (path !== '/login') {
       const fullPath = path + url.search;
       throw redirect(303, `/login?redirectTo=${encodeURIComponent(fullPath)}`);
     }
   }
 
-  if (isAuthRoute && event.locals.user && path !== '/logout') {
-    const safeRedirectTo = redirectTo || '/';
-
-    if (safeRedirectTo !== path && safeRedirectTo !== '/login') {
-      throw redirect(303, safeRedirectTo);
-    }
-  }
-
   // --------------------------------------------------
-  // 7. Resolve request
+  // 6. Resolve request
   // --------------------------------------------------
   const response = await resolve(event);
 
   // --------------------------------------------------
-  // 🔒 8. NO-CACHE HEADERS (HTML ONLY)
+  // 🔒 7. NO-CACHE HEADERS (HTML ONLY)
   // --------------------------------------------------
   const contentType = response.headers.get('content-type');
 
