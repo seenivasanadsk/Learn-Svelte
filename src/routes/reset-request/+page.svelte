@@ -1,4 +1,5 @@
 <script>
+  import { tick } from 'svelte';
   import { invalidate } from '$app/navigation';
   import Badge from '$lib/components/Badge.svelte';
   import Button from '$lib/components/Button.svelte';
@@ -10,20 +11,40 @@
 
   let showPassword = $state(false);
   let approvingIndex = $state(null);
+  let formElementRef = $state(null);
 
   const { data } = $props();
-  const { resetRequest, currentUser, users, approverCount } = data;
+  const resetRequest = $derived(data.resetRequest);
+  const currentUser = $derived(data.currentUser);
+  const users = $derived(data.users);
+  const approverCount = $derived(data.approverCount);
 
-  const alredyExisit = !!resetRequest?._id;
-  let username = $state(resetRequest?.username || '');
+  let username = $state('');
+  let status = $state('INIT');
 
-  function handleForm() {
-    return async function ({ result }) {
+  console.log(resetRequest);
+
+  $effect(() => {
+    username = resetRequest?.username ?? '';
+    status = resetRequest?.status ?? 'INIT';
+  });
+
+  async function handleForm({ formData }) {
+    const data = Object.fromEntries(formData.entries());
+    console.log(data);
+    return async ({ result }) => {
+      approvingIndex = null;
       if (result?.data?.message) {
-        showToast(result?.data?.message, result.type == 'success' ? 'success' : 'danger');
-        await invalidate();
+        showToast(result.data.message, result.type === 'success' ? 'success' : 'danger');
       }
+      await invalidate('reset-request:data');
     };
+  }
+
+  async function handleApprovingIndex(e, i) {
+    approvingIndex = i;
+    await tick();
+    e?.target?.closest('form')?.querySelector('button[type=submit]')?.click();
   }
 </script>
 
@@ -48,6 +69,7 @@
     action="?/resetRequest"
     enhance={handleForm}
     autocomplete="off"
+    hideSubmitButton={status == 'NEW'}
   >
     {#snippet description()}
       <ol class="my-2 text-amber-600 list-decimal list-outside ml-5" type="1">
@@ -56,20 +78,21 @@
         <li>After approved by other users, you can create new password.</li>
       </ol>
     {/snippet}
+    <input type="hidden" name="status" value={status} />
     <InputField
       placeholder="Select Username"
       options={users || []}
       autoFocus
       name="username"
-      disabled={alredyExisit}
+      readonly={status != 'INIT'}
       bind:value={username}
       silent={true}
     />
 
-    {#if alredyExisit && data.resetRequest?.userId}
+    {#if status == 'NEW'}
       {@render divider('&#9312;', 'Reset Requested')}
       {#each Array(approverCount) as _, i}
-        {@const approver = resetRequest.approver[i] || null}
+        {@const approver = resetRequest?.approver[i] || {}}
         <div
           class="border-2 rounded-md inline-flex w-full items-center justify-between p-2 border-gray-400 mb-3"
         >
@@ -86,14 +109,15 @@
             {#if approver?.username}
               <Badge color="success" prefix={ShieldCheck}>Approved</Badge>
             {:else if currentUser}
-              <input
-                type="hidden"
-                name={`approver[${i}][username]`}
-                bind:value={approver.username}
-              />
-              <input type="hidden" name={`approver[${i}][userId]`} bind:value={approver.userId} />
-              <Button prefix={CircleCheck} color="primary" onclick={() => handleApprove(i)}>
-                Approve
+              {#if approvingIndex == i}
+                <input type="hidden" name="approvingIndex" value={i} />
+              {/if}
+              <Button
+                prefix={CircleCheck}
+                color="primary"
+                onclick={(e) => handleApprovingIndex(e, i)}
+              >
+                {approvingIndex == i ? 'Approving...' : 'Approve'}
               </Button>
             {:else}
               <Badge prefix={Hourglass}>Waiting...</Badge>

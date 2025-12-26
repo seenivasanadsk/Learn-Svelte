@@ -1,9 +1,11 @@
-import { getActiveResetRequest, upsertResetRequestService } from "$lib/features/auth/auth.service.js";
+import { approveResetRequestService, createResetRequestService, getActiveResetRequest } from "$lib/features/auth/auth.service.js";
 import { resetRequestSerializer } from "$lib/features/auth/resetRequest.model.js";
 import { getAllUsernames } from "$lib/features/users/user.repository";
 import { fail } from "@sveltejs/kit";
 
-export async function load({ locals }) {
+export async function load({ locals, depends }) {
+  depends('reset-request:data');
+
   const currentUser = locals?.user;
 
   let resetRequest = await getActiveResetRequest();
@@ -19,14 +21,16 @@ export async function load({ locals }) {
 }
 
 export const actions = {
-  resetRequest: async ({ request }) => {
-    const formData = await request.formData();
-    const action = formData.get('action');
+  resetRequest: async ({ request, locals }) => {
+    const currentUser = locals?.user;
 
-    // 🟢 CREATE RESET REQUEST
-    if (!action) {
+    const formData = await request.formData();
+    const status = formData.get('status');
+
+    // INIT status makes NEW
+    if (status === 'INIT') {
       const username = formData.get('username');
-      const result = await upsertResetRequestService(username);
+      const result = await createResetRequestService(username);
 
       if (!result?.ok) {
         return fail(400, { message: result.message });
@@ -35,21 +39,10 @@ export const actions = {
       return result;
     }
 
-    // 🟢 APPROVE RESET REQUEST
-    if (action === 'approve') {
-      const index = Number(formData.get('approverIndex'));
-
-      const approver = {
-        userId: formData.get('approverUserId'),
-        username: formData.get('approverUsername'),
-        approvedAt: new Date()
-      };
-
-      const result = await upsertResetRequestService(null, {
-        approve: true,
-        index,
-        approver
-      });
+    if (status === 'NEW') {
+      const index = Number(formData.get('approvingIndex'));
+      const approver = { id: currentUser?.id, username: currentUser?.username, approvedAt: new Date() }
+      const result = approveResetRequestService(approver, 'WAITING', index)
 
       if (!result?.ok) {
         return fail(400, { message: result.message });

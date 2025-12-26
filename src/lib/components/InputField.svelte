@@ -24,6 +24,7 @@
     placeholder = '',
     onEnter = () => {},
     disabled = false,
+    readonly = false,
     textAlign = 'left',
     type = 'text',
     ...props
@@ -138,7 +139,7 @@
 <div
   class="group inline-flex items-center border-2 border-gray-400 rounded-md font-semibold relative
   focus-within:border-amber-500 w-full mb-3 last:mb-0
-  {disabled && 'bg-gray-100 dark:bg-gray-800'}
+  {(disabled || readonly) && 'bg-gray-100 dark:bg-gray-800'}
   {hasError && 'error'} {userClass}"
 >
   {#if prefix}
@@ -164,6 +165,7 @@
     onfocus={() => (showOptions = !silent)}
     onblur={handleOnBlur}
     {disabled}
+    {readonly}
     {type}
     {...props}
   />

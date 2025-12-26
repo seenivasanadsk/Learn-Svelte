@@ -1,8 +1,8 @@
 import { env } from '$env/dynamic/private';
-import { getUserById, getUserByUsername } from '../users/user.repository';
+import { getAllUsernames, getUserById, getUserByUsername } from '../users/user.repository';
 import { verifyPassword } from './password';
 import { resetRequestCreateModel } from './resetRequest.model';
-import { createResetRequest, findResetRequestByStatus } from './resetRequest.repository';
+import { createResetRequest, getOpenResetRequestByStatus, updateResetRequest } from './resetRequest.repository';
 import {
   createSession,
   deleteSessionByToken,
@@ -160,12 +160,12 @@ export async function verifySession(session) {
 //  Reset Request Related Services
 // -------------------------------------
 
-export async function upsertResetRequestService(username) {
+export async function createResetRequestService(username) {
   if (!username) {
     return { message: 'Username is required', ok: false }
   }
 
-  const exsitingNewResetReqeust = await findResetRequestByStatus('NEW')
+  const exsitingNewResetReqeust = await getOpenResetRequestByStatus()
   if (exsitingNewResetReqeust?._id) {
     return { message: 'Reset Request Already Requested', ok: false }
   }
@@ -194,5 +194,40 @@ export async function upsertResetRequestService(username) {
 }
 
 export async function getActiveResetRequest() {
-  return await findResetRequestByStatus('NEW');
+  return await getOpenResetRequestByStatus();
+}
+
+export async function approveResetRequestService(approver, STATUS, index) {
+  const exsitingNewResetReqeust = await getOpenResetRequestByStatus()
+
+  if (!exsitingNewResetReqeust?._id) {
+    return { message: 'Reset Request not exist', ok: false }
+  }
+
+  if (exsitingNewResetReqeust.approver[index]?.userId) {
+    return { message: 'Already approved', ok: false }
+  }
+
+  exsitingNewResetReqeust.approver[index] = approver
+
+  const activeUsers = await getAllUsernames();
+  const users = activeUsers.map(u => u.username);
+
+  let approverCount = users.filter(u => u !== exsitingNewResetReqeust?.username).length;
+  approverCount = approverCount >= 2 ? 2 : 1;
+
+  const approvedCount = exsitingNewResetReqeust.approver.filter(a => a?.username).length
+
+  exsitingNewResetReqeust.status = approvedCount == approverCount ? 'APROVED' : 'WAITING'
+
+  const { _id, ...resetRequest } = exsitingNewResetReqeust
+
+  const result = await updateResetRequest(resetRequest, _id)
+
+  if (!result.acknowledged) {
+    return { message: 'Reset Request not Updated', ok: false }
+  }
+
+  return { ok: true, data: await getOpenResetRequestByStatus() }
+
 }

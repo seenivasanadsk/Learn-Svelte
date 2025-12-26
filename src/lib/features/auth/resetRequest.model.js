@@ -7,7 +7,7 @@ export function resetRequestCreateModel(data, overridableData) {
   return {
     username: input.username,
     userId: input._id,
-    status: 'NEW', // [NEW, PROCESSING, APROVED, FINISHED, CANCELED]
+    status: 'NEW', // [NEW, WAITING, APROVED, FINISHED, REJECTED]
     approver: [], // {id, username, approvedAt}
     createdAt: new Date(),
     cancelledAt: null,

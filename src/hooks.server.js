@@ -13,13 +13,6 @@ export async function handle({ event, resolve }) {
   const path = url.pathname;
 
   // --------------------------------------------------
-  // 0. Skip JSON / data requests
-  // --------------------------------------------------
-  if (path.includes('/__data.json') || path.includes('.json')) {
-    return await resolve(event);
-  }
-
-  // --------------------------------------------------
   // 1. Extract session from cookies
   // --------------------------------------------------
   const session = event.cookies.get('SESSION');
@@ -53,7 +46,14 @@ export async function handle({ event, resolve }) {
   }
 
   // --------------------------------------------------
-  // 3. Route classification
+  // 3. Skip JSON / data requests
+  // --------------------------------------------------
+  if (path.includes('/__data.json') || path.includes('.json')) {
+    return await resolve(event);
+  }
+
+  // --------------------------------------------------
+  // 4. Route classification
   // --------------------------------------------------
   const isPublicRoute = PUBLIC_ROUTES.some(
     (route) =>
@@ -63,14 +63,14 @@ export async function handle({ event, resolve }) {
   const isAuthRoute = AUTH_ROUTES.includes(path);
 
   // --------------------------------------------------
-  // 4. Make stay logged users in home page when access login page
+  // 5. Make stay logged users in home page when access login page
   // --------------------------------------------------
   if (event.locals.user && isAuthRoute) {
     throw redirect(303, '/');
   }
 
   // --------------------------------------------------
-  // 5. Redirect to login page when user not logged in
+  // 6. Redirect to login page when user not logged in
   // --------------------------------------------------
   if (!isPublicRoute && !event.locals.user) {
     if (path === '/') {
@@ -82,12 +82,12 @@ export async function handle({ event, resolve }) {
   }
 
   // --------------------------------------------------
-  // 6. Resolve request
+  // 7. Resolve request
   // --------------------------------------------------
   const response = await resolve(event);
 
   // --------------------------------------------------
-  // 🔒 7. NO-CACHE HEADERS (HTML ONLY)
+  // 🔒 8. NO-CACHE HEADERS (HTML ONLY)
   // --------------------------------------------------
   const contentType = response.headers.get('content-type');
 

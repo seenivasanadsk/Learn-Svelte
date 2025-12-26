@@ -14,6 +14,7 @@
     cancelButtonText = 'Cancel',
     extraButtons,
     description,
+    hideSubmitButton = false,
     ...props
   } = $props();
 
@@ -65,7 +66,7 @@
   <div
     class="border-t-2 border-amber-200 dark:border-amber-900 bg-amber-100 dark:bg-amber-950 px-3 py-2 flex gap-2 justify-end rounded-b-md"
   >
-    <Button color="success" type="submit">
+    <Button color="success" type="submit" class={hideSubmitButton && 'invisible'}>
       {#if loading}
         <LoaderCircle class="animate-spin mr-1" /> Loading...
       {:else}
