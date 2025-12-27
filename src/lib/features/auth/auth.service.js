@@ -1,5 +1,11 @@
 import { env } from '$env/dynamic/private';
-import { changePassword, getAllUsernames, getUserById, getUserByUsername } from '../users/user.repository';
+import { ObjectId } from 'mongodb';
+import {
+  changePassword,
+  getAllUsernames,
+  getUserById,
+  getUserByUsername
+} from '../users/user.repository';
 import { hashPassword, verifyPassword } from './password';
 import { resetRequestCreateModel } from './resetRequest.model';
 import {
@@ -219,7 +225,8 @@ export async function approveResetRequestService(currentUser, STATUS, index) {
     return { message: 'Already approved', ok: false };
   }
 
-  const isCurrentUserAlreadyApproved = exsitingNewResetReqeust?.approver?.some((a) => a.id === currentUser?.id) ?? false
+  const isCurrentUserAlreadyApproved =
+    exsitingNewResetReqeust?.approver?.some((a) => a?.id === currentUser?.id) ?? false;
 
   if (isCurrentUserAlreadyApproved) {
     return { message: `Same user can't approve twice`, ok: false };
@@ -254,22 +261,21 @@ export async function changePasswordByResetRequest(newPassword, confirmPassword,
   }
 
   const exsitingNewResetReqeust = await getOpenResetRequestByStatus();
-  console.log(exsitingNewResetReqeust?.userId?.toString() !== currentUser?.id)
 
-  if ((exsitingNewResetReqeust?.id !== currentUser?.id) && currentUser?.id) {
+  if (currentUser?.id ? exsitingNewResetReqeust?.userId?.toString() !== currentUser?.id : false) {
     return { message: `You can't change password`, ok: false };
   }
 
-  const hashedPassword = await hashPassword(newPassword)
+  const hashedPassword = await hashPassword(newPassword);
 
-  let result = await changePassword(exsitingNewResetReqeust?.id, hashedPassword)
+  let result = await changePassword(exsitingNewResetReqeust?.userId, hashedPassword);
 
   if (!result.acknowledged) {
     return { message: `Password Can't changed`, ok: false };
   }
 
   const { _id, ...resetRequest } = exsitingNewResetReqeust;
-  resetRequest.status = 'FINISHED'
+  resetRequest.status = 'FINISHED';
 
   result = await updateResetRequest(resetRequest, _id);
 
@@ -277,6 +283,26 @@ export async function changePasswordByResetRequest(newPassword, confirmPassword,
     return { message: `Password Updated Reset request can't updated`, ok: false };
   }
 
-  return { ok: true, message: 'Passwrod Updated successful' }
+  return { ok: true, message: 'Passwrod Updated successful' };
+}
 
+export async function cancelResetRequestService(currentUser) {
+  if (!currentUser?.id) {
+    return { message: `Only a logged-in user can cancel the request.`, ok: false };
+  }
+
+  const exsitingNewResetReqeust = await getOpenResetRequestByStatus();
+
+  const { _id, ...resetRequest } = exsitingNewResetReqeust;
+  resetRequest.status = 'REJECTED';
+  resetRequest.cancelledAt = new Date();
+  resetRequest.cancelledBy = new ObjectId(currentUser?.id);
+
+  const result = await updateResetRequest(resetRequest, _id);
+
+  if (!result.acknowledged) {
+    return { message: `Can't Cancel Request`, ok: false };
+  }
+
+  return { ok: true, message: 'Reset Request Cancelled' };
 }

@@ -18,6 +18,7 @@
 
   let showPassword = $state(false);
   let approvingIndex = $state(null);
+  let cancelRequest = $state(false);
   let formElementRef = $state(null);
   let newPassword = $state('');
   let confirmPassword = $state('');
@@ -30,11 +31,9 @@
 
   const isCurrentUserRequest = $derived(currentUser?.id === resetRequest?.userId);
   const isCurrentUserAlreadyApproved = $derived(
-    resetRequest?.approver?.some((a) => a.id === currentUser?.id) ?? false
+    resetRequest?.approver?.some((a) => a?.id === currentUser?.id) ?? false
   );
   const isSamePassword = $derived(newPassword === confirmPassword && newPassword !== '');
-
-  console.log(resetRequest);
 
   let username = $state('');
   let status = $state('INIT');
@@ -51,12 +50,21 @@
       if (result?.data?.message) {
         showToast(result.data.message, result.type === 'success' ? 'success' : 'danger');
       }
-      await invalidate('reset-request:data');
+      if (result.type == 'success') {
+        window.location.href = '/login';
+      } else {
+        await invalidate('reset-request:data');
+      }
     };
   }
 
   async function handleApprovingIndex(e, i) {
     approvingIndex = i;
+    await tick();
+    e?.target?.closest('form')?.querySelector('button[type=submit]')?.click();
+  }
+  async function handleCancel(e) {
+    cancelRequest = true;
     await tick();
     e?.target?.closest('form')?.querySelector('button[type=submit]')?.click();
   }
@@ -83,8 +91,16 @@
     action="?/resetRequest"
     enhance={handleForm}
     autocomplete="off"
-    hideSubmitButton={(status == 'NEW' || status == 'WAITING') && !isSamePassword}
+    hideSubmitButton={status != 'INIT' && !isSamePassword}
   >
+    {#snippet extraButtons()}
+      {#if status != 'INIT'}
+        {#if cancelRequest}
+          <input type="hidden" name="cancelRequest" value="YES" />
+        {/if}
+        <Button onclick={handleCancel}>Cancel Request</Button>
+      {/if}
+    {/snippet}
     {#snippet description()}
       <ol class="my-2 text-amber-600 list-decimal list-outside ml-5" type="1">
         <li>Select your name and request for Reset.</li>

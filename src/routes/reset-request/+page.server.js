@@ -1,5 +1,6 @@
 import {
   approveResetRequestService,
+  cancelResetRequestService,
   changePasswordByResetRequest,
   createResetRequestService,
   getActiveResetRequest
@@ -31,6 +32,17 @@ export const actions = {
 
     const formData = await request.formData();
     const status = formData.get('status');
+    const cancelRequest = formData.get('cancelRequest');
+
+    if (cancelRequest === 'YES') {
+      const result = await cancelResetRequestService(currentUser);
+
+      if (!result?.ok) {
+        return fail(400, { message: result.message });
+      }
+
+      return result;
+    }
 
     // INIT status makes NEW
     if (status === 'INIT') {
@@ -56,9 +68,9 @@ export const actions = {
     }
 
     if (status === 'APROVED') {
-      const newPassword = (formData.get('newPassword'));
-      const confirmPassword = (formData.get('confirmPassword'));
-      const result = changePasswordByResetRequest(newPassword, confirmPassword, currentUser);
+      const newPassword = formData.get('newPassword');
+      const confirmPassword = formData.get('confirmPassword');
+      const result = await changePasswordByResetRequest(newPassword, confirmPassword, currentUser);
 
       if (!result?.ok) {
         return fail(400, { message: result.message });
