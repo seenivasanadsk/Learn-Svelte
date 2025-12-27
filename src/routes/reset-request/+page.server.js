@@ -1,5 +1,6 @@
 import {
   approveResetRequestService,
+  changePasswordByResetRequest,
   createResetRequestService,
   getActiveResetRequest
 } from '$lib/features/auth/auth.service.js';
@@ -46,6 +47,18 @@ export const actions = {
     if (status === 'NEW' || status === 'WAITING') {
       const index = Number(formData.get('approvingIndex'));
       const result = approveResetRequestService(currentUser, 'WAITING', index);
+
+      if (!result?.ok) {
+        return fail(400, { message: result.message });
+      }
+
+      return result;
+    }
+
+    if (status === 'APROVED') {
+      const newPassword = (formData.get('newPassword'));
+      const confirmPassword = (formData.get('confirmPassword'));
+      const result = changePasswordByResetRequest(newPassword, confirmPassword, currentUser);
 
       if (!result?.ok) {
         return fail(400, { message: result.message });

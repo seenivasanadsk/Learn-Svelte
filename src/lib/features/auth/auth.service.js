@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
-import { getAllUsernames, getUserById, getUserByUsername } from '../users/user.repository';
-import { verifyPassword } from './password';
+import { changePassword, getAllUsernames, getUserById, getUserByUsername } from '../users/user.repository';
+import { hashPassword, verifyPassword } from './password';
 import { resetRequestCreateModel } from './resetRequest.model';
 import {
   createResetRequest,
@@ -219,6 +219,12 @@ export async function approveResetRequestService(currentUser, STATUS, index) {
     return { message: 'Already approved', ok: false };
   }
 
+  const isCurrentUserAlreadyApproved = exsitingNewResetReqeust?.approver?.some((a) => a.id === currentUser?.id) ?? false
+
+  if (isCurrentUserAlreadyApproved) {
+    return { message: `Same user can't approve twice`, ok: false };
+  }
+
   exsitingNewResetReqeust.approver[index] = approver;
 
   const activeUsers = await getAllUsernames();
@@ -240,4 +246,37 @@ export async function approveResetRequestService(currentUser, STATUS, index) {
   }
 
   return { ok: true, data: await getOpenResetRequestByStatus() };
+}
+
+export async function changePasswordByResetRequest(newPassword, confirmPassword, currentUser) {
+  if (newPassword !== confirmPassword) {
+    return { message: 'Confrim password not match', ok: false };
+  }
+
+  const exsitingNewResetReqeust = await getOpenResetRequestByStatus();
+  console.log(exsitingNewResetReqeust?.userId?.toString() !== currentUser?.id)
+
+  if ((exsitingNewResetReqeust?.id !== currentUser?.id) && currentUser?.id) {
+    return { message: `You can't change password`, ok: false };
+  }
+
+  const hashedPassword = await hashPassword(newPassword)
+
+  let result = await changePassword(exsitingNewResetReqeust?.id, hashedPassword)
+
+  if (!result.acknowledged) {
+    return { message: `Password Can't changed`, ok: false };
+  }
+
+  const { _id, ...resetRequest } = exsitingNewResetReqeust;
+  resetRequest.status = 'FINISHED'
+
+  result = await updateResetRequest(resetRequest, _id);
+
+  if (!result.acknowledged) {
+    return { message: `Password Updated Reset request can't updated`, ok: false };
+  }
+
+  return { ok: true, message: 'Passwrod Updated successful' }
+
 }

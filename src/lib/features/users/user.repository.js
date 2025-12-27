@@ -19,3 +19,8 @@ export async function getUserById(userId) {
   const collection = await getCollection(COLLECTION_NAME);
   return await collection.findOne({ _id: new ObjectId(userId) });
 }
+
+export async function changePassword(userId, hashedPassword) {
+  const collection = await getCollection(COLLECTION_NAME);
+  return await collection.updateOne({ _id: new ObjectId(userId) }, { $set: { hashedPassword } });
+}

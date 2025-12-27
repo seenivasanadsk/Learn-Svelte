@@ -12,6 +12,7 @@
     radius = '',
     prefix = null,
     suffix = null,
+    disabled = false,
     class: userClass = '',
     ...props
   } = $props();
@@ -64,6 +65,12 @@
   const suffixClassSize = $derived(
     size === 'sm' ? 'ml-1' : size === 'md' ? 'ml-2' : size === 'lg' ? 'ml-3' : 'ml-2'
   );
+
+  const disabledClass = $derived(
+    disabled
+      ? 'cursor-not-allowed pointer-events-none opacity-60 hover:bg-gray-300 active:bg-gray-300'
+      : 'cursor-pointer'
+  );
 </script>
 
 <!-- -------------------------------------
@@ -73,7 +80,7 @@
 {#if href}
   <!-- Anchor Button -->
   <a
-    {href}
+    href={disabled ? undefined : href}
     class="{baseClass} {colorStyles[color]} {sizeStyles[size]}
     {radiusStyles[radius || size]} {userClass}"
     {...props}
@@ -93,9 +100,10 @@
 {:else}
   <!-- Normal Button -->
   <button
-    class="{baseClass} {colorStyles[color]} {sizeStyles[size]}
+    class="{baseClass} {colorStyles[color]} {sizeStyles[size]} {disabledClass}
     {radiusStyles[radius || size]} {userClass}"
     {onclick}
+    {disabled}
     {type}
     {...props}
   >

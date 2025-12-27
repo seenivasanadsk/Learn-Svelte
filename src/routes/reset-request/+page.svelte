@@ -19,6 +19,8 @@
   let showPassword = $state(false);
   let approvingIndex = $state(null);
   let formElementRef = $state(null);
+  let newPassword = $state('');
+  let confirmPassword = $state('');
 
   const { data } = $props();
   const resetRequest = $derived(data.resetRequest);
@@ -26,9 +28,13 @@
   const users = $derived(data.users);
   const approverCount = $derived(data.approverCount);
 
-  const isCurrentUserRequest = $derived(currentUser?.id === resetRequest.userId);
+  const isCurrentUserRequest = $derived(currentUser?.id === resetRequest?.userId);
+  const isCurrentUserAlreadyApproved = $derived(
+    resetRequest?.approver?.some((a) => a.id === currentUser?.id) ?? false
+  );
+  const isSamePassword = $derived(newPassword === confirmPassword && newPassword !== '');
 
-  console.log(resetRequest, currentUser);
+  console.log(resetRequest);
 
   let username = $state('');
   let status = $state('INIT');
@@ -40,7 +46,6 @@
 
   async function handleForm({ formData }) {
     const data = Object.fromEntries(formData.entries());
-    console.log(data);
     return async ({ result }) => {
       approvingIndex = null;
       if (result?.data?.message) {
@@ -73,12 +78,12 @@
 <div class="h-full p-3 pt-10 max-w-xl mx-auto font-semibold">
   <Form
     title="Reset Request"
-    submitButtonText={['Request Reset']}
+    submitButtonText={[status == 'APROVED' ? 'Change Password' : 'Request Reset']}
     method="POST"
     action="?/resetRequest"
     enhance={handleForm}
     autocomplete="off"
-    hideSubmitButton={status == 'NEW'}
+    hideSubmitButton={(status == 'NEW' || status == 'WAITING') && !isSamePassword}
   >
     {#snippet description()}
       <ol class="my-2 text-amber-600 list-decimal list-outside ml-5" type="1">
@@ -105,13 +110,13 @@
         <div
           class="border-2 rounded-md inline-flex w-full items-center justify-between p-2 border-gray-400 mb-3"
         >
-          <div class="flex flex-col {approver?.username && 'text-green-700 dark:text-green-500'}">
+          <div class="flex flex-col {approver?.username && 'text-green-600 dark:text-green-500'}">
             <span class="flex gap-2 items-center">
               {#if approver?.username}
                 <CircleCheck size={20} />
               {/if}
               {approver?.username
-                ? approver?.id == currentUser.id
+                ? approver?.id == currentUser?.id
                   ? `You (${approver?.username})`
                   : approver?.username
                 : 'Not Approved'}
@@ -136,6 +141,7 @@
                 prefix={CircleCheck}
                 color="primary"
                 onclick={(e) => handleApprovingIndex(e, i)}
+                disabled={isCurrentUserAlreadyApproved}
               >
                 {approvingIndex == i ? 'Approving...' : 'Approve'}
               </Button>
@@ -147,19 +153,23 @@
       {/each}
     {/if}
 
-    {#if status == 'APROVED'}
+    {#if status == 'APROVED' && (isCurrentUserRequest || !currentUser?.id)}
       {@render divider('&#9313;', 'Approved')}
       <InputField
+        name="newPassword"
         placeholder="New Password"
         type={!showPassword && 'password'}
         suffix={showPassword ? Eye : EyeClosed}
+        bind:value={newPassword}
         caseMode="none"
         onSuffixClick={() => (showPassword = !showPassword)}
       />
       <InputField
+        name="confirmPassword"
         placeholder="Confirm Password"
         type={!showPassword && 'password'}
         suffix={showPassword ? Eye : EyeClosed}
+        bind:value={confirmPassword}
         caseMode="none"
         onSuffixClick={() => (showPassword = !showPassword)}
       />
