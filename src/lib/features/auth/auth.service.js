@@ -2,7 +2,11 @@ import { env } from '$env/dynamic/private';
 import { getAllUsernames, getUserById, getUserByUsername } from '../users/user.repository';
 import { verifyPassword } from './password';
 import { resetRequestCreateModel } from './resetRequest.model';
-import { createResetRequest, getOpenResetRequestByStatus, updateResetRequest } from './resetRequest.repository';
+import {
+  createResetRequest,
+  getOpenResetRequestByStatus,
+  updateResetRequest
+} from './resetRequest.repository';
 import {
   createSession,
   deleteSessionByToken,
@@ -13,7 +17,7 @@ import {
 } from './session.repository';
 
 export async function loginService(username, password) {
-  const maxAge = env.SESSION_MAX_AGE || (60 * 60 * 24) // 1 days in sesconds
+  const maxAge = env.SESSION_MAX_AGE || 60 * 60 * 24; // 1 days in sesconds
 
   if (!username || !password) {
     return { message: 'Username and password are required', ok: false };
@@ -53,7 +57,7 @@ export async function loginService(username, password) {
       session: `${session.token}.${user._id}`,
       user
     },
-    message: "Login successful"
+    message: 'Login successful'
   };
 }
 
@@ -122,39 +126,41 @@ export async function verifySession(session) {
   }
 
   if (session.expiredOn < new Date()) {
-    await deleteSessionByToken(token)
-    return { message: 'Session Expired', ok: false }
+    await deleteSessionByToken(token);
+    return { message: 'Session Expired', ok: false };
   }
 
   if (session.userId != userId) {
     return {
-      message: 'Wrong Session', ok: false
-    }
+      message: 'Wrong Session',
+      ok: false
+    };
   }
 
   const user = await getUserById(userId);
 
   if (!user) {
-    await deleteSessionByToken(token)
+    await deleteSessionByToken(token);
     return {
-      message: 'User not found', ok: false
-    }
+      message: 'User not found',
+      ok: false
+    };
   }
 
   if (!user.isActive) {
-    await deleteSessionByToken(token)
+    await deleteSessionByToken(token);
     return {
-      message: 'User is Deactivated', ok: false
-    }
+      message: 'User is Deactivated',
+      ok: false
+    };
   }
 
   return {
     ok: true,
     data: user,
-    message: "Verificaiton successful"
+    message: 'Verificaiton successful'
   };
 }
-
 
 // -------------------------------------
 //  Reset Request Related Services
@@ -162,29 +168,29 @@ export async function verifySession(session) {
 
 export async function createResetRequestService(username) {
   if (!username) {
-    return { message: 'Username is required', ok: false }
+    return { message: 'Username is required', ok: false };
   }
 
-  const exsitingNewResetReqeust = await getOpenResetRequestByStatus()
+  const exsitingNewResetReqeust = await getOpenResetRequestByStatus();
   if (exsitingNewResetReqeust?._id) {
-    return { message: 'Reset Request Already Requested', ok: false }
+    return { message: 'Reset Request Already Requested', ok: false };
   }
 
-  const user = await getUserByUsername(username)
+  const user = await getUserByUsername(username);
 
   if (!user) {
-    return { message: 'User not exist', ok: false }
+    return { message: 'User not exist', ok: false };
   }
 
   if (!user.isActive) {
-    return { message: 'User Deactivated', ok: false }
+    return { message: 'User Deactivated', ok: false };
   }
 
-  const resetRequest = resetRequestCreateModel(user)
-  const result = await createResetRequest(resetRequest)
+  const resetRequest = resetRequestCreateModel(user);
+  const result = await createResetRequest(resetRequest);
 
   if (!result.acknowledged) {
-    return { message: 'Reset request not created', ok: false }
+    return { message: 'Reset request not created', ok: false };
   }
 
   return {
@@ -197,37 +203,41 @@ export async function getActiveResetRequest() {
   return await getOpenResetRequestByStatus();
 }
 
-export async function approveResetRequestService(approver, STATUS, index) {
-  const exsitingNewResetReqeust = await getOpenResetRequestByStatus()
+export async function approveResetRequestService(currentUser, STATUS, index) {
+  const approver = { id: currentUser?.id, username: currentUser?.username, approvedAt: new Date() };
+  const exsitingNewResetReqeust = await getOpenResetRequestByStatus();
 
   if (!exsitingNewResetReqeust?._id) {
-    return { message: 'Reset Request not exist', ok: false }
+    return { message: 'Reset Request not exist', ok: false };
+  }
+
+  if (exsitingNewResetReqeust.userId == currentUser?.id) {
+    return { message: `Can't approve own request`, ok: false };
   }
 
   if (exsitingNewResetReqeust.approver[index]?.userId) {
-    return { message: 'Already approved', ok: false }
+    return { message: 'Already approved', ok: false };
   }
 
-  exsitingNewResetReqeust.approver[index] = approver
+  exsitingNewResetReqeust.approver[index] = approver;
 
   const activeUsers = await getAllUsernames();
-  const users = activeUsers.map(u => u.username);
+  const users = activeUsers.map((u) => u.username);
 
-  let approverCount = users.filter(u => u !== exsitingNewResetReqeust?.username).length;
+  let approverCount = users.filter((u) => u !== exsitingNewResetReqeust?.username).length;
   approverCount = approverCount >= 2 ? 2 : 1;
 
-  const approvedCount = exsitingNewResetReqeust.approver.filter(a => a?.username).length
+  const approvedCount = exsitingNewResetReqeust.approver.filter((a) => a?.username).length;
 
-  exsitingNewResetReqeust.status = approvedCount == approverCount ? 'APROVED' : 'WAITING'
+  exsitingNewResetReqeust.status = approvedCount == approverCount ? 'APROVED' : 'WAITING';
 
-  const { _id, ...resetRequest } = exsitingNewResetReqeust
+  const { _id, ...resetRequest } = exsitingNewResetReqeust;
 
-  const result = await updateResetRequest(resetRequest, _id)
+  const result = await updateResetRequest(resetRequest, _id);
 
   if (!result.acknowledged) {
-    return { message: 'Reset Request not Updated', ok: false }
+    return { message: 'Reset Request not Updated', ok: false };
   }
 
-  return { ok: true, data: await getOpenResetRequestByStatus() }
-
+  return { ok: true, data: await getOpenResetRequestByStatus() };
 }

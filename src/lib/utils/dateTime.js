@@ -107,7 +107,7 @@ export function getDateTimeParts(date = new Date()) {
  * // "23-08-2001 10:30 AM"
  */
 export function formatDateTime(pattern = '', date = new Date()) {
-  const p = getDateTimeParts(date);
+  const p = getDateTimeParts(new Date(date));
 
   const tokens = {
     YY: p.year,

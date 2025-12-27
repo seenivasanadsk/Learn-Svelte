@@ -6,8 +6,15 @@
   import Form from '$lib/components/Form.svelte';
   import InputField from '$lib/components/InputField.svelte';
   import { showToast } from '$lib/stores/toast.js';
-  import { getFormattedTime } from '$lib/utils/dateTime.js';
-  import { CircleCheck, Eye, EyeClosed, Hourglass, ShieldCheck } from 'lucide-svelte';
+  import { getFormattedTime, getFormattedTimeStamp } from '$lib/utils/dateTime.js';
+  import {
+    CircleCheck,
+    CircleCheckBig,
+    Eye,
+    EyeClosed,
+    Hourglass,
+    ShieldCheck
+  } from 'lucide-svelte';
 
   let showPassword = $state(false);
   let approvingIndex = $state(null);
@@ -19,10 +26,12 @@
   const users = $derived(data.users);
   const approverCount = $derived(data.approverCount);
 
+  const isCurrentUserRequest = $derived(currentUser?.id === resetRequest.userId);
+
+  console.log(resetRequest, currentUser);
+
   let username = $state('');
   let status = $state('INIT');
-
-  console.log(resetRequest);
 
   $effect(() => {
     username = resetRequest?.username ?? '';
@@ -89,26 +98,37 @@
       silent={true}
     />
 
-    {#if status == 'NEW'}
+    {#if status != 'INIT'}
       {@render divider('&#9312;', 'Reset Requested')}
       {#each Array(approverCount) as _, i}
         {@const approver = resetRequest?.approver[i] || {}}
         <div
           class="border-2 rounded-md inline-flex w-full items-center justify-between p-2 border-gray-400 mb-3"
         >
-          <div class="flex flex-col">
-            <span>
-              {approver?.username || 'Not Approved'}
+          <div class="flex flex-col {approver?.username && 'text-green-700 dark:text-green-500'}">
+            <span class="flex gap-2 items-center">
+              {#if approver?.username}
+                <CircleCheck size={20} />
+              {/if}
+              {approver?.username
+                ? approver?.id == currentUser.id
+                  ? `You (${approver?.username})`
+                  : approver?.username
+                : 'Not Approved'}
             </span>
             <span class="text-xs font-medium">
-              {(approver?.approvedAt && getFormattedTime(approver?.approvedAt)) ||
-                (currentUser ? 'Approve to reset password' : 'Waiting for approval...')}
+              {(approver?.approvedAt && getFormattedTimeStamp(approver?.approvedAt)) ||
+                (currentUser
+                  ? isCurrentUserRequest
+                    ? `Can't approve own request`
+                    : 'Approve to reset password'
+                  : 'Waiting for approval...')}
             </span>
           </div>
           <span>
             {#if approver?.username}
               <Badge color="success" prefix={ShieldCheck}>Approved</Badge>
-            {:else if currentUser}
+            {:else if currentUser && !isCurrentUserRequest}
               {#if approvingIndex == i}
                 <input type="hidden" name="approvingIndex" value={i} />
               {/if}
@@ -127,7 +147,7 @@
       {/each}
     {/if}
 
-    {#if !1}
+    {#if status == 'APROVED'}
       {@render divider('&#9313;', 'Approved')}
       <InputField
         placeholder="New Password"

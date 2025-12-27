@@ -1,7 +1,11 @@
-import { approveResetRequestService, createResetRequestService, getActiveResetRequest } from "$lib/features/auth/auth.service.js";
-import { resetRequestSerializer } from "$lib/features/auth/resetRequest.model.js";
-import { getAllUsernames } from "$lib/features/users/user.repository";
-import { fail } from "@sveltejs/kit";
+import {
+  approveResetRequestService,
+  createResetRequestService,
+  getActiveResetRequest
+} from '$lib/features/auth/auth.service.js';
+import { resetRequestSerializer } from '$lib/features/auth/resetRequest.model.js';
+import { getAllUsernames } from '$lib/features/users/user.repository';
+import { fail } from '@sveltejs/kit';
 
 export async function load({ locals, depends }) {
   depends('reset-request:data');
@@ -12,9 +16,9 @@ export async function load({ locals, depends }) {
   resetRequest = resetRequestSerializer(resetRequest);
 
   const activeUsers = await getAllUsernames();
-  const users = activeUsers.map(u => u.username);
+  const users = activeUsers.map((u) => u.username);
 
-  let approverCount = users.filter(u => u !== resetRequest?.username).length;
+  let approverCount = users.filter((u) => u !== resetRequest?.username).length;
   approverCount = approverCount >= 2 ? 2 : 1;
 
   return { users, resetRequest, currentUser, approverCount };
@@ -39,10 +43,9 @@ export const actions = {
       return result;
     }
 
-    if (status === 'NEW') {
+    if (status === 'NEW' || status === 'WAITING') {
       const index = Number(formData.get('approvingIndex'));
-      const approver = { id: currentUser?.id, username: currentUser?.username, approvedAt: new Date() }
-      const result = approveResetRequestService(approver, 'WAITING', index)
+      const result = approveResetRequestService(currentUser, 'WAITING', index);
 
       if (!result?.ok) {
         return fail(400, { message: result.message });
