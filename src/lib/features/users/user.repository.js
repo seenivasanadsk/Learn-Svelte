@@ -22,5 +22,10 @@ export async function getUserById(userId) {
 
 export async function changePassword(userId, hashedPassword) {
   const collection = await getCollection(COLLECTION_NAME);
-  return await collection.updateOne({ _id: new ObjectId(userId) }, { $set: { hashedPassword } });
+  return await collection.updateOne({ _id: new ObjectId(userId) }, { $set: { hashedPassword, lastPasswordReset: new Date() } });
+}
+
+export async function updateUser(id, data) {
+  const collection = await getCollection(COLLECTION_NAME);
+  return await collection.updateOne({ _id: new ObjectId(id) }, { $set: data });
 }

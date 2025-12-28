@@ -38,6 +38,7 @@ export function userUpdateModel(data, overridableData) {
   // hashedPassword: input.hashedPassword,
   // lastLogin: null,
   // lastAccess: null,
+  // lastLogout: null,
   // lastPasswordReset: null,
   // settings: {}
 }

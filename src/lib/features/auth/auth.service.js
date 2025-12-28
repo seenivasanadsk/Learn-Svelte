@@ -4,7 +4,8 @@ import {
   changePassword,
   getAllUsernames,
   getUserById,
-  getUserByUsername
+  getUserByUsername,
+  updateUser
 } from '../users/user.repository';
 import { hashPassword, verifyPassword } from './password';
 import { resetRequestCreateModel } from './resetRequest.model';
@@ -57,6 +58,8 @@ export async function loginService(username, password) {
     return { message: 'Session Error Occured', ok: false };
   }
 
+  await updateUser(user._id, { lastLogin: new Date() })
+
   return {
     ok: true,
     data: {
@@ -78,6 +81,8 @@ export async function logoutService(storedSession) {
   if (!result.acknowledged) {
     return { message: 'Session is Not Found', ok: false };
   }
+
+  await updateUser(userId, { lastLogout: new Date() })
 
   return {
     ok: true,
@@ -111,6 +116,8 @@ export async function forceLogoutService(username, password) {
   if (!result.acknowledged) {
     return { message: 'Force Logout Faild', ok: false };
   }
+
+  await updateUser(user._id, { lastLogout: new Date() })
 
   return {
     ok: true,
@@ -160,6 +167,8 @@ export async function verifySession(session) {
       ok: false
     };
   }
+
+  await updateUser(userId, { lastAccess: new Date() })
 
   return {
     ok: true,
