@@ -12,12 +12,13 @@
   const { data, form } = $props();
   let showPassword = $state(false);
   let loading = $state(false);
-  let autoFocus = username ? 'password' : 'username';
+  let autoFocus = $derived(username ? 'password' : 'username');
+  let formRef = $state(null);
 
   if (form) showToast(form.message, 'danger');
 
   function triggerFormSubmission(e) {
-    e?.target?.closest('form')?.querySelector('button[type=submit]')?.click();
+    formRef.submit();
   }
 </script>
 
@@ -26,6 +27,7 @@
     title="Force Logout"
     action="?/forceLogout"
     method="POST"
+    bind:this={formRef}
     autoComplete="off"
     submitButtonText={['Force Logout']}
     {loading}

@@ -1,3 +1,4 @@
+import { emit } from '$lib/core/server/sseBus.js';
 import {
   approveResetRequestService,
   cancelResetRequestService,
@@ -7,10 +8,11 @@ import {
 } from '$lib/features/auth/auth.service.js';
 import { resetRequestSerializer } from '$lib/features/auth/resetRequest.model.js';
 import { getAllUsernames } from '$lib/features/users/user.repository';
+import { serializeDoc } from '$lib/utils/serializer.js';
 import { fail } from '@sveltejs/kit';
 
 export async function load({ locals, depends }) {
-  depends('reset-request:data');
+  depends('RESET_REQUEST_UPDATED');
 
   const currentUser = locals?.user;
 
@@ -26,6 +28,11 @@ export async function load({ locals, depends }) {
   return { users, resetRequest, currentUser, approverCount };
 }
 
+function syncSSE() {
+  console.log(new Date())
+  emit({ type: 'RESET_REQUEST_UPDATED' });
+}
+
 export const actions = {
   resetRequest: async ({ request, locals }) => {
     const currentUser = locals?.user;
@@ -34,6 +41,8 @@ export const actions = {
     const status = formData.get('status');
     const cancelRequest = formData.get('cancelRequest');
 
+    console.log(status, cancelRequest)
+
     if (cancelRequest === 'YES') {
       const result = await cancelResetRequestService(currentUser);
 
@@ -41,7 +50,8 @@ export const actions = {
         return fail(400, { message: result.message });
       }
 
-      return result;
+      syncSSE()
+      return serializeDoc(result);
     }
 
     // INIT status makes NEW
@@ -53,18 +63,21 @@ export const actions = {
         return fail(400, { message: result.message });
       }
 
-      return result;
+      syncSSE()
+      return serializeDoc(result);
     }
 
     if (status === 'NEW' || status === 'WAITING') {
       const index = Number(formData.get('approvingIndex'));
-      const result = approveResetRequestService(currentUser, 'WAITING', index);
+      const result = await approveResetRequestService(currentUser, 'WAITING', index);
+      console.log("inside NEW", result)
 
       if (!result?.ok) {
         return fail(400, { message: result.message });
       }
 
-      return result;
+      syncSSE()
+      return serializeDoc(result);
     }
 
     if (status === 'APPROVED') {
@@ -76,7 +89,8 @@ export const actions = {
         return fail(400, { message: result.message });
       }
 
-      return result;
+      syncSSE()
+      return serializeDoc(result);
     }
   }
 };

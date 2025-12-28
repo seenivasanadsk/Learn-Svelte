@@ -28,7 +28,8 @@ export const actions = {
       path: '/', // required
       httpOnly: true, // JS can't access
       sameSite: 'strict', // CSRF protection
-      secure: true, // HTTPS only (use false in dev if needed)
+      // secure: true, // HTTPS only (use false in dev if needed)
+      secure: false,
       maxAge: 60 * 60 * 25 * 366 // Store cookies in maxAge in seconds (1year)
     };
     cookies.set('SESSION', result.data.session, cookieOption);

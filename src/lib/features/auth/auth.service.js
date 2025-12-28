@@ -274,6 +274,12 @@ export async function changePasswordByResetRequest(newPassword, confirmPassword,
     return { message: `Password Can't changed`, ok: false };
   }
 
+  result = await deleteSessionByUserId(exsitingNewResetReqeust?.userId)
+
+  if (!result.acknowledged) {
+    return { message: `Password Changed, But session not removed`, ok: false };
+  }
+
   const { _id, ...resetRequest } = exsitingNewResetReqeust;
   resetRequest.status = 'FINISHED';
 

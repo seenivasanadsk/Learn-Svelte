@@ -13,9 +13,10 @@
   let showPassword = $state(false);
   let loading = $state(false);
   let username = $state(data.lastUsername || '');
+  let formRef = $state(null);
 
   $effect(() => {
-    if (form) showToast(form.message, 'danger');
+    if (form?.message) showToast(form.message, 'danger');
     if (form?.message === 'User already Logged in') {
       showToast(
         `Force Logout <b><u><a href="/force-logout?username=${username}">Here</a></u></b>`,
@@ -25,7 +26,7 @@
   });
 
   function triggerFormSubmission(e) {
-    e?.target?.closest('form')?.querySelector('button[type=submit]')?.click();
+    formRef.submit();
   }
 </script>
 
@@ -34,6 +35,7 @@
     title="Login"
     action={`?/login&redirectTo=${$page.url.searchParams.get('redirectTo') || '/'}`}
     method="POST"
+    bind:value={formRef}
     autoComplete="off"
     submitButtonText={['Login']}
     {loading}

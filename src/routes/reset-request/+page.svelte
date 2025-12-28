@@ -68,7 +68,7 @@
       if (result.type === 'success' && status === 'APPROVED') {
         goto('/login');
       } else {
-        await invalidate('reset-request:data');
+        await invalidate('RESET_REQUEST_UPDATED');
       }
     };
   }
