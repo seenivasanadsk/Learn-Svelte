@@ -242,7 +242,7 @@ export async function approveResetRequestService(currentUser, STATUS, index) {
 
   const approvedCount = exsitingNewResetReqeust.approver.filter((a) => a?.username).length;
 
-  exsitingNewResetReqeust.status = approvedCount == approverCount ? 'APROVED' : 'WAITING';
+  exsitingNewResetReqeust.status = approvedCount == approverCount ? 'APPROVED' : 'WAITING';
 
   const { _id, ...resetRequest } = exsitingNewResetReqeust;
 

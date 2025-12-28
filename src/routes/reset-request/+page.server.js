@@ -67,7 +67,7 @@ export const actions = {
       return result;
     }
 
-    if (status === 'APROVED') {
+    if (status === 'APPROVED') {
       const newPassword = formData.get('newPassword');
       const confirmPassword = formData.get('confirmPassword');
       const result = await changePasswordByResetRequest(newPassword, confirmPassword, currentUser);

@@ -18,6 +18,14 @@
     ...props
   } = $props();
 
+  let formEl = $state(null);
+
+  function submit() {
+    formEl?.requestSubmit();
+  }
+
+  export { submit };
+
   function handleCancel(e) {
     if (cancel) cancel();
     else window.history.back();
@@ -32,6 +40,7 @@
 <form
   class="bg-white dark:bg-amber-950/30 shadow-md rounded-md"
   {...props}
+  bind:this={formEl}
   use:conditionalEnhance={enhanceAction}
 >
   <!-- Card Header -->

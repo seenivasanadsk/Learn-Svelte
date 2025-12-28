@@ -14,12 +14,15 @@
   let loading = $state(false);
   let username = $state(data.lastUsername || '');
 
-  if (form) showToast(form.message, 'danger');
-  if (form?.message == 'User already Logged in')
-    showToast(
-      `Force Logout <b><u><a href="/force-logout?username=${username}">Here</a></u></b>`,
-      'primary'
-    );
+  $effect(() => {
+    if (form) showToast(form.message, 'danger');
+    if (form?.message === 'User already Logged in') {
+      showToast(
+        `Force Logout <b><u><a href="/force-logout?username=${username}">Here</a></u></b>`,
+        'primary'
+      );
+    }
+  });
 
   function triggerFormSubmission(e) {
     e?.target?.closest('form')?.querySelector('button[type=submit]')?.click();

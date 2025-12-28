@@ -18,7 +18,7 @@ export async function updateResetRequest(resetRequest, id) {
 }
 
 export async function getOpenResetRequestByStatus() {
-  const statusesToCheck = ['NEW', 'WAITING', 'APROVED'];
+  const statusesToCheck = ['NEW', 'WAITING', 'APPROVED'];
   const collection = await getCollection(COLLECTION_NAME)
   return await collection.findOne({ status: { $in: statusesToCheck } });
 }

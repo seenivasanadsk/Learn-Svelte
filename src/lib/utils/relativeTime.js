@@ -1,6 +1,7 @@
 // src\lib\utils\relativeTime.js
 
 export function timeAgo(date, locale = 'en') {
+  date = new Date(date)
   const now = new Date();
   const diffSec = (date - now) / 1000;
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
@@ -29,6 +30,7 @@ export function timeAgo(date, locale = 'en') {
  * Today / Yesterday / Tomorrow — exact logic
  */
 export function timeAgoSmart(date, locale = 'en') {
+  date = new Date(date)
   const now = new Date();
   const d1 = new Date(date).setHours(0, 0, 0, 0);
   const d2 = new Date(now).setHours(0, 0, 0, 0);
