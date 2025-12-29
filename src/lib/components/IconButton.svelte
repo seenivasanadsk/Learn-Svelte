@@ -5,6 +5,6 @@
   const { children, ...props } = $props();
 </script>
 
-<Button class="p-2" {...props}>
+<Button size="sm" radius="md" {...props}>
   {@render children()}
 </Button>

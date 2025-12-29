@@ -35,7 +35,7 @@
     title="Login"
     action={`?/login&redirectTo=${$page.url.searchParams.get('redirectTo') || '/'}`}
     method="POST"
-    bind:value={formRef}
+    bind:this={formRef}
     autoComplete="off"
     submitButtonText={['Login']}
     {loading}

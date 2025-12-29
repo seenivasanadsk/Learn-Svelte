@@ -12,7 +12,6 @@ export function startSSE() {
   }
 
   source.onmessage = (e) => {
-    console.log(e)
     const event = JSON.parse(e.data);
     invalidate(event.type);
   };
