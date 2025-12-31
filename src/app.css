@@ -26,6 +26,11 @@ body {
   scrollbar-color: theme(--color-gray-400) theme(--color-gray-100);
 }
 
+.dark * {
+  scrollbar-width: thin;
+  scrollbar-color: theme(--color-gray-600) theme(--color-gray-900);
+}
+
 /* ---------- Error animation ---------- */
 .error {
   border-color: red;

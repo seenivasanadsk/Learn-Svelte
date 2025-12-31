@@ -41,7 +41,7 @@
 
 <div class="min-h-full">
   <div
-    class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 h-[90vh] overflow-y-auto mt-[5vh]"
+    class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 h-[90dvh] overflow-y-auto mt-[5dvh]"
   >
     <!-- Header -->
     <div

@@ -1,0 +1,77 @@
+<script>
+  import { CirclePlus } from 'lucide-svelte';
+  import Button from './Button.svelte';
+</script>
+
+<div class="h-full font-semibold">
+  <div
+    class="max-w-11/12 mx-auto bg-white/90 dark:bg-gray-900/80 backdrop-blur rounded-xl shadow-xl h-[94dvh] mt-[3dvh] flex flex-col overflow-hidden"
+  >
+    <!-- Header -->
+    <div
+      class="sticky top-0 z-20 bg-amber-100/80 dark:bg-amber-950/60 backdrop-blur p-3 flex items-center border-b border-amber-200 dark:border-amber-900"
+    >
+      <!-- Header Left -->
+      <div class="flex-1 flex items-center gap-2">
+        <h1 class="text-3xl font-bold tracking-tight text-amber-950 dark:text-amber-50">Users</h1>
+        <span
+          class=" px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-200"
+        >
+          50
+        </span>
+      </div>
+
+      <!-- Header Right -->
+      <div class="flex-1 flex justify-end">
+        <Button prefix={CirclePlus} color="success">New Entry</Button>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="p-3 flex-1 overflow-hidden">
+      <div
+        class="h-full overflow-auto rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-900"
+      >
+        <table class="w-full">
+          <thead
+            class="sticky top-0 z-10 bg-gray-100 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-700"
+          >
+            <tr class="text-left">
+              <th class="px-2.5 py-1.5 font-semibold">S.No</th>
+              <th class="px-2.5 py-1.5 font-semibold">Test</th>
+              <th class="px-2.5 py-1.5 font-semibold">Name</th>
+              <th class="px-2.5 py-1.5 font-semibold">ADSK</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {#each Array.from({ length: 50 }) as _, i}
+              <tr
+                class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900 dark:even:bg-gray-800
+                       hover:bg-amber-50 dark:hover:bg-amber-950/30"
+              >
+                <td class="px-2.5 py-1.5 font-medium">{i + 1}</td>
+                <td class="px-2.5 py-1.5">Test</td>
+                <td class="px-2.5 py-1.5">Name</td>
+                <td class="px-2.5 py-1.5">ADSK</td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div
+      class="bg-amber-100/80 dark:bg-amber-950/60 p-2 flex items-center border-t border-amber-200 dark:border-amber-900"
+    >
+      <!-- Footer Left -->
+      <div class="flex-1 text-gray-600 dark:text-gray-400">© 2025 Users Module</div>
+
+      <!-- Footer Right -->
+      <div class="flex-1 flex justify-end">
+        <Button prefix={CirclePlus} size="sm">New Entry</Button>
+      </div>
+    </div>
+  </div>
+</div>
