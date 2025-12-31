@@ -10,7 +10,7 @@
 <button
   type="button"
   onclick={toggle}
-  class={`w-12 h-6 flex items-center rounded-full p-1 transition-colors min-w-12 ml-5 ${
+  class={`w-12 h-6 flex items-center rounded-full cursor-pointer p-1 min-w-12 ml-5 ${
     enabled ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-500'
   }`}
 >

@@ -49,8 +49,8 @@
     { label: 'Price', icon: Tags, route: '/pricing' },
     { label: 'Materials', icon: List, route: '/materials' },
     { label: 'Party', icon: Users, route: '/party' },
-    { label: 'User', icon: CircleUser, route: '/party' },
-    { label: 'Tasks', icon: CircleCheckBig, route: '/tasks' },
+    // { label: 'User', icon: CircleUser, route: '/party' },
+    // { label: 'Tasks', icon: CircleCheckBig, route: '/tasks' },
     { label: 'Settings', icon: Settings, route: '/settings' }
     // { label: 'Permission', icon: ShieldCheck, route: '/permission' }
   ];
