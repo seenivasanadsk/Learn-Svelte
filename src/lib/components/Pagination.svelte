@@ -3,9 +3,7 @@
   import Button from './Button.svelte';
   import IconButton from './IconButton.svelte';
 
-  const { page, totalItems, onPageChange } = $props();
-
-  let itemsPerPage = $state(25);
+  let { page = $bindable(1), totalItems, itemsPerPage = $bindable(25) } = $props();
   const itemsPerPageOptions = [10, 15, 20, 25, 50, 100, 200, 250, 500];
   const totalPages = $derived(Math.ceil(totalItems / itemsPerPage));
 
@@ -33,10 +31,9 @@
     return pages;
   });
 
-  function change(p) {
-    if (p < 1 || p > totalPages || p === page) return;
-    onPageChange(p);
-  }
+  $effect(() => {
+    page = itemsPerPage && 1; // Whenever items per page changes reset page to 1
+  });
 </script>
 
 <div class="flex justify-center items-center gap-1">
@@ -44,26 +41,33 @@
     type="text"
     size="1"
     class="border-2 outline-none px-1 border-amber-500 dark:border-amber-700 rounded appearance-none text-amber-700 dark:text-amber-500 text-center"
-    value={itemsPerPage}
+    bind:value={itemsPerPage}
   >
     {#each itemsPerPageOptions as p}
-      <option value={p}>{p}</option>
+      <option
+        class="bg-amber-50 dark:bg-amber-900 text-amber-900 dark:text-amber-50 font-semibold"
+        value={p}
+      >
+        {p}
+      </option>
     {/each}
   </select>
 
-  <Button size="xs" radius="sm" disabled={page === 1} onclick={() => change(page - 1)}>
+  <Button size="xs" radius="sm" disabled={page === 1} onclick={() => (page = page - 1)}>
     <LucideChevronLeft />
   </Button>
 
   {#each pageNumbers() as p}
     {#if p !== '...'}
-      <Button size="sm">{p}</Button>
+      <Button size="sm" color={page === p ? 'primary' : 'accent'} onclick={() => (page = p)}>
+        {p}
+      </Button>
     {:else}
       <span class="text-amber-600">&bull;</span>
     {/if}
   {/each}
 
-  <Button size="xs" radius="sm" disabled={page === totalPages} onclick={() => change(page + 1)}>
+  <Button size="xs" radius="sm" disabled={page === totalPages} onclick={() => (page = page + 1)}>
     <LucideChevronRight />
   </Button>
 </div>

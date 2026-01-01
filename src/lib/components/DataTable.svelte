@@ -1,6 +1,7 @@
 <script>
-  import { CirclePlus } from 'lucide-svelte';
+  import { CirclePlus, Funnel, Search, Table } from 'lucide-svelte';
   import Button from './Button.svelte';
+  import IconButton from './Button.svelte';
   import Badge from './Badge.svelte';
   import Pagination from './Pagination.svelte';
 </script>
@@ -22,7 +23,10 @@
       <div class="flex-1 flex items-center gap-2 justify-center">Internal Navigation</div>
 
       <!-- Header Right -->
-      <div class="flex-1 flex justify-end">
+      <div class="flex-1 flex justify-end gap-2">
+        <IconButton><Table /></IconButton>
+        <IconButton><Search /></IconButton>
+        <IconButton><Funnel /></IconButton>
         <Button prefix={CirclePlus} color="success">New Entry</Button>
       </div>
     </div>
