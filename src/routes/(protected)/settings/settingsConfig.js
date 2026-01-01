@@ -1,4 +1,4 @@
-import { CircleUser, User } from "lucide-svelte";
+import { CircleUser, Monitor, MoonIcon, User } from "lucide-svelte";
 
 export const iconBg = {
   red: 'bg-red-50 text-red-600 dark:bg-red-900/30',
@@ -28,6 +28,20 @@ export const groupedSettingsConfig = [
         color: 'blue',
         description: 'Manage your profile',
         href: '/settings/profile'
+      },
+      {
+        name: 'System Theme',
+        icon: Monitor,
+        color: 'amber',
+        description: 'Get default system theme automatically (Dark or Light mode)',
+        key: 'personal.theme.system'
+      },
+      {
+        name: 'Dark Mode',
+        icon: MoonIcon,
+        color: 'amber',
+        description: 'Turn on Dark mode',
+        key: 'personal.theme.dark'
       }
     ]
   },

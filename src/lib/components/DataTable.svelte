@@ -1,6 +1,8 @@
 <script>
   import { CirclePlus } from 'lucide-svelte';
   import Button from './Button.svelte';
+  import Badge from './Badge.svelte';
+  import Pagination from './Pagination.svelte';
 </script>
 
 <div class="h-full font-semibold">
@@ -14,12 +16,10 @@
       <!-- Header Left -->
       <div class="flex-1 flex items-center gap-2">
         <h1 class="text-3xl font-bold tracking-tight text-amber-950 dark:text-amber-50">Users</h1>
-        <span
-          class=" px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-200"
-        >
-          50
-        </span>
       </div>
+
+      <!-- Header Center -->
+      <div class="flex-1 flex items-center gap-2 justify-center">Internal Navigation</div>
 
       <!-- Header Right -->
       <div class="flex-1 flex justify-end">
@@ -27,7 +27,10 @@
       </div>
     </div>
 
+    <!--  -->
+    <!--  -->
     <!-- Body -->
+    <!-- Body Start -->
     <div class="p-3 flex-1 overflow-hidden">
       <div
         class="h-full overflow-auto rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-900"
@@ -47,8 +50,8 @@
           <tbody>
             {#each Array.from({ length: 50 }) as _, i}
               <tr
-                class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900 dark:even:bg-gray-800
-                       hover:bg-amber-50 dark:hover:bg-amber-950/30"
+                class="odd:bg-white even:bg-gray-100 dark:odd:bg-gray-900 dark:even:bg-gray-800
+                       hover:bg-amber-100 dark:hover:bg-amber-600/30"
               >
                 <td class="px-2.5 py-1.5 font-medium">{i + 1}</td>
                 <td class="px-2.5 py-1.5">Test</td>
@@ -60,17 +63,28 @@
         </table>
       </div>
     </div>
+    <!-- Body End -->
+    <!--  -->
+    <!--  -->
 
     <!-- Footer -->
     <div
       class="bg-amber-100/80 dark:bg-amber-950/60 p-2 flex items-center border-t border-amber-200 dark:border-amber-900"
     >
       <!-- Footer Left -->
-      <div class="flex-1 text-gray-600 dark:text-gray-400">© 2025 Users Module</div>
+      <div class="flex-1 text-gray-600 dark:text-gray-400">
+        <Button>View</Button>
+      </div>
+
+      <!-- Footer Center -->
+      <div class="flex-1 text-gray-600 dark:text-gray-400 flex justify-center">
+        <Pagination page={37} totalItems={1000} />
+      </div>
 
       <!-- Footer Right -->
-      <div class="flex-1 flex justify-end">
-        <Button prefix={CirclePlus} size="sm">New Entry</Button>
+      <div class="flex-1 flex justify-end gap-2">
+        <Badge>Total: {'100'}</Badge>
+        <Badge>Showed: {'50'}</Badge>
       </div>
     </div>
   </div>

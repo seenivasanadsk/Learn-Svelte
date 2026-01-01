@@ -61,6 +61,6 @@
     class:translate-x-0={isSidebarOpen}
     class:translate-x-full={!isSidebarOpen}
   >
-    <Sidebar {toggleSidebar} {user} />
+    <Sidebar {toggleSidebar} {user} ip={data.serverIP} port={data.port} />
   </aside>
 </div>
