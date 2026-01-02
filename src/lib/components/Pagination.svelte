@@ -63,7 +63,7 @@
         {p}
       </Button>
     {:else}
-      <span class="text-amber-600">&bull;</span>
+      <span class="text-amber-600">&hellip;</span>
     {/if}
   {/each}
 

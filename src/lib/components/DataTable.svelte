@@ -4,6 +4,8 @@
   import IconButton from './Button.svelte';
   import Badge from './Badge.svelte';
   import Pagination from './Pagination.svelte';
+
+  const options = $state({ page: 1 });
 </script>
 
 <div class="h-full font-semibold">
@@ -82,7 +84,7 @@
 
       <!-- Footer Center -->
       <div class="flex-1 text-gray-600 dark:text-gray-400 flex justify-center">
-        <Pagination page={37} totalItems={1000} />
+        <Pagination bind:page={options.page} totalItems={1000} />
       </div>
 
       <!-- Footer Right -->
