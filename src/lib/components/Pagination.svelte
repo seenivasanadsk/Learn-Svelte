@@ -1,11 +1,14 @@
 <script>
-  import { LucideChevronLeft, LucideChevronRight } from 'lucide-svelte';
+  import { FileInput, LucideChevronLeft, LucideChevronRight } from 'lucide-svelte';
   import Button from './Button.svelte';
   import IconButton from './IconButton.svelte';
+  import Popover from './Popover.svelte';
+  import InputField from './InputField.svelte';
 
   let { page = $bindable(1), totalItems, itemsPerPage = $bindable(25) } = $props();
   const itemsPerPageOptions = [10, 15, 20, 25, 50, 100, 200, 250, 500];
   const totalPages = $derived(Math.ceil(totalItems / itemsPerPage));
+  let customPage = $state('');
 
   const pageNumbers = $derived(() => {
     if (totalPages <= 5) {
@@ -31,43 +34,70 @@
     return pages;
   });
 
+  function handleCustomPage() {
+    let cPage = Math.floor(Number(customPage));
+    console.log(cPage);
+    if (cPage > 0 && cPage <= totalPages) {
+      page = cPage;
+    }
+  }
+
   $effect(() => {
     page = itemsPerPage && 1; // Whenever items per page changes reset page to 1
   });
 </script>
 
-<div class="flex justify-center items-center gap-1">
-  <select
-    type="text"
-    size="1"
-    class="border-2 outline-none px-1 border-amber-500 dark:border-amber-700 rounded appearance-none text-amber-700 dark:text-amber-500 text-center"
-    bind:value={itemsPerPage}
-  >
-    {#each itemsPerPageOptions as p}
-      <option
-        class="bg-amber-50 dark:bg-amber-900 text-amber-900 dark:text-amber-50 font-semibold"
-        value={p}
-      >
-        {p}
-      </option>
+{#if totalPages <= 1}
+  <span></span>
+{:else}
+  <div class="flex justify-center items-center gap-1">
+    <select
+      type="text"
+      size="1"
+      class="border-2 outline-none px-1 border-amber-500 dark:border-amber-700 rounded appearance-none text-amber-700 dark:text-amber-500 text-center"
+      bind:value={itemsPerPage}
+    >
+      {#each itemsPerPageOptions as p}
+        <option
+          class="bg-amber-50 dark:bg-amber-900 text-amber-900 dark:text-amber-50 font-semibold"
+          value={p}
+        >
+          {p}
+        </option>
+      {/each}
+    </select>
+
+    <Button size="xs" radius="sm" disabled={page === 1} onclick={() => (page = page - 1)}>
+      <LucideChevronLeft />
+    </Button>
+
+    {#each pageNumbers() as p}
+      {#if p !== '...'}
+        <Button size="sm" color={page === p ? 'primary' : 'accent'} onclick={() => (page = p)}>
+          {p}
+        </Button>
+      {:else}
+        <span class="text-amber-600">&hellip;</span>
+      {/if}
     {/each}
-  </select>
 
-  <Button size="xs" radius="sm" disabled={page === 1} onclick={() => (page = page - 1)}>
-    <LucideChevronLeft />
-  </Button>
+    <Button size="xs" radius="sm" disabled={page === totalPages} onclick={() => (page = page + 1)}>
+      <LucideChevronRight />
+    </Button>
 
-  {#each pageNumbers() as p}
-    {#if p !== '...'}
-      <Button size="sm" color={page === p ? 'primary' : 'accent'} onclick={() => (page = p)}>
-        {p}
-      </Button>
-    {:else}
-      <span class="text-amber-600">&hellip;</span>
-    {/if}
-  {/each}
-
-  <Button size="xs" radius="sm" disabled={page === totalPages} onclick={() => (page = page + 1)}>
-    <LucideChevronRight />
-  </Button>
-</div>
+    <Popover triggerAction="click" size="xs" radius="sm" class="mt-1!">
+      {#snippet trigger()}
+        <FileInput />
+      {/snippet}
+      <div class="flex gap-2 items-center rounded p-2">
+        <InputField
+          placeholder="Go to Page"
+          class="w-26! mb-0! appearance-none"
+          bind:value={customPage}
+          type="number"
+        />
+        <Button onclick={handleCustomPage}>Go</Button>
+      </div>
+    </Popover>
+  </div>
+{/if}
