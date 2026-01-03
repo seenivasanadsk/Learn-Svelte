@@ -1,4 +1,5 @@
 <script>
+  import { keyboardEventBus } from '$lib/utils/eventBus';
   import Button from './Button.svelte';
 
   /* ---------- PROPS ---------- */
@@ -10,7 +11,9 @@
     position = 'top-center',
     size = '',
     radius = '',
-    triggerAction = 'mouseenter' // 'mouseenter' | 'click' | 'focus'
+    open = false,
+    triggerAction = 'mouseenter', // 'mouseenter' | 'click' | 'focus'
+    ...props
   } = $props();
 
   /* ---------- STATE ---------- */
@@ -82,20 +85,33 @@
       container.querySelector('input')?.focus();
     }
   });
+
+  function onKeyDown(e) {
+    if (e.key !== 'Escape') return;
+
+    // close only if this popover is active
+    if (show && container?.contains(document.activeElement)) {
+      show = false;
+      lastTriggeredEvent = '';
+    }
+  }
 </script>
 
 <!-- ---------- WRAPPER ---------- -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class="relative inline-block {userClass}"
   bind:this={container}
   onfocus={() => toggleShow('focus')}
   onblur={() => toggleShow('blur')}
+  onkeydown={onKeyDown}
   use:clickOutside={() => {
     if (lastTriggeredEvent === 'click') {
       show = false;
       lastTriggeredEvent = '';
     }
   }}
+  {...props}
 >
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -109,11 +125,11 @@
     {@render trigger()}
   </Button>
 
-  {#if show}
+  {#if triggerAction == 'manual' ? open : show}
     <div
       class="
         absolute z-50 p-2 rounded-md shadow-lg
-        bg-white dark:bg-amber-950/50
+        bg-white dark:bg-amber-950
         {positionConfig[position]} {popoverClass}
       "
     >
@@ -121,7 +137,7 @@
       <svg class="absolute {svgConfig[position]}" width="16" height="8" viewBox="0 0 16 8">
         <path
           d="M0 0 L8 8 L16 0 Z"
-          class="fill-white dark:fill-amber-950/50"
+          class="fill-white dark:fill-amber-950"
           filter={position.startsWith('top')
             ? 'drop-shadow(0 1px 1px rgb(0 0 0 / 0.2))'
             : undefined}

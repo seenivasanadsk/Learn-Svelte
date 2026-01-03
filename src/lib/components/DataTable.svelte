@@ -4,8 +4,11 @@
   import IconButton from './Button.svelte';
   import Badge from './Badge.svelte';
   import Pagination from './Pagination.svelte';
+  import Popover from './Popover.svelte';
+  import InputField from './InputField.svelte';
 
   const options = $state({ page: 1 });
+  let open = $state(false);
 </script>
 
 <div class="h-full font-semibold">
@@ -25,10 +28,27 @@
       <div class="flex-1 flex items-center gap-2 justify-center">Internal Navigation</div>
 
       <!-- Header Right -->
-      <div class="flex-1 flex justify-end gap-2">
+      <div class="flex-1 flex justify-end gap-2 items-center">
         <IconButton><Table /></IconButton>
-        <IconButton><Search /></IconButton>
+
+        <!-- Filter Popover -->
         <IconButton><Funnel /></IconButton>
+
+        <!-- Search Popover -->
+        <Popover
+          size="md"
+          radius="md"
+          position="bottom-center"
+          triggerAction="manual"
+          popoverClass="w-58"
+          {open}
+          onclick={() => (open = true)}
+        >
+          {#snippet trigger()}
+            <Search />
+          {/snippet}
+          <InputField placeholder="Search..." prefix={Search} autoFocus={open} />
+        </Popover>
         <Button prefix={CirclePlus} color="success">New Entry</Button>
       </div>
     </div>
@@ -84,7 +104,7 @@
 
       <!-- Footer Center -->
       <div class="flex-1 text-gray-600 dark:text-gray-400 flex justify-center">
-        <Pagination bind:page={options.page} totalItems={1000} />
+        <Pagination bind:page={options.page} totalItems={300} />
       </div>
 
       <!-- Footer Right -->
