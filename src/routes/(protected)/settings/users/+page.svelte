@@ -4,9 +4,9 @@
 </script>
 
 <div class="flex h-full justify-center items-center">
-  <Popover>
+  <Popover position="bottom-right">
     {#snippet trigger()}
-      <Button>Test</Button>
+      <Button>Testing Numbers</Button>
     {/snippet}
     <div>
       Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae ratione nam eius
