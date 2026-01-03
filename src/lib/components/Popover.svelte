@@ -1,6 +1,5 @@
 <script>
   import { keyboardEventBus } from '$lib/utils/eventBus';
-  import Button from './Button.svelte';
 
   /* ---------- PROPS ---------- */
   const {
@@ -9,16 +8,10 @@
     class: userClass = '',
     popoverClass = '',
     position = 'top-center',
-    size = '',
-    radius = '',
-    open = false,
-    triggerAction = 'mouseenter', // 'mouseenter' | 'click' | 'focus'
+    show = false,
     ...props
   } = $props();
 
-  /* ---------- STATE ---------- */
-  let show = $state(false);
-  let lastTriggeredEvent = $state('');
   let container;
 
   /* ---------- POSITION MAPS ---------- */
@@ -40,92 +33,23 @@
     'bottom-right': '-top-2 rotate-180 right-4'
   };
 
-  /* ---------- TOGGLE LOGIC ---------- */
-  function toggleShow(eventType) {
-    if (lastTriggeredEvent === 'mouseenter' && eventType === 'mouseleave') {
-      show = false;
-      lastTriggeredEvent = '';
-      return;
-    }
-
-    if (
-      (lastTriggeredEvent === 'click' || lastTriggeredEvent === 'focus') &&
-      eventType === 'blur'
-    ) {
-      show = false;
-      lastTriggeredEvent = '';
-      return;
-    }
-
-    if (eventType === triggerAction) {
-      show = true;
-      lastTriggeredEvent = eventType;
-    }
-  }
-
-  /* ---------- CLICK OUTSIDE ACTION ---------- */
-  function clickOutside(node, handler) {
-    const handle = (event) => {
-      if (!node.contains(event.target)) {
-        handler(event);
-      }
-    };
-
-    document.addEventListener('click', handle, true);
-
-    return {
-      destroy() {
-        document.removeEventListener('click', handle, true);
-      }
-    };
-  }
-
   $effect(() => {
     if (show) {
       container.querySelector('input')?.focus();
     }
   });
-
-  function onKeyDown(e) {
-    if (e.key !== 'Escape') return;
-
-    // close only if this popover is active
-    if (show && container?.contains(document.activeElement)) {
-      show = false;
-      lastTriggeredEvent = '';
-    }
-  }
 </script>
 
 <!-- ---------- WRAPPER ---------- -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class="relative inline-block {userClass}"
   bind:this={container}
-  onfocus={() => toggleShow('focus')}
-  onblur={() => toggleShow('blur')}
-  onkeydown={onKeyDown}
-  use:clickOutside={() => {
-    if (lastTriggeredEvent === 'click') {
-      show = false;
-      lastTriggeredEvent = '';
-    }
-  }}
   {...props}
+  onblur={(e) => console.log(e)}
 >
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <Button
-    onmouseenter={() => toggleShow('mouseenter')}
-    onmouseleave={() => toggleShow('mouseleave')}
-    onclick={() => toggleShow('click')}
-    {size}
-    {radius}
-  >
-    {@render trigger()}
-  </Button>
+  {@render trigger()}
 
-  {#if triggerAction == 'manual' ? open : show}
+  {#if show}
     <div
       class="
         absolute z-50 p-2 rounded-md shadow-lg

@@ -5,10 +5,14 @@
   import Popover from './Popover.svelte';
   import InputField from './InputField.svelte';
 
-  let { page = $bindable(1), totalItems, itemsPerPage = $bindable(25) } = $props();
   const itemsPerPageOptions = [10, 15, 20, 25, 50, 100, 200, 250, 500];
-  const totalPages = $derived(Math.ceil(totalItems / itemsPerPage));
+
+  let { page = $bindable(1), totalItems, itemsPerPage = $bindable(25) } = $props();
+
   let customPage = $state('');
+  let showCustomPage = $state(false);
+
+  const totalPages = $derived(Math.ceil(totalItems / itemsPerPage));
 
   const pageNumbers = $derived(() => {
     if (totalPages <= 5) {
@@ -85,9 +89,11 @@
       <LucideChevronRight />
     </Button>
 
-    <Popover triggerAction="click" size="xs" radius="sm" class="mt-1!">
+    <Popover class="mt-1!" show={showCustomPage} onblur={() => (showCustomPage = false)}>
       {#snippet trigger()}
-        <FileInput />
+        <Button onclick={() => (showCustomPage = true)} size="xs" radius="sm">
+          <FileInput />
+        </Button>
       {/snippet}
       <div class="flex gap-2 items-center rounded p-2">
         <InputField
