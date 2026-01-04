@@ -1,14 +1,34 @@
 <script>
-  import { CirclePlus, Funnel, Search, Table } from 'lucide-svelte';
+  import { CirclePlus, Funnel, IdCard, Search, Table } from 'lucide-svelte';
   import Button from './Button.svelte';
   import IconButton from './Button.svelte';
   import Badge from './Badge.svelte';
   import Pagination from './Pagination.svelte';
   import Popover from './Popover.svelte';
   import InputField from './InputField.svelte';
+  import { keyboardEventBus } from '$lib/utils/eventBus';
 
   const options = $state({ page: 1 });
   let showSearchBar = $state(false);
+  let showTable = $state(true);
+
+  function toggleSearchBar(type = null) {
+    showSearchBar = type == null ? !showSearchBar : type;
+  }
+
+  function toggleTable(_, type = null) {
+    console.log(type == null ? !showTable : type);
+    showTable = type == null ? !showTable : type;
+  }
+
+  $effect(() => {
+    keyboardEventBus.on('7', toggleTable);
+    keyboardEventBus.on('8', toggleSearchBar);
+    return () => {
+      keyboardEventBus.off('7', toggleTable);
+      keyboardEventBus.off('8', toggleSearchBar);
+    };
+  });
 </script>
 
 <div class="h-full font-semibold">
@@ -29,10 +49,13 @@
 
       <!-- Header Right -->
       <div class="flex-1 flex justify-end gap-2 items-center">
-        <IconButton><Table /></IconButton>
-
-        <!-- Filter Popover -->
-        <IconButton><Funnel /></IconButton>
+        <IconButton onclick={toggleTable}>
+          {#if showTable}
+            <IdCard />
+          {:else}
+            <Table />
+          {/if}
+        </IconButton>
 
         <!-- Search Popover -->
         <Popover
@@ -49,8 +72,12 @@
               <Search />
             </Button>
           {/snippet}
-          <InputField placeholder="Search..." prefix={Search} autoFocus={open} />
+          <InputField placeholder="Search..." prefix={Search} />
         </Popover>
+
+        <!-- Filter Popover -->
+        <IconButton><Funnel /></IconButton>
+
         <Button prefix={CirclePlus} color="success">New Entry</Button>
       </div>
     </div>

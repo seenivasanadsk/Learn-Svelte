@@ -1,13 +1,19 @@
-// src/lib/utils/keyboardEventBus.js
+// src/lib/utils/eventBus.js
 
 const shortcuts = new Map();
+let initialized = false;
 
 /**
  * Normalize shortcut string
- * Example: "Ctrl+Shift+K" → "ctrl+shift+k"
+ * Example: "Ctrl+Shift+K" → "ctrl+k+shift"
  */
 function normalizeShortcut(shortcut) {
-  return shortcut.toLowerCase().replace(/\s+/g, '').split('+').sort().join('+');
+  return shortcut
+    .toLowerCase()
+    .replace(/\s+/g, '')
+    .split('+')
+    .sort()
+    .join('+');
 }
 
 /**
@@ -31,12 +37,53 @@ function getShortcutFromEvent(e) {
   return keys.sort().join('+');
 }
 
+/**
+ * Detect whether user is typing into a text-accepting element
+ */
+function isTextInputFocused() {
+  const el = document.activeElement;
+  if (!el) return false;
+
+  // contenteditable
+  if (el.isContentEditable) return true;
+
+  // textarea
+  if (el.tagName === 'TEXTAREA') return true;
+
+  // input types that accept typing
+  if (el.tagName === 'INPUT') {
+    const type = el.type;
+    return ![
+      'button',
+      'submit',
+      'checkbox',
+      'radio',
+      'range',
+      'file',
+      'color'
+    ].includes(type);
+  }
+
+  return false;
+}
+
+/**
+ * Global keydown handler
+ */
 function handleKeydown(e) {
-  if (!e.key) return true; // When user clicked Saved Password it doesnot contain 'key'
+  if (!e.key) return;
+
+  const isModifierCombo = e.ctrlKey || e.metaKey || e.altKey;
+
+  // 🚫 Block shortcuts while typing (allow modifier combos)
+  if (isTextInputFocused() && !isModifierCombo) {
+    return;
+  }
+
   const shortcut = getShortcutFromEvent(e);
   const handlers = shortcuts.get(shortcut);
 
-  if (!handlers) return;
+  if (!handlers || handlers.size === 0) return;
 
   e.preventDefault();
 
@@ -49,14 +96,18 @@ function handleKeydown(e) {
   });
 }
 
-let initialized = false;
-
+/**
+ * Initialize global listener
+ */
 function init() {
   if (initialized || typeof window === 'undefined') return;
   window.addEventListener('keydown', handleKeydown);
   initialized = true;
 }
 
+/**
+ * Destroy all listeners
+ */
 function destroy() {
   if (!initialized) return;
   window.removeEventListener('keydown', handleKeydown);
@@ -67,8 +118,9 @@ function destroy() {
 export const keyboardEventBus = {
   /**
    * Register shortcut
-   * @param {string} shortcut e.g. "Ctrl+K"
+   * @param {string} shortcut e.g. "Ctrl+K", "1", "numpad1"
    * @param {Function} handler
+   * @returns {Function} unsubscribe
    */
   on(shortcut, handler) {
     init();
@@ -112,7 +164,7 @@ export const keyboardEventBus = {
   },
 
   /**
-   * Cleanup (use on app destroy)
+   * Cleanup (use on app destroy if needed)
    */
   destroy
 };
