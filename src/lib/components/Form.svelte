@@ -14,6 +14,7 @@
     cancelButtonText = 'Cancel',
     extraButtons,
     description,
+    class: userClass = '',
     hideSubmitButton = false,
     ...props
   } = $props();
@@ -38,14 +39,14 @@
 </script>
 
 <form
-  class="bg-white dark:bg-amber-950/30 shadow-md rounded-md"
+  class="bg-white dark:bg-amber-950/30 shadow-md rounded-lg {userClass}"
   {...props}
   bind:this={formEl}
   use:conditionalEnhance={enhanceAction}
 >
   <!-- Card Header -->
   <div
-    class="border-b-2 border-amber-200 dark:border-amber-900 bg-amber-100 dark:bg-amber-950 px-3 py-2 flex justify-between rounded-t-md"
+    class="border-b-2 border-amber-200 dark:border-amber-900 bg-amber-100 dark:bg-amber-950 px-3 py-2 flex justify-between rounded-t-lg"
   >
     <div>
       <h1 class="text-2xl font-semibold text-amber-900 dark:text-amber-100">{title}</h1>
@@ -73,7 +74,7 @@
 
   <!-- Card Footer -->
   <div
-    class="border-t-2 border-amber-200 dark:border-amber-900 bg-amber-100 dark:bg-amber-950 px-3 py-2 flex gap-2 justify-end rounded-b-md"
+    class="border-t-2 border-amber-200 dark:border-amber-900 bg-amber-100 dark:bg-amber-950 px-3 py-2 flex gap-2 justify-end rounded-b-lg"
   >
     <Button color="success" type="submit" class={hideSubmitButton && 'invisible'}>
       {#if loading}

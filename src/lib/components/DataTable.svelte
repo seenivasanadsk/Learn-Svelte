@@ -7,26 +7,32 @@
   import Popover from './Popover.svelte';
   import InputField from './InputField.svelte';
   import { keyboardEventBus } from '$lib/utils/eventBus';
+  import FilterModel from './FilterModel.svelte';
 
   const options = $state({ page: 1 });
   let showSearchBar = $state(false);
   let showTable = $state(true);
+  let openFilter = $state(false);
 
   function toggleSearchBar(type = null) {
     showSearchBar = type == null ? !showSearchBar : type;
   }
 
   function toggleTable(_, type = null) {
-    console.log(type == null ? !showTable : type);
     showTable = type == null ? !showTable : type;
   }
+
+  const handleOpenFilter = () => (openFilter = true);
+  const handleCloseFilter = () => (openFilter = false);
 
   $effect(() => {
     keyboardEventBus.on('7', toggleTable);
     keyboardEventBus.on('8', toggleSearchBar);
+    keyboardEventBus.on('9', handleOpenFilter);
     return () => {
       keyboardEventBus.off('7', toggleTable);
       keyboardEventBus.off('8', toggleSearchBar);
+      keyboardEventBus.off('9', handleOpenFilter);
     };
   });
 </script>
@@ -76,7 +82,9 @@
         </Popover>
 
         <!-- Filter Popover -->
-        <IconButton><Funnel /></IconButton>
+        <FilterModel open={openFilter} onOpen={handleOpenFilter} onClose={handleCloseFilter}>
+          <IconButton><Funnel /></IconButton>
+        </FilterModel>
 
         <Button prefix={CirclePlus} color="success">New Entry</Button>
       </div>
