@@ -8,7 +8,7 @@
   import InputField from './InputField.svelte';
 
   const options = $state({ page: 1 });
-  let open = $state(false);
+  let showSearchBar = $state(false);
 </script>
 
 <div class="h-full font-semibold">
@@ -41,11 +41,13 @@
           position="bottom-center"
           triggerAction="manual"
           popoverClass="w-58"
-          {open}
-          onclick={() => (open = true)}
+          show={showSearchBar}
+          onClose={() => (showSearchBar = false)}
         >
           {#snippet trigger()}
-            <Search />
+            <Button onclick={() => (showSearchBar = !showSearchBar)}>
+              <Search />
+            </Button>
           {/snippet}
           <InputField placeholder="Search..." prefix={Search} autoFocus={open} />
         </Popover>

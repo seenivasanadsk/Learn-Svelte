@@ -1,7 +1,6 @@
 <script>
   import { FileInput, LucideChevronLeft, LucideChevronRight } from 'lucide-svelte';
   import Button from './Button.svelte';
-  import IconButton from './IconButton.svelte';
   import Popover from './Popover.svelte';
   import InputField from './InputField.svelte';
 
@@ -40,9 +39,10 @@
 
   function handleCustomPage() {
     let cPage = Math.floor(Number(customPage));
-    console.log(cPage);
     if (cPage > 0 && cPage <= totalPages) {
       page = cPage;
+      customPage = '';
+      showCustomPage = false;
     }
   }
 
@@ -89,9 +89,9 @@
       <LucideChevronRight />
     </Button>
 
-    <Popover class="mt-1!" show={showCustomPage} onblur={() => (showCustomPage = false)}>
+    <Popover class="mt-1!" show={showCustomPage} onClose={() => (showCustomPage = false)}>
       {#snippet trigger()}
-        <Button onclick={() => (showCustomPage = true)} size="xs" radius="sm">
+        <Button onclick={() => (showCustomPage = !showCustomPage)} size="xs" radius="sm">
           <FileInput />
         </Button>
       {/snippet}
@@ -101,6 +101,13 @@
           class="w-26! mb-0! appearance-none"
           bind:value={customPage}
           type="number"
+          min="1"
+          max={totalPages}
+          onkeydown={(e) => {
+            if (e.key === 'Enter') {
+              handleCustomPage();
+            }
+          }}
         />
         <Button onclick={handleCustomPage}>Go</Button>
       </div>

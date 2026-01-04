@@ -1,5 +1,5 @@
 <script>
-  import { keyboardEventBus } from '$lib/utils/eventBus';
+  import { onMount } from 'svelte';
 
   /* ---------- PROPS ---------- */
   const {
@@ -9,10 +9,14 @@
     popoverClass = '',
     position = 'top-center',
     show = false,
+    closeOnOutsideClick = true,
+    closeOnEscape = true,
+    onClose = () => {},
     ...props
   } = $props();
 
   let container;
+  let popoverElement;
 
   /* ---------- POSITION MAPS ---------- */
   const positionConfig = {
@@ -33,20 +37,57 @@
     'bottom-right': '-top-2 rotate-180 right-4'
   };
 
+  function handleClickOutside(event) {
+    if (!closeOnOutsideClick || !show) return;
+
+    // Check if click is outside both container and popover
+    const isOutside =
+      !container.contains(event.target) &&
+      (!popoverElement || !popoverElement.contains(event.target));
+
+    if (isOutside) {
+      onClose();
+    }
+  }
+
+  function handleEscapeKey(event) {
+    if (closeOnEscape && show && event.key === 'Escape') {
+      onClose();
+    }
+  }
+
+  // Handle outside clicks and escape key
   $effect(() => {
     if (show) {
-      container.querySelector('input')?.focus();
+      // Focus the first input element when popover opens
+      setTimeout(() => {
+        const input = popoverElement?.querySelector('input, button');
+        input?.focus();
+      }, 0);
+
+      // Add event listeners
+      if (closeOnOutsideClick) {
+        document.addEventListener('mousedown', handleClickOutside);
+      }
+      if (closeOnEscape) {
+        document.addEventListener('keydown', handleEscapeKey);
+      }
+
+      // Cleanup function
+      return () => {
+        if (closeOnOutsideClick) {
+          document.removeEventListener('mousedown', handleClickOutside);
+        }
+        if (closeOnEscape) {
+          document.removeEventListener('keydown', handleEscapeKey);
+        }
+      };
     }
   });
 </script>
 
 <!-- ---------- WRAPPER ---------- -->
-<div
-  class="relative inline-block {userClass}"
-  bind:this={container}
-  {...props}
-  onblur={(e) => console.log(e)}
->
+<div class="relative inline-block {userClass}" bind:this={container} {...props}>
   {@render trigger()}
 
   {#if show}
@@ -56,6 +97,7 @@
         bg-white dark:bg-amber-950
         {positionConfig[position]} {popoverClass}
       "
+      bind:this={popoverElement}
     >
       <!-- ---------- ARROW ---------- -->
       <svg class="absolute {svgConfig[position]}" width="16" height="8" viewBox="0 0 16 8">
