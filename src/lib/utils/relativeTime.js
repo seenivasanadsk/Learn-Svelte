@@ -1,8 +1,8 @@
 // src\lib\utils\relativeTime.js
 
-export function timeAgo(date, locale = 'en') {
+export function timeAgo(date = new Date(), comparableDate = new Date(), locale = 'en') {
   date = new Date(date)
-  const now = new Date();
+  const now = new Date(comparableDate);
   const diffSec = (date - now) / 1000;
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
 
@@ -29,9 +29,8 @@ export function timeAgo(date, locale = 'en') {
 /**
  * Today / Yesterday / Tomorrow — exact logic
  */
-export function timeAgoSmart(date, locale = 'en') {
-  date = new Date(date)
-  const now = new Date();
+export function timeAgoSmart(date, comparableDate = new Date(), locale = 'en') {
+  const now = new Date(comparableDate);
   const d1 = new Date(date).setHours(0, 0, 0, 0);
   const d2 = new Date(now).setHours(0, 0, 0, 0);
   const diffDays = (d1 - d2) / (24 * 60 * 60 * 1000);
@@ -40,5 +39,5 @@ export function timeAgoSmart(date, locale = 'en') {
   if (diffDays === -1) return 'Yesterday';
   if (diffDays === 1) return 'Tomorrow';
 
-  return timeAgo(date, locale);
+  return timeAgo(date, comparableDate, locale);
 }

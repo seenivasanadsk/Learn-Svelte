@@ -1,19 +1,24 @@
 <script>
   import DataTable from '$lib/components/DataTable.svelte';
   import FilterModel from '$lib/components/FilterModel.svelte';
-  import { syncOff, syncOn } from '$lib/core/client/sseReceiver.js';
+  import { syncOff, syncOn, updatesOff, updatesOn } from '$lib/core/client/sseReceiver.js';
   let { data } = $props();
+  let items = $state(data?.listData?.items || []);
 
   $effect(() => {
-    syncOn('USER_UPDATED');
+    updatesOn('USER_UPDATED', (event) => {
+      console.log('Recived Event', event);
+      let findIndex = items.findIndex((i) => i._id === event.data?._id);
+      items[findIndex] = event.data;
+    });
     return () => {
-      syncOff('USER_UPDATED');
+      updatesOff('USER_UPDATED');
     };
   });
 </script>
 
 <DataTable
-  items={data?.listData?.items || []}
+  {items}
   headers={data?.listData?.headers || []}
   total={data?.listData?.total || 0}
   showed={data?.listData?.showed || 0}

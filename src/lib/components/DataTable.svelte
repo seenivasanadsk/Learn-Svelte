@@ -17,6 +17,7 @@
   let showSearchBar = $state(false);
   let showTable = $state(true);
   let openFilter = $state(false);
+  let now = $state(new Date());
 
   function toggleSearchBar(type = null) {
     showSearchBar = type == null ? !showSearchBar : type;
@@ -28,6 +29,14 @@
 
   const handleOpenFilter = () => (openFilter = true);
   const handleCloseFilter = () => (openFilter = false);
+
+  $effect(() => {
+    const timeSync = setInterval(() => {
+      now = new Date();
+    }, 1000);
+
+    return () => clearInterval(timeSync);
+  });
 
   $effect(() => {
     keyboardEventBus.on('7', toggleTable);
@@ -184,17 +193,17 @@
   {:else if header.valuePath == 'createdBy'}
     <!-- CreatedBy Fields -->
     <span title={getFormattedTimeStamp(value)}>
-      {timeAgoSmart(value)}
+      {timeAgoSmart(value, now)}
     </span>
   {:else if header.valuePath == 'updatedBy'}
     <!-- UpdatedBy Fields -->
     <span title={getFormattedTimeStamp(value)}>
-      {timeAgoSmart(value)}
+      {timeAgoSmart(value, now)}
     </span>
   {:else if header.display == 'datetime'}
     <!-- Date Time Fields -->
     <span title={getFormattedTimeStamp(value)}>
-      {timeAgoSmart(value)}
+      {timeAgoSmart(value, now)}
     </span>
   {:else}
     <!-- Fallback to exact value -->

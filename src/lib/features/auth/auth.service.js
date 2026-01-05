@@ -24,6 +24,7 @@ import {
   findSessionByToken,
   findSessionByUsername
 } from './session.repository';
+import { emit } from '$lib/core/server/sseBus';
 
 export async function loginService(username, password) {
   const maxAge = env.SESSION_MAX_AGE || 60 * 60 * 24; // 1 days in sesconds
@@ -32,7 +33,7 @@ export async function loginService(username, password) {
     return { message: 'Username and password are required', ok: false };
   }
 
-  const user = await getUserByUsername(username);
+  const user = await getUserByUsername(username, true);
 
   if (!user) {
     return { message: 'Invalid username or password', ok: false };
@@ -85,6 +86,8 @@ export async function logoutService(storedSession) {
   }
 
   await updateUser(userId, { lastLogout: new Date() })
+  const updatedUser = await getUserById(userId)
+  emit({ type: 'USER_UPDATED', data: updatedUser })
 
   return {
     ok: true,
@@ -97,7 +100,7 @@ export async function forceLogoutService(username, password) {
     return { message: 'Username and password are required', ok: false };
   }
 
-  const user = await getUserByUsername(username);
+  const user = await getUserByUsername(username, true);
 
   if (!user) {
     return { message: 'Invalid username or password', ok: false };
@@ -120,6 +123,8 @@ export async function forceLogoutService(username, password) {
   }
 
   await updateUser(user._id, { lastLogout: new Date() })
+  const updatedUser = await getUserById(user._id)
+  emit({ type: 'USER_UPDATED', data: updatedUser })
 
   return {
     ok: true,
@@ -171,6 +176,8 @@ export async function verifySession(session) {
   }
 
   await updateUser(userId, { lastAccess: new Date() })
+  const updatedUser = await getUserById(userId)
+  emit({ type: 'USER_UPDATED', data: updatedUser })
 
   return {
     ok: true,

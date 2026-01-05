@@ -24,14 +24,14 @@ export async function getAllUsernames() {
     .toArray();
 }
 
-export async function getUserByUsername(username) {
+export async function getUserByUsername(username, getHasedPassword = false) {
   const collection = await getCollection(COLLECTION_NAME);
-  return await collection.findOne({ username: username });
+  return await collection.findOne({ username: username }, { projection: getHasedPassword ? {} : HIDE_FIELDS });
 }
 
 export async function getUserById(userId) {
   const collection = await getCollection(COLLECTION_NAME);
-  return await collection.findOne({ _id: new ObjectId(userId) });
+  return await collection.findOne({ _id: new ObjectId(userId) }, { projection: HIDE_FIELDS });
 }
 
 export async function changePassword(userId, hashedPassword) {

@@ -40,5 +40,5 @@
 
 <!-- Mark content for teleporting -->
 <div data-teleport-content>
-  <slot />
+  {@render children()}
 </div>
