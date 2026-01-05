@@ -1,5 +1,5 @@
 <script>
-  import { CirclePlus, Funnel, IdCard, Search, Table } from 'lucide-svelte';
+  import { Check, CirclePlus, Funnel, IdCard, Search, Table, X } from 'lucide-svelte';
   import Button from './Button.svelte';
   import IconButton from './Button.svelte';
   import Badge from './Badge.svelte';
@@ -8,6 +8,10 @@
   import InputField from './InputField.svelte';
   import { keyboardEventBus } from '$lib/utils/eventBus';
   import FilterModel from './FilterModel.svelte';
+  import { timeAgoSmart } from '$lib/utils/relativeTime';
+  import { getFormattedTimeStamp } from '$lib/utils/dateTime';
+
+  let { items, headers, total, showed } = $props();
 
   const options = $state({ page: 1 });
   let showSearchBar = $state(false);
@@ -103,23 +107,27 @@
             class="sticky top-0 z-10 bg-gray-100 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-700"
           >
             <tr class="text-left">
-              <th class="px-2.5 py-1.5 font-semibold">S.No</th>
-              <th class="px-2.5 py-1.5 font-semibold">Test</th>
-              <th class="px-2.5 py-1.5 font-semibold">Name</th>
-              <th class="px-2.5 py-1.5 font-semibold">ADSK</th>
+              <th class="px-2.5 py-1.5 font-semibold text-center">S.No</th>
+              {#each headers as header}
+                <th class="px-2.5 py-1.5 font-semibold text-center">{header.name}</th>
+              {/each}
+              <th class="px-2.5 py-1.5 font-semibold text-center">Action</th>
             </tr>
           </thead>
 
           <tbody>
-            {#each Array.from({ length: 50 }) as _, i}
+            {#each items as item, i}
               <tr
                 class="odd:bg-white even:bg-gray-100 dark:odd:bg-gray-900 dark:even:bg-gray-800
                        hover:bg-amber-100 dark:hover:bg-amber-600/30"
               >
                 <td class="px-2.5 py-1.5 font-medium">{i + 1}</td>
-                <td class="px-2.5 py-1.5">Test</td>
-                <td class="px-2.5 py-1.5">Name</td>
-                <td class="px-2.5 py-1.5">ADSK</td>
+                {#each headers as header}
+                  <td class="px-2.5 py-1.5 {`text-${header.align || 'center'}`}">
+                    {@render tableCell(header, item)}
+                  </td>
+                {/each}
+                <td class="px-2.5 py-1.5 text-center">ADSK</td>
               </tr>
             {/each}
           </tbody>
@@ -141,14 +149,55 @@
 
       <!-- Footer Center -->
       <div class="flex-1 text-gray-600 dark:text-gray-400 flex justify-center">
-        <Pagination bind:page={options.page} totalItems={300} />
+        <Pagination bind:page={options.page} totalItems={showed} />
       </div>
 
       <!-- Footer Right -->
       <div class="flex-1 flex justify-end gap-2">
-        <Badge>Total: {'100'}</Badge>
-        <Badge>Showed: {'50'}</Badge>
+        <Badge>Total: {total}</Badge>
+        {#if total != showed}
+          <Badge>Showed: {showed}</Badge>
+        {/if}
       </div>
     </div>
   </div>
 </div>
+
+<!-- Render Table Cell -->
+{#snippet tableCell(header, item)}
+  {@const value = item[header.valuePath]}
+  {#if typeof value == 'boolean'}
+    <!-- Boolean Fields -->
+    <span class="flex items-center justify-center {value ? 'text-green-500' : 'text-red-500'}">
+      <span class="inline-block border-2 rounded-full mr-1">
+        {#if value}
+          <Check size="15" strokeWidth="3" />
+        {:else}
+          <X size="15" strokeWidth="3" />
+        {/if}
+      </span>
+      {value ? 'Yes' : 'No'}
+    </span>
+  {:else if !value}
+    <!-- FallBack For Empty Value -->
+    <span class="text-gray-500">-</span>
+  {:else if header.valuePath == 'createdBy'}
+    <!-- CreatedBy Fields -->
+    <span title={getFormattedTimeStamp(value)}>
+      {timeAgoSmart(value)}
+    </span>
+  {:else if header.valuePath == 'updatedBy'}
+    <!-- UpdatedBy Fields -->
+    <span title={getFormattedTimeStamp(value)}>
+      {timeAgoSmart(value)}
+    </span>
+  {:else if header.display == 'datetime'}
+    <!-- Date Time Fields -->
+    <span title={getFormattedTimeStamp(value)}>
+      {timeAgoSmart(value)}
+    </span>
+  {:else}
+    <!-- Fallback to exact value -->
+    {item[header?.valuePath]}
+  {/if}
+{/snippet}

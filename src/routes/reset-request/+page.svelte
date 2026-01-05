@@ -12,6 +12,7 @@
   import { timeAgoSmart } from '$lib/utils/relativeTime.js';
 
   import { CircleCheck, Eye, EyeClosed, Hourglass, ShieldCheck } from 'lucide-svelte';
+  import { syncOff, syncOn } from '$lib/core/client/sseReceiver.js';
 
   /* -------------------------------------
    * Props (server data)
@@ -84,6 +85,13 @@
     await tick();
     form.submit();
   }
+
+  $effect(() => {
+    syncOn('RESET_REQUEST_UPDATED');
+    return () => {
+      syncOff('RESET_REQUEST_UPDATED');
+    };
+  });
 </script>
 
 {#snippet divider(number, text)}

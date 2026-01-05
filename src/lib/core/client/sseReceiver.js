@@ -1,6 +1,9 @@
+// src\lib\core\client\sseReceiver.js
+
 import { invalidate } from '$app/navigation';
 
 let source;
+let triggerables = new Set();
 
 export function startSSE() {
   if (source) return;
@@ -13,12 +16,22 @@ export function startSSE() {
 
   source.onmessage = (e) => {
     const event = JSON.parse(e.data);
-    invalidate(event.type);
+    console.log(event)
+    if (triggerables.has(event.type))
+      invalidate(event.type);
   };
 
   source.onerror = () => {
     console.warn('SSE connection lost');
   };
+}
+
+export function syncOn(type) {
+  triggerables.add(type)
+}
+
+export function syncOff(type) {
+  triggerables.delete(type)
 }
 
 export function stopSSE() {

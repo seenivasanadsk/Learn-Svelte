@@ -1,3 +1,5 @@
+// src\lib\core\server\sseBus.js
+
 const clients = new Set();
 
 /**

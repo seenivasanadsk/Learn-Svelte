@@ -1,3 +1,5 @@
+// src\lib\features\auth\auth.service.js
+
 import { env } from '$env/dynamic/private';
 import { ObjectId } from 'mongodb';
 import {

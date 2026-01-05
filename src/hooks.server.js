@@ -1,3 +1,5 @@
+// src\hooks.server.js
+
 import { verifySession } from '$lib/features/auth/auth.service';
 import { redirect } from '@sveltejs/kit';
 
