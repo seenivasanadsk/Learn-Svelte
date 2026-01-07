@@ -29,7 +29,6 @@ export async function load({ locals, depends }) {
 }
 
 function syncSSE() {
-  console.log(new Date())
   emit({ type: 'RESET_REQUEST_UPDATED' });
 }
 
@@ -40,8 +39,6 @@ export const actions = {
     const formData = await request.formData();
     const status = formData.get('status');
     const cancelRequest = formData.get('cancelRequest');
-
-    console.log(status, cancelRequest)
 
     if (cancelRequest === 'YES') {
       const result = await cancelResetRequestService(currentUser);
@@ -70,7 +67,6 @@ export const actions = {
     if (status === 'NEW' || status === 'WAITING') {
       const index = Number(formData.get('approvingIndex'));
       const result = await approveResetRequestService(currentUser, 'WAITING', index);
-      console.log("inside NEW", result)
 
       if (!result?.ok) {
         return fail(400, { message: result.message });

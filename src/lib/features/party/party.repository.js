@@ -6,8 +6,8 @@ export const HIDE_FIELDS = {}
 export const HEADERS = [
   { name: "Name", valuePath: 'name', align: 'left' },
   { name: "Note", valuePath: 'note', align: 'left' },
-  { name: "Created By", valuePath: 'createdBy' },
-  { name: "Updated By", valuePath: 'updatedBy' },
+  { name: "Creater", valuePath: 'createdBy' },
+  { name: "Updater", valuePath: 'updatedBy' },
   { name: "Active", valuePath: 'isActive' },
 ]
 
@@ -33,11 +33,57 @@ export async function updateParty(id, data) {
   return await collection.updateOne({ _id: new ObjectId(id) }, { $set: data });
 }
 
-export async function getParty(filter = {}, projection = {}) {
-  projection = { ...HIDE_FIELDS, ...projection }
+export async function insertParty(data) {
   const collection = await getCollection(COLLECTION_NAME);
-  return await collection.find(filter, { projection }).toArray();
+  return await collection.insertOne(data);
 }
+
+// export async function getParty(filter = {}, projection = {}) {
+//   projection = { ...HIDE_FIELDS, ...projection }
+//   const collection = await getCollection(COLLECTION_NAME);
+//   return await collection.find(filter, { projection }).toArray();
+// }
+
+export async function getParty(filter = {}) {
+  const collection = await getCollection(COLLECTION_NAME);
+
+  return await collection.aggregate([
+    { $match: filter },
+
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'createdBy',
+        foreignField: '_id',
+        as: 'createdByUser'
+      }
+    },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'updatedBy',
+        foreignField: '_id',
+        as: 'updatedByUser'
+      }
+    },
+
+    {
+      $addFields: {
+        createrName: { $first: '$createdByUser.username' },
+        updaterName: { $first: '$updatedByUser.username' }
+      }
+    },
+
+    {
+      $project: {
+        createdByUser: 0,
+        updatedByUser: 0,
+        ...HIDE_FIELDS
+      }
+    }
+  ]).toArray();
+}
+
 
 export async function getTotalPartyCount() {
   const collection = await getCollection(COLLECTION_NAME);

@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 export const ALLOWED_UPDATE_FIELDS = ['name', 'phone', 'note', 'isActive'];
 
 export function partyCreateModel(data, overridableData, seed = false) {
@@ -7,11 +9,11 @@ export function partyCreateModel(data, overridableData, seed = false) {
     phone: input.phone,
     note: input.note,
     createdAt: seed ? null : new Date(),
-    createdBy: seed ? null : input.createdBy,
+    createdBy: seed ? null : new ObjectId(input.createdBy),
     updatedAt: null,
     updatedBy: null,
     seededAt: seed ? new Date() : null,
-    isActive: true,
+    isActive: false,
   };
 }
 
@@ -26,7 +28,7 @@ export function partyUpdateModel(data, overridableData) {
   }
 
   update.updatedAt = new Date();
-  update.updatedBy = input.updatedBy ?? null;
+  update.updatedBy = input?.updatedBy ? new ObjectId(input.updatedBy) : null;
 
   return update;
 }

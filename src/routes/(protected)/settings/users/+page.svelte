@@ -18,7 +18,6 @@
 
   $effect(() => {
     updatesOn('USER_UPDATED', (event) => {
-      console.log('Recived Event', event);
       let findIndex = items.findIndex((i) => i._id === event.data?._id);
       items[findIndex] = event.data;
     });

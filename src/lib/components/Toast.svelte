@@ -11,7 +11,7 @@
   };
 </script>
 
-<div class="fixed bottom-5 right-5 z-30 flex flex-col gap-4">
+<div class="fixed bottom-5 right-5 z-50 flex flex-col gap-4">
   {#each $toasts as toast (toast.id)}
     <div
       class={`

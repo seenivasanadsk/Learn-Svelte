@@ -91,7 +91,7 @@
 
 {#if open}
   <Teleport to="body">
-    <div class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="fixed inset-0 z-30 flex items-center justify-center">
       <!-- Backdrop -->
       <div class="absolute inset-0 bg-black/50" onclick={() => closeOnBackdrop && close()} />
 

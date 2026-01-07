@@ -93,7 +93,7 @@
   {#if show}
     <div
       class="
-        absolute z-50 p-2 rounded-md shadow-lg
+        absolute z-40 p-2 rounded-md shadow-lg
         bg-white dark:bg-amber-950
         {positionConfig[position]} {popoverClass}
       "

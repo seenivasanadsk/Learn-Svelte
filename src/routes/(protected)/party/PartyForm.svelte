@@ -3,23 +3,49 @@
   import Form from '$lib/components/Form.svelte';
   import InputField from '$lib/components/InputField.svelte';
   import MultiField from '$lib/components/MultiField.svelte';
+  import { showToast } from '$lib/stores/toast';
 
   let { onClose } = $props();
+  let phoneField = [
+    { name: 'name', title: 'Name', placeholder: 'Name' },
+    { name: 'number', title: 'Number', placeholder: 'Number' }
+  ];
 
   let data = $state({
     name: '',
     note: '',
-    isActive: false
+    phone: [],
+    isActive: true
   });
 
-  $effect(() => {
-    $inspect(data);
-  });
+  function handleSubmit() {
+    return ({ result }) => {
+      if (result?.data?.message) {
+        showToast(result.data.message, result.type === 'success' ? 'success' : 'danger');
+      }
+      if (result?.type === 'success') {
+        onClose();
+      }
+    };
+  }
 </script>
 
-<Form title="Create Party" submitButtonText={['Create']} cancel={onClose}>
+<Form
+  title="Create Party"
+  submitButtonText={['Create']}
+  cancel={onClose}
+  method="POST"
+  action="?/create"
+  enhance={handleSubmit}
+>
   <InputField placeholder="Name" name="name" bind:value={data.name} autofocus />
   <InputField placeholder="Note" name="note" bind:value={data.note} />
-  <MultiField />
+  <MultiField
+    fields={phoneField}
+    length={1}
+    title="Phone Numbers"
+    fieldName="phone"
+    bind:value={data.phone}
+  />
   <CheckBoxField placeholder="Active" name="isActive" bind:value={data.isActive} />
 </Form>

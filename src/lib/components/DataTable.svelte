@@ -10,6 +10,7 @@
   import FilterModel from './FilterModel.svelte';
   import { timeAgoSmart } from '$lib/utils/relativeTime';
   import { getFormattedTimeStamp } from '$lib/utils/dateTime';
+  import Tooltip from './Tooltip.svelte';
 
   let { items, headers, total, showed, title, openForm, closeForm } = $props();
 
@@ -201,15 +202,41 @@
     <!-- FallBack For Empty Value -->
     <span class="text-gray-500 inline-block w-full text-center">-</span>
   {:else if header.valuePath == 'createdBy'}
+    {@const createdAt = item['createdAt']}
     <!-- CreatedBy Fields -->
-    <span title={getFormattedTimeStamp(value)}>
-      {timeAgoSmart(value, now)}
-    </span>
+    <Tooltip>
+      {#snippet tip()}
+        <div class="flex flex-col gap-1 px-3 py-2 text-sm items-start">
+          <span>{item.createrName}</span>
+          <span>{timeAgoSmart(createdAt, now)}</span>
+          <span>{getFormattedTimeStamp(createdAt)}</span>
+        </div>
+      {/snippet}
+      <div class="flex flex-col">
+        <div class="text-[14px] -mt-1 p-0">{item.createrName}</div>
+        <div class="text-[10px] -mt-1 p-0">
+          {timeAgoSmart(createdAt, now)}
+        </div>
+      </div>
+    </Tooltip>
   {:else if header.valuePath == 'updatedBy'}
+    {@const updatedAt = item['updatedAt']}
     <!-- UpdatedBy Fields -->
-    <span title={getFormattedTimeStamp(value)}>
-      {timeAgoSmart(value, now)}
-    </span>
+    <Tooltip>
+      {#snippet tip()}
+        <div class="flex flex-col gap-1 px-3 py-2 text-sm items-start">
+          <span>{item.updaterName}</span>
+          <span>{timeAgoSmart(updatedAt, now)}</span>
+          <span>{getFormattedTimeStamp(updatedAt)}</span>
+        </div>
+      {/snippet}
+      <div class="flex flex-col">
+        <div class="text-[14px] -mt-1 p-0">{item.updaterName}</div>
+        <div class="text-[10px] -mt-1 p-0">
+          {timeAgoSmart(updatedAt, now)}
+        </div>
+      </div>
+    </Tooltip>
   {:else if header.display == 'datetime'}
     <!-- Date Time Fields -->
     <span title={getFormattedTimeStamp(value)}>
