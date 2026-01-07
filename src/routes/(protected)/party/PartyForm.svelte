@@ -5,18 +5,20 @@
   import MultiField from '$lib/components/MultiField.svelte';
   import { showToast } from '$lib/stores/toast';
 
-  let { onClose } = $props();
+  let { onClose, editableData } = $props();
   let phoneField = [
     { name: 'name', title: 'Name', placeholder: 'Name' },
     { name: 'number', title: 'Number', placeholder: 'Number' }
   ];
 
-  let data = $state({
+  let initData = {
     name: '',
     note: '',
     phone: [],
     isActive: true
-  });
+  };
+
+  let data = $state(editableData?._id ? { ...initData, ...editableData } : initData);
 
   function handleSubmit() {
     return ({ result }) => {
@@ -31,13 +33,16 @@
 </script>
 
 <Form
-  title="Create Party"
-  submitButtonText={['Create']}
+  title={`${editableData?._id ? 'Update' : 'Create'} Party`}
+  submitButtonText={[editableData?._id ? 'Update' : 'Create']}
   cancel={onClose}
   method="POST"
-  action="?/create"
+  action={editableData?._id ? '?/update' : '?/create'}
   enhance={handleSubmit}
 >
+  {#if editableData?.id}
+    <input type="hidden" name="editId" value={editableData.id} />
+  {/if}
   <InputField placeholder="Name" name="name" bind:value={data.name} autofocus />
   <InputField placeholder="Note" name="note" bind:value={data.note} />
   <MultiField

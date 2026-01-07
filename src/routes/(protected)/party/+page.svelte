@@ -2,10 +2,25 @@
   import DataTable from '$lib/components/DataTable.svelte';
   import Model from '$lib/components/Model.svelte';
   import PartyForm from './PartyForm.svelte';
+  import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
 
-  let { data } = $props();
+  const { data } = $props();
 
-  let showForm = $state(false);
+  const showForm = $derived($page.url.searchParams.get('openForm') === 'true');
+
+  function openForm() {
+    const url = new URL($page.url);
+    url.searchParams.set('openForm', 'true');
+    goto(url, { replaceState: true });
+  }
+
+  function closeForm() {
+    const url = new URL($page.url);
+    url.searchParams.delete('openForm');
+    url.searchParams.delete('editId');
+    goto(url, { replaceState: true });
+  }
 </script>
 
 <DataTable
@@ -14,14 +29,9 @@
   total={data?.listData?.total || 0}
   showed={data?.listData?.showed || 0}
   title="Party"
-  openForm={() => (showForm = true)}
+  {openForm}
 />
 
-<Model
-  open={showForm}
-  modelClass="w-full max-w-md"
-  autoFocusTabIndex={1}
-  onClose={() => (showForm = false)}
->
-  <PartyForm onClose={() => (showForm = false)} />
+<Model open={showForm} modelClass="w-full max-w-md" autoFocusTabIndex={1} onClose={closeForm}>
+  <PartyForm onClose={closeForm} editableData={data.editableData} />
 </Model>

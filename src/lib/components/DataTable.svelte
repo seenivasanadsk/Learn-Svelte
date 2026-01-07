@@ -1,5 +1,5 @@
 <script>
-  import { Check, CirclePlus, Funnel, IdCard, Search, Table, X } from 'lucide-svelte';
+  import { Check, CirclePlus, Funnel, IdCard, Pencil, Search, Table, X } from 'lucide-svelte';
   import Button from './Button.svelte';
   import IconButton from './Button.svelte';
   import Badge from './Badge.svelte';
@@ -145,7 +145,20 @@
                     {@render tableCell(header, item)}
                   </td>
                 {/each}
-                <td class="px-2.5 py-1.5 text-center"></td>
+                <td class="px-2.5 py-1.5 text-center">
+                  <a
+                    href={`?editId=${item._id}&openForm=true`}
+                    class="size-6 rounded-full bg-amber-600 text-white
+                    inline-flex items-center justify-center
+                    outline-offset-1
+                    focus-visible:outline-2
+                    hover:outline-2 cursor-pointer
+                    hover:outline-amber-600
+                    focus-visible:outline-amber-600"
+                  >
+                    <span class="leading-none"> <Pencil size="15" strokeWidth="3" /> </span>
+                  </a>
+                </td>
               </tr>
             {/each}
           </tbody>
