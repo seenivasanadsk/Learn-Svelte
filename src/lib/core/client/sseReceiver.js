@@ -32,7 +32,7 @@ export function startSSE() {
       return;
     }
 
-    console.log('SSE event:', event);
+    console.log(`SSE event: ${event.type}`);
 
     // Trigger SvelteKit invalidate
     if (triggerables.has(event.type)) {

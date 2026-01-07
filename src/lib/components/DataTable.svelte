@@ -11,7 +11,7 @@
   import { timeAgoSmart } from '$lib/utils/relativeTime';
   import { getFormattedTimeStamp } from '$lib/utils/dateTime';
 
-  let { items, headers, total, showed } = $props();
+  let { items, headers, total, showed, title, openForm, closeForm } = $props();
 
   const options = $state({ page: 1 });
   let showSearchBar = $state(false);
@@ -41,11 +41,17 @@
   $effect(() => {
     keyboardEventBus.on('7', toggleTable);
     keyboardEventBus.on('8', toggleSearchBar);
+    keyboardEventBus.on('Alt+F', toggleSearchBar);
     keyboardEventBus.on('9', handleOpenFilter);
+    keyboardEventBus.on('0', openForm);
+    keyboardEventBus.on('Alt+N', openForm);
     return () => {
       keyboardEventBus.off('7', toggleTable);
       keyboardEventBus.off('8', toggleSearchBar);
+      keyboardEventBus.off('Alt+F', toggleSearchBar);
       keyboardEventBus.off('9', handleOpenFilter);
+      keyboardEventBus.off('0', openForm);
+      keyboardEventBus.on('Alt+N', openForm);
     };
   });
 </script>
@@ -60,24 +66,26 @@
     >
       <!-- Header Left -->
       <div class="flex-1 flex items-center gap-2">
-        <h1 class="text-3xl font-bold tracking-tight text-amber-950 dark:text-amber-50">Users</h1>
+        <h1 class="text-3xl font-bold tracking-tight text-amber-950 dark:text-amber-50">
+          {title || '[No Title]'}
+        </h1>
       </div>
 
       <!-- Header Center -->
-      <div class="flex-1 flex items-center gap-2 justify-center">Internal Navigation</div>
+      <div class="flex-1 flex items-center gap-2 justify-center"></div>
 
       <!-- Header Right -->
       <div class="flex-1 flex justify-end gap-2 items-center">
-        <IconButton onclick={toggleTable}>
+        <!-- <IconButton onclick={toggleTable}>
           {#if showTable}
             <IdCard />
           {:else}
             <Table />
           {/if}
-        </IconButton>
+        </IconButton> -->
 
         <!-- Search Popover -->
-        <Popover
+        <!-- <Popover
           size="md"
           radius="md"
           position="bottom-center"
@@ -92,14 +100,14 @@
             </Button>
           {/snippet}
           <InputField placeholder="Search..." prefix={Search} />
-        </Popover>
+        </Popover> -->
 
         <!-- Filter Popover -->
-        <FilterModel open={openFilter} onOpen={handleOpenFilter} onClose={handleCloseFilter}>
+        <!-- <FilterModel open={openFilter} onOpen={handleOpenFilter} onClose={handleCloseFilter}>
           <IconButton><Funnel /></IconButton>
-        </FilterModel>
+        </FilterModel> -->
 
-        <Button prefix={CirclePlus} color="success">New Entry</Button>
+        <Button prefix={CirclePlus} color="success" onclick={openForm}>New Entry</Button>
       </div>
     </div>
 
@@ -136,7 +144,7 @@
                     {@render tableCell(header, item)}
                   </td>
                 {/each}
-                <td class="px-2.5 py-1.5 text-center">ADSK</td>
+                <td class="px-2.5 py-1.5 text-center"></td>
               </tr>
             {/each}
           </tbody>
@@ -153,18 +161,20 @@
     >
       <!-- Footer Left -->
       <div class="flex-1 text-gray-600 dark:text-gray-400">
-        <Button>View</Button>
+        <!-- <Button>View</Button> -->
       </div>
 
       <!-- Footer Center -->
       <div class="flex-1 text-gray-600 dark:text-gray-400 flex justify-center">
-        <Pagination bind:page={options.page} totalItems={showed} />
+        <!-- <Pagination bind:page={options.page} totalItems={showed} /> -->
       </div>
 
       <!-- Footer Right -->
       <div class="flex-1 flex justify-end gap-2">
-        <Badge>Total: {total}</Badge>
-        {#if total != showed}
+        {#if total}
+          <Badge>Total: {total}</Badge>
+        {/if}
+        {#if total != showed && showed}
           <Badge>Showed: {showed}</Badge>
         {/if}
       </div>
@@ -189,7 +199,7 @@
     </span>
   {:else if !value}
     <!-- FallBack For Empty Value -->
-    <span class="text-gray-500">-</span>
+    <span class="text-gray-500 inline-block w-full text-center">-</span>
   {:else if header.valuePath == 'createdBy'}
     <!-- CreatedBy Fields -->
     <span title={getFormattedTimeStamp(value)}>

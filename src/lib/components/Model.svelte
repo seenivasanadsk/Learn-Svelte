@@ -8,11 +8,12 @@
     closeOnBackdrop = true,
     closeOnEsc = true,
     children,
-    trigger,
+    trigger = false,
     onOpen = () => {},
     onClose = () => {},
     autoFocusTabIndex = 0,
     class: userClass = '',
+    modelClass = '',
     ...props
   } = $props();
 
@@ -82,9 +83,11 @@
 </script>
 
 <!-- Triggering -->
-<span class={userClass} {...props} onclick={onOpen}>
-  {@render trigger(close)}
-</span>
+{#if trigger}
+  <span class={userClass} {...props} onclick={onOpen}>
+    {@render trigger(close)}
+  </span>
+{/if}
 
 {#if open}
   <Teleport to="body">
@@ -93,7 +96,7 @@
       <div class="absolute inset-0 bg-black/50" onclick={() => closeOnBackdrop && close()} />
 
       <!-- Modal -->
-      <div bind:this={modalEl} role="dialog" aria-modal="true" class="z-10">
+      <div bind:this={modalEl} role="dialog" aria-modal="true" class="z-10 {modelClass}">
         {@render children(close)}
       </div>
     </div>
