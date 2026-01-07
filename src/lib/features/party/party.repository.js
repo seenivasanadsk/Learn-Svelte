@@ -18,9 +18,13 @@ export async function getAllPartyNames() {
     .toArray();
 }
 
-export async function getPartyByPartyName(name) {
+export async function getPartyByPartyName(name, id) {
   const collection = await getCollection(COLLECTION_NAME);
-  return await collection.findOne({ name: name });
+  const filter = { name };
+  if (id) {
+    filter._id = { $ne: new ObjectId(id) };
+  }
+  return await collection.findOne(filter);
 }
 
 export async function getPartyById(id) {

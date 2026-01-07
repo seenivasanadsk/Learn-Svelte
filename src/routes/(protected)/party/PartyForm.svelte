@@ -12,13 +12,13 @@
   ];
 
   let initData = {
-    name: '',
-    note: '',
-    phone: [],
-    isActive: true
+    name: editableData?.name ?? '',
+    note: editableData?.note ?? '',
+    phone: editableData?.phone ?? [],
+    isActive: editableData?._id ? (editableData?.isActive ?? false) : true
   };
 
-  let data = $state(editableData?._id ? { ...initData, ...editableData } : initData);
+  let data = $state(initData);
 
   function handleSubmit() {
     return ({ result }) => {
@@ -40,8 +40,9 @@
   action={editableData?._id ? '?/update' : '?/create'}
   enhance={handleSubmit}
 >
-  {#if editableData?.id}
-    <input type="hidden" name="editId" value={editableData.id} />
+  {#if editableData?._id}
+    <input type="hidden" name="editId" value={editableData._id} />
+    testst
   {/if}
   <InputField placeholder="Name" name="name" bind:value={data.name} autofocus />
   <InputField placeholder="Note" name="note" bind:value={data.note} />

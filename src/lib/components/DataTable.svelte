@@ -217,7 +217,7 @@
   {:else if header.valuePath == 'createdBy'}
     {@const createdAt = item['createdAt']}
     <!-- CreatedBy Fields -->
-    <Tooltip>
+    <Tooltip position="auto">
       {#snippet tip()}
         <div class="flex flex-col gap-1 px-3 py-2 text-sm items-start">
           <span>{item.createrName}</span>
@@ -235,7 +235,7 @@
   {:else if header.valuePath == 'updatedBy'}
     {@const updatedAt = item['updatedAt']}
     <!-- UpdatedBy Fields -->
-    <Tooltip>
+    <Tooltip position="auto">
       {#snippet tip()}
         <div class="flex flex-col gap-1 px-3 py-2 text-sm items-start">
           <span>{item.updaterName}</span>
