@@ -1,6 +1,14 @@
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  /* More darker version of amber color */
+  --color-amber-1000: #2d1202;
+  --color-amber-1100: #1b0b02;
+  --color-amber-1200: #100602;
+  --color-amber-full: #050100;
+}
+
 /* ---------- LIGHT THEME (default) ---------- */
 :root {
   --foreground: #000000;

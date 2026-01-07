@@ -138,7 +138,7 @@
 
 <div
   class="group inline-flex items-center border-2 border-gray-400 rounded-md font-semibold relative
-  focus-within:border-amber-500 w-full mb-3 last:mb-0
+  focus-within:border-amber-500 w-full mb-3 last:mb-0 focus-within:bg-amber-50 dark:focus-within:bg-amber-950
   {(disabled || readonly) && 'bg-gray-100 dark:bg-gray-800'}
   {hasError && 'error'} {userClass}"
 >

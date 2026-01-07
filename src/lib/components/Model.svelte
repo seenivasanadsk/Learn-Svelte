@@ -96,7 +96,12 @@
       <div class="absolute inset-0 bg-black/50" onclick={() => closeOnBackdrop && close()} />
 
       <!-- Modal -->
-      <div bind:this={modalEl} role="dialog" aria-modal="true" class="z-10 {modelClass}">
+      <div
+        bind:this={modalEl}
+        role="dialog"
+        aria-modal="true"
+        class="z-10 max-h-[90vh] overflow-auto rounded-md {modelClass}"
+      >
         {@render children(close)}
       </div>
     </div>

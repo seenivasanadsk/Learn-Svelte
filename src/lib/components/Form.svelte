@@ -39,7 +39,7 @@
 </script>
 
 <form
-  class="bg-white dark:bg-amber-950/30 shadow-md rounded-lg {userClass}"
+  class="bg-white dark:bg-amber-1100 shadow-md rounded-lg {userClass}"
   {...props}
   bind:this={formEl}
   use:conditionalEnhance={enhanceAction}

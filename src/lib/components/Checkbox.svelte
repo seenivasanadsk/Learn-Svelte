@@ -28,7 +28,7 @@
 
 <input type="checkbox" bind:checked={value} class="hidden" />
 <button
-  class="border-2 rounded inline-block size-5 text-center relative overflow-hidden select-none outline-none
+  class="border-2 rounded inline-block size-5 text-center relative overflow-hidden select-none focus:bg-amber-50 dark:focus:bg-amber-950 focus:outline-2 focus:outline-amber-600 outline-offset-1
   {varientStyle[varient]?.border}
   {value ? varientStyle[varient]?.checkedBorder : 'border-gray-400'}"
   onclick={() => (value = !value)}

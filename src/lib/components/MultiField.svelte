@@ -1,10 +1,11 @@
 <script>
   let {
     fields = [
-      { name: 'seeni', title: 'Seeni', placeholder: 'seeni 12', width: '200px' },
-      { name: 'vasan', title: 'Vasan', placeholder: 'vasan 34', width: '250px' }
+      { name: 'name', title: 'Name', placeholder: 'Name' },
+      { name: 'number', title: 'Number', placeholder: 'Number' }
     ],
     length = 3,
+    title = 'Phone Numbers',
     value = $bindable([]),
     disabled = false
   } = $props();
@@ -18,6 +19,7 @@
         return row;
       });
     }
+    $inspect(value);
   });
 
   function updateValue(rowIndex, fieldName, newValue) {
@@ -25,40 +27,57 @@
   }
 </script>
 
-<div class="w-full border-2 border-gray-400 rounded-md overflow-hidden">
-  <!-- HEADER -->
+<div
+  class="overflow-hidden rounded-md border-2 border-gray-400 **:border-gray-400 font-semibold mb-3"
+>
   <div
-    class="grid bg-gray-100 border-b-2 border-gray-400"
-    style="grid-template-columns: {gridTemplate};"
+    class="border-b-2 p-2 text-center font-bold bg-gray-300/50 dark:bg-gray-800/50 flex justify-between"
   >
-    {#each fields as field}
-      <div class="px-4 py-2 font-medium border-r-2 border-gray-400 last:border-r-0">
-        {field.title}
-      </div>
-    {/each}
+    <span>{title}</span>
+    <button
+      class="size-6 rounded-full bg-green-600 text-white
+         inline-flex items-center justify-center
+         text-xl font-bold
+         outline-offset-1
+         focus-visible:outline-2
+         hover:outline-2
+         hover:outline-green-500
+         focus-visible:outline-green-500"
+    >
+      <span class="leading-none -mt-1">+</span>
+    </button>
   </div>
 
-  <!-- ROWS -->
-  {#each value as row, rowIndex}
-    <div
-      class="grid border-b border-gray-300 last:border-b-0
-               {rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}"
-      style="grid-template-columns: {gridTemplate};"
-    >
-      {#each fields as field}
-        <div class="px-2 py-1 border-r border-gray-300 last:border-r-0">
-          <input
-            type="text"
-            placeholder={field.placeholder}
-            class="w-full bg-transparent
-                     outline-none border-none
-                     text-sm"
-            bind:value={row[field.name]}
-            {disabled}
-            oninput={(e) => updateValue(rowIndex, field.name, e.target.value)}
-          />
-        </div>
+  <table class="w-full border-collapse">
+    <thead class="bg-gray-300/50 dark:bg-gray-800/50">
+      <tr class="border-b-2">
+        <th class="px-2 py-1 border-r-2 w-0">#</th>
+        {#each fields as field}
+          <th class="px-2 py-1 border-r-2">{field.title}</th>
+        {/each}
+        <th class="px-2 py-1 w-0">@</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {#each Array.from({ length }) as _, i}
+        <tr class="not-last:border-b-2">
+          <td class="border-r-2 p-1 text-center">{i + 1}</td>
+          {#each fields as { placeholder, ...field }}
+            <td class="border-r-2">
+              <input
+                class="w-full px-2 py-1 focus:outline-amber-500 focus:outline-2 focus:bg-amber-50 dark:focus:bg-amber-950"
+                placeholder={`${placeholder} ${i + 1}`}
+                {...field}
+                oninput={(e) => {
+                  updateValue(i, field.name, e.target.value);
+                }}
+              />
+            </td>
+          {/each}
+          <td class="text-center">{i + 1}</td>
+        </tr>
       {/each}
-    </div>
-  {/each}
+    </tbody>
+  </table>
 </div>
