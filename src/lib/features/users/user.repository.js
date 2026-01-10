@@ -1,42 +1,84 @@
+// src/lib/features/user/user.repository.js
 import { getCollection } from '$lib/core/db';
+import { addDeletableField } from '$lib/core/server/deletable';
 import { ObjectId } from 'mongodb';
 
 export const COLLECTION_NAME = 'users';
-export const HIDE_FIELDS = { hashedPassword: 0 }
+export const HIDE_FIELDS = {};
 export const HEADERS = [
-  { name: "Username", valuePath: 'username', align: 'left' },
-  { name: "Role", valuePath: 'role', align: 'left' },
-  { name: "Last Login", valuePath: 'lastLogin', display: 'datetime' },
-  { name: "Last Access", valuePath: 'lastAccess', display: 'datetime' },
-  { name: "Last Password Reset", valuePath: 'lastPasswordReset', display: 'datetime' },
-  { name: "Last Logout", valuePath: 'lastLogout', display: 'datetime' },
-  // { name: "Created At", valuePath: 'createdAt', display: 'datetime' },
-  { name: "Created By", valuePath: 'createdBy' },
-  // { name: "Updated At", valuePath: 'updatedAt', display: 'datetime' },
-  { name: "Updated By", valuePath: 'updatedBy' },
-  { name: "Active", valuePath: 'isActive' },
-]
+  { name: "Username", valuePath: 'username' },
+  { name: "Email", valuePath: 'email' },
+  { name: "Party", valuePath: 'partyName' },
+  { name: "Substitute Party", valuePath: 'substitutePartyName' },
+  { name: "Active", valuePath: 'isActive', align: 'center' },
+  { name: "Deletable", valuePath: 'isDeletable', align: 'center' },
+];
 
-export async function getAllUsernames() {
+export async function getUsers(filter = {}) {
   const collection = await getCollection(COLLECTION_NAME);
-  return await collection
-    .find({ isActive: true }, { projection: { username: 1, _id: 0 } })
-    .toArray();
+
+  return await collection.aggregate([
+    { $match: filter },
+
+    // Lookup party names (only if your users have partyId field)
+    {
+      $lookup: {
+        from: 'party',
+        localField: 'partyId',
+        foreignField: '_id',
+        as: 'partyData'
+      }
+    },
+    {
+      $lookup: {
+        from: 'party',
+        localField: 'substitutePartyId',
+        foreignField: '_id',
+        as: 'substitutePartyData'
+      }
+    },
+
+    // Add display fields
+    {
+      $addFields: {
+        partyName: { $first: '$partyData.name' },
+        substitutePartyName: { $first: '$substitutePartyData.name' }
+      }
+    },
+
+    ...addDeletableField('users'), // Check if user can be deleted
+
+    {
+      $sort: {
+        // Sort by appropriate field - adjust based on your schema
+        username: 1
+      }
+    },
+
+    {
+      $project: {
+        partyData: 0,
+        substitutePartyData: 0,
+        ...HIDE_FIELDS
+      }
+    }
+  ]).toArray();
 }
 
-export async function getUserByUsername(username, getHasedPassword = false) {
+// Other user repository functions...
+export async function getUserById(id) {
   const collection = await getCollection(COLLECTION_NAME);
-  return await collection.findOne({ username: username }, { projection: getHasedPassword ? {} : HIDE_FIELDS });
+  return await collection.findOne({ _id: new ObjectId(id) });
 }
 
-export async function getUserById(userId) {
+export async function getUserByEmail(email) {
   const collection = await getCollection(COLLECTION_NAME);
-  return await collection.findOne({ _id: new ObjectId(userId) }, { projection: HIDE_FIELDS });
+  return await collection.findOne({ email });
 }
 
-export async function changePassword(userId, hashedPassword) {
+export async function insertUser(data) {
   const collection = await getCollection(COLLECTION_NAME);
-  return await collection.updateOne({ _id: new ObjectId(userId) }, { $set: { hashedPassword, lastPasswordReset: new Date() } });
+  return await collection.insertOne(data);
 }
 
 export async function updateUser(id, data) {
@@ -44,18 +86,14 @@ export async function updateUser(id, data) {
   return await collection.updateOne({ _id: new ObjectId(id) }, { $set: data });
 }
 
-export async function getUsers(filter = {}, projection = {}) {
-  projection = { ...HIDE_FIELDS, ...projection }
-  const collection = await getCollection(COLLECTION_NAME);
-  return await collection.find(filter, { projection }).toArray();
-}
+// Safe delete function for users
+export async function deleteUser(id) {
+  const { canDelete, usedIn } = await canDelete('users', id);
 
-export async function getTotalUsers() {
-  const collection = await getCollection(COLLECTION_NAME);
-  return await collection.estimatedDocumentCount();
-}
+  if (!canDelete) {
+    throw new Error(`Cannot delete user. It is referenced in: ${usedIn.join(', ')}`);
+  }
 
-export async function countUsers(filter = {}) {
   const collection = await getCollection(COLLECTION_NAME);
-  return await collection.countDocuments(filter);
+  return await collection.deleteOne({ _id: new ObjectId(id) });
 }

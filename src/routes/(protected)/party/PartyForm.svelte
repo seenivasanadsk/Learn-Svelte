@@ -1,11 +1,15 @@
+<!-- src\routes\(protected)\party\PartyForm.svelte -->
+
 <script>
   import CheckBoxField from '$lib/components/CheckBoxField.svelte';
   import Form from '$lib/components/Form.svelte';
   import InputField from '$lib/components/InputField.svelte';
   import MultiField from '$lib/components/MultiField.svelte';
   import { showToast } from '$lib/stores/toast';
+  import { formDataToObject } from '$lib/utils/form';
 
   let { onClose, editableData } = $props();
+
   let phoneField = [
     { name: 'name', title: 'Name', placeholder: 'Name' },
     { name: 'number', title: 'Number', placeholder: 'Number' }
@@ -20,7 +24,8 @@
 
   let data = $state(initData);
 
-  function handleSubmit() {
+  function handleSubmit({ formData }) {
+    const parsed = formDataToObject(formData);
     return ({ result }) => {
       if (result?.data?.message) {
         showToast(result.data.message, result.type === 'success' ? 'success' : 'danger');
@@ -42,13 +47,12 @@
 >
   {#if editableData?._id}
     <input type="hidden" name="editId" value={editableData._id} />
-    testst
   {/if}
   <InputField placeholder="Name" name="name" bind:value={data.name} autofocus />
   <InputField placeholder="Note" name="note" bind:value={data.note} />
   <MultiField
     fields={phoneField}
-    length={1}
+    length={data.phone.length || 1}
     title="Phone Numbers"
     fieldName="phone"
     bind:value={data.phone}

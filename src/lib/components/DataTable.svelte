@@ -125,11 +125,13 @@
             class="sticky top-0 z-10 bg-gray-100 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-700"
           >
             <tr class="text-left">
-              <th class="px-2.5 py-1.5 font-semibold text-center">S.No</th>
+              <th class="px-3 py-1.5 font-semibold">S.No</th>
               {#each headers as header}
-                <th class="px-2.5 py-1.5 font-semibold text-center">{header.name}</th>
+                <th class="px-3 py-1.5 font-semibold {`text-${header.align || 'left'}`}">
+                  {header.name}
+                </th>
               {/each}
-              <th class="px-2.5 py-1.5 font-semibold text-center">Action</th>
+              <th class="px-3 py-1.5 font-semibold text-center">Action</th>
             </tr>
           </thead>
 
@@ -137,11 +139,12 @@
             {#each items as item, i}
               <tr
                 class="odd:bg-white even:bg-gray-100 dark:odd:bg-gray-900 dark:even:bg-gray-800
-                       hover:bg-amber-100 dark:hover:bg-amber-600/30"
+                       hover:bg-amber-100 dark:hover:bg-amber-600/30
+                        not-last:border-b border-gray-200 dark:border-gray-700"
               >
                 <td class="px-2.5 py-1.5 font-medium">{i + 1}</td>
                 {#each headers as header}
-                  <td class="px-2.5 py-1.5 {`text-${header.align || 'center'}`}">
+                  <td class="px-2.5 py-1.5 {`text-${header.align || 'left'}`}">
                     {@render tableCell(header, item)}
                   </td>
                 {/each}
@@ -213,7 +216,7 @@
     </span>
   {:else if !value}
     <!-- FallBack For Empty Value -->
-    <span class="text-gray-500 inline-block w-full text-center">-</span>
+    <span class="text-gray-500 inline-block w-full">-</span>
   {:else if header.valuePath == 'createdBy'}
     {@const createdAt = item['createdAt']}
     <!-- CreatedBy Fields -->

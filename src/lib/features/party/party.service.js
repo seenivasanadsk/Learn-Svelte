@@ -1,3 +1,6 @@
+// src\lib\features\party\party.service.js
+
+import { emit } from "$lib/core/server/sseBus";
 import { partyCreateModel, partyUpdateModel } from "./party.model";
 import { countParty, getTotalPartyCount, getParty, HEADERS, getPartyByPartyName, insertParty, getPartyById, updateParty } from "./party.repository";
 import { partySchema } from "./party.schema";
@@ -13,6 +16,7 @@ export async function getPartyList() {
 }
 
 export async function createNewParty(data, currentUser) {
+
   const valid = partySchema.safeParse(data);
 
   if (!valid.success) {
@@ -35,6 +39,8 @@ export async function createNewParty(data, currentUser) {
     return { message: `Faild to create Party`, ok: false };
   }
 
+  emit({ type: 'PARTY_UPDATED' })
+
   return { message: 'Party Created Successful', ok: true }
 }
 
@@ -49,7 +55,6 @@ export async function updateExsitingParty(data, currentUser) {
   }
 
   let result = await getPartyById(editId)
-  console.log(result)
 
   if (!result?._id) {
     return { message: `Party not exist`, ok: false };
@@ -68,6 +73,8 @@ export async function updateExsitingParty(data, currentUser) {
   if (!result.acknowledged) {
     return { message: `Faild to update Party`, ok: false };
   }
+
+  emit({ type: 'PARTY_UPDATED' })
 
   return { message: 'Party Updated Successful', ok: true }
 }

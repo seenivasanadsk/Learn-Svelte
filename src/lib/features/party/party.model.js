@@ -1,3 +1,5 @@
+// src\lib\features\party\party.model.js
+
 import { ObjectId } from "mongodb";
 
 export const ALLOWED_UPDATE_FIELDS = ['name', 'phone', 'note', 'isActive'];
@@ -13,22 +15,26 @@ export function partyCreateModel(data, overridableData, seed = false) {
     updatedAt: null,
     updatedBy: null,
     seededAt: seed ? new Date() : null,
-    isActive: false,
+    isActive: input.isActive ?? false,
   };
 }
 
-export function partyUpdateModel(data, overridableData) {
+export function partyUpdateModel(data, overridableData = {}) {
   const input = { ...data, ...overridableData };
   const update = {};
 
   for (const field of ALLOWED_UPDATE_FIELDS) {
-    if (field in input) {
+    if (input[field] !== undefined) {
       update[field] = input[field];
     }
   }
 
+  update.isActive = input.isActive ?? false;
   update.updatedAt = new Date();
-  update.updatedBy = input?.updatedBy ? new ObjectId(input.updatedBy) : null;
+
+  if (input.updatedBy) {
+    update.updatedBy = new ObjectId(input.updatedBy);
+  }
 
   return update;
 }

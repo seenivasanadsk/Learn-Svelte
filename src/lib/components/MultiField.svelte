@@ -1,3 +1,5 @@
+<!-- src\lib\components\MultiField.svelte -->
+
 <script>
   import stringCase from '$lib/utils/stringCase';
   let {
@@ -9,36 +11,49 @@
     fieldName = ''
   } = $props();
 
-  // Initialize rows
-  // Initialize rows dynamically
-  // Ensure value always has `length` rows
-  $effect(() => {
-    let needsInit = value.length !== length;
+  // Track if we've initialized
+  let initialized = $state(false);
 
-    if (!needsInit) {
-      for (let i = 0; i < length; i++) {
-        if (!value[i]) {
-          needsInit = true;
-          break;
+  // Initialize rows only once when value changes
+  $effect(() => {
+    // Skip if already initialized or no fields
+    if (initialized || fields.length === 0) return;
+
+    // If value has data, use it
+    if (value.length > 0) {
+      // Ensure each row has all required fields
+      const processedValue = value.map((row) => {
+        const processedRow = {};
+        for (const f of fields) {
+          processedRow[f.name] = row[f.name] ?? '';
         }
+        return processedRow;
+      });
+
+      // Only update if different
+      if (JSON.stringify(processedValue) !== JSON.stringify(value)) {
+        value = processedValue;
       }
+      length = processedValue.length;
+    }
+    // Otherwise initialize with empty rows
+    else {
+      value = Array.from({ length }, () => {
+        const row = {};
+        for (const f of fields) {
+          row[f.name] = '';
+        }
+        return row;
+      });
     }
 
-    if (!needsInit) return;
-
-    value = Array.from({ length }, (_, i) => {
-      const existing = value[i] ?? {};
-      const row = {};
-      for (const f of fields) {
-        row[f.name] = existing[f.name] ?? '';
-      }
-      return row;
-    });
+    initialized = true;
   });
 
-  // function updateValue(rowIndex, fieldName, newValue) {
-  //   value = value.map((row, i) => (i === rowIndex ? { ...row, [fieldName]: newValue } : row));
-  // }
+  // Add this function to properly format names for FormData
+  function getInputName(index, fieldNameInRow) {
+    return `${fieldName}[${index}][${fieldNameInRow}]`;
+  }
 </script>
 
 <div
@@ -50,7 +65,14 @@
     <span>{title}</span>
     <button
       type="button"
-      onclick={() => (length = length + 1)}
+      onclick={() => {
+        const newRow = {};
+        for (const f of fields) {
+          newRow[f.name] = '';
+        }
+        value = [...value, newRow];
+        length = length + 1;
+      }}
       class="size-6 rounded-full bg-green-600 text-white
          inline-flex items-center justify-center
          text-xl font-bold
@@ -86,7 +108,7 @@
                 placeholder={`${placeholder} ${i + 1}`}
                 {...field}
                 bind:value={row[field.name]}
-                name={`${fieldName}[${i}][${field.name}]`}
+                name={getInputName(i, field.name)}
                 oninput={(e) => {
                   row[field.name] = stringCase.smartTitle(e.target.value);
                 }}
@@ -97,7 +119,7 @@
             <button
               type="button"
               onclick={() => {
-                value.splice(i, 1);
+                value = value.filter((_, idx) => idx !== i);
                 length = length - 1;
               }}
               class="size-6 rounded-full bg-amber-600 text-white

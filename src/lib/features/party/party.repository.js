@@ -1,14 +1,17 @@
+// src\lib\features\party\party.repository.js
+
 import { getCollection } from '$lib/core/db';
+import { addDeletableField } from '$lib/core/server/deletable';
 import { ObjectId } from 'mongodb';
 
 export const COLLECTION_NAME = 'party';
 export const HIDE_FIELDS = {}
 export const HEADERS = [
-  { name: "Name", valuePath: 'name', align: 'left' },
-  { name: "Note", valuePath: 'note', align: 'left' },
+  { name: "Name", valuePath: 'name' },
+  { name: "Note", valuePath: 'note' },
   { name: "Creater", valuePath: 'createdBy' },
   { name: "Updater", valuePath: 'updatedBy' },
-  { name: "Active", valuePath: 'isActive' },
+  { name: "Active", valuePath: 'isActive', align: 'center' },
 ]
 
 export async function getAllPartyNames() {
@@ -75,6 +78,14 @@ export async function getParty(filter = {}) {
       $addFields: {
         createrName: { $first: '$createdByUser.username' },
         updaterName: { $first: '$updatedByUser.username' }
+      }
+    },
+
+    ...addDeletableField('party'),
+
+    {
+      $sort: {
+        createdAt: -1
       }
     },
 

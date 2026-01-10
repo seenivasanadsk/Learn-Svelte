@@ -1,9 +1,12 @@
+<!-- src\routes\(protected)\party\+page.svelte -->
+
 <script>
   import DataTable from '$lib/components/DataTable.svelte';
   import Model from '$lib/components/Model.svelte';
   import PartyForm from './PartyForm.svelte';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
+  import { syncOff, syncOn } from '$lib/core/client/sseReceiver';
 
   const { data } = $props();
 
@@ -21,6 +24,13 @@
     url.searchParams.delete('editId');
     goto(url, { replaceState: true });
   }
+
+  $effect(() => {
+    syncOn('PARTY_UPDATED');
+    return () => {
+      syncOff('PARTY_UPDATED');
+    };
+  });
 </script>
 
 <DataTable
