@@ -7,12 +7,22 @@ export const COLLECTION_NAME = 'users';
 export const HIDE_FIELDS = {};
 export const HEADERS = [
   { name: "Username", valuePath: 'username' },
-  { name: "Email", valuePath: 'email' },
-  { name: "Party", valuePath: 'partyName' },
-  { name: "Substitute Party", valuePath: 'substitutePartyName' },
+  // { name: "Email", valuePath: 'email' },
   { name: "Active", valuePath: 'isActive', align: 'center' },
   { name: "Deletable", valuePath: 'isDeletable', align: 'center' },
 ];
+
+export async function getAllUsernames() {
+  const collection = await getCollection(COLLECTION_NAME);
+  return await collection
+    .find({ isActive: true }, { projection: { username: 1, _id: 0 } })
+    .toArray();
+}
+
+export async function getUserByUsername(username, getHasedPassword = false) {
+  const collection = await getCollection(COLLECTION_NAME);
+  return await collection.findOne({ username: username }, { projection: getHasedPassword ? {} : HIDE_FIELDS });
+}
 
 export async function getUsers(filter = {}) {
   const collection = await getCollection(COLLECTION_NAME);
@@ -96,4 +106,14 @@ export async function deleteUser(id) {
 
   const collection = await getCollection(COLLECTION_NAME);
   return await collection.deleteOne({ _id: new ObjectId(id) });
+}
+
+export async function getTotalUsersCount() {
+  const collection = await getCollection(COLLECTION_NAME);
+  return await collection.estimatedDocumentCount();
+}
+
+export async function countUsers(filter = {}) {
+  const collection = await getCollection(COLLECTION_NAME);
+  return await collection.countDocuments(filter);
 }

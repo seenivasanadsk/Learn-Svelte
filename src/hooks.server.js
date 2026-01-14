@@ -48,7 +48,7 @@ export async function handle({ event, resolve }) {
   }
 
   // --------------------------------------------------
-  // 3. Skip JSON / data requests
+  // 3. Skip JSON / data / SSE requests
   // --------------------------------------------------
   if (path.includes('/__data.json') || path.includes('.json') || path.includes('/api/events')) {
     return await resolve(event);
