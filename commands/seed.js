@@ -14,11 +14,8 @@ export const info = 'Seed data into the Database';
  * @param {*} _flags - CLI flags (ignored, but required for CLI signature)
  * @param {boolean} fresh - If true, delete existing data before seeding.
  */
-async function seed(_flags, fresh = false) {
-  const projectRoot = path.resolve(import.meta.dirname, '..');
-  const seedFolder = path.join(projectRoot, 'seed');
-
-  const seedFiles = getFilesName(seedFolder);
+async function seed({ appPath }, fresh = false) {
+  const seedFiles = getFilesName(appPath.seed);
 
   if (!Array.isArray(seedFiles) || seedFiles.length === 0) {
     console.log(redText('No seed files found in /seed directory.'));
@@ -26,7 +23,7 @@ async function seed(_flags, fresh = false) {
   }
 
   for (const fileName of seedFiles) {
-    const modulePath = path.join(seedFolder, fileName);
+    const modulePath = path.join(appPath.seed, fileName);
     const moduleURL = pathToFileURL(modulePath);
 
     const module = await import(moduleURL);
@@ -75,8 +72,8 @@ async function seedCollection(collectionName, seedData, fresh) {
 }
 
 /** CLI command: forces fresh seeding */
-export function fresh(_flags) {
-  seed(_flags, true);
+export function fresh(_) {
+  seed(_, true);
 }
 
 export default seed;

@@ -10,15 +10,14 @@ export const info = 'Show available Commands';
 /**
  * Main function: List all available command modules in this directory.
  */
-export default async function () {
+export default async function ({ appPath }) {
   console.log(greenText('List of available commands'));
   console.log(''); // blank line
 
-  const commandsDir = import.meta.dirname;
-  const commandFiles = getFilesName(commandsDir);
+  const commandFiles = getFilesName(appPath.commands);
 
   for (const file of commandFiles) {
-    const modulePath = path.join(commandsDir, file);
+    const modulePath = path.join(appPath.commands, file);
     const moduleURL = pathToFileURL(modulePath);
 
     const module = await import(moduleURL);

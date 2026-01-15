@@ -5,17 +5,16 @@ import { redText, yellowText } from './formatText.js';
 /**
  * Execute a CLI command based on parsed user input.
  */
-export default async function runCommand(parsedInput) {
-  const { command, subCommand, ...flags } = parsedInput;
-
+export default async function runCommand({ command, subCommand, ...options }) {
+  const { appPath } = options
   try {
-    const module = await loadCommandModule(command);
+    const module = await loadCommandModule(command, appPath.commands);
 
     // Run named export as subcommand
     if (subCommand) {
       const fn = module[subCommand];
       if (typeof fn === 'function') {
-        return await fn(flags);
+        return await fn(options);
       }
 
       return printError(`Subcommand "${subCommand}" not found in "${command}".`);
@@ -23,13 +22,13 @@ export default async function runCommand(parsedInput) {
 
     // Run default export
     if (typeof module.default === 'function') {
-      return await module.default(flags);
+      return await module.default(options);
     }
 
     printError(`Command "${command}" does not export a default function.`);
   } catch (e) {
     console.error(e);
-    printError(`Wrong command: '${command}' or command cannot be executed.`);
+    printError(`Wrong command: '${command}'. Command cannot be executed.`);
     printHint();
   }
 }
@@ -38,14 +37,13 @@ export default async function runCommand(parsedInput) {
  * Loads the JS module for a given command.
  * Falls back to help message if no command is given.
  */
-async function loadCommandModule(command) {
+async function loadCommandModule(command, commandsPath) {
   if (!command) {
     printHint();
     process.exit(0);
   }
 
-  const baseDir = import.meta.dirname; // Node 22+
-  const filePath = path.join(baseDir, '../', `${command}.js`);
+  const filePath = path.join(commandsPath, `${command}.js`);
   const fileURL = pathToFileURL(filePath).href;
 
   return import(fileURL);
