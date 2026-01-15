@@ -9,3 +9,11 @@ export async function load({ depends }) {
   users = serializeDoc(users)
   return { listData: users }
 }
+
+export const actions = {
+  create: async ({ request }) => {
+    const data = await request.formData();
+    console.log(data);
+    return { seeni: "test" }
+  }
+}
