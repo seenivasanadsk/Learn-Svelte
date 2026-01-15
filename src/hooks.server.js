@@ -9,7 +9,6 @@ const PUBLIC_ROUTES = ['/reset-request'];
 // Auth routes (only accessible when NOT logged in)
 const AUTH_ROUTES = ['/login', '/force-logout'];
 
-/** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
   const url = new URL(event.request.url);
   const path = url.pathname;
